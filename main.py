@@ -3,6 +3,7 @@
 ################- USE ARROW_UP TO ADD ONE ANIMAL -###############
 ##############- USE ARROW_LEFT TO ADD FIVE ANIMALS -#############
 ###- USE ARROW_DOWN TO PRINT AMOUNT OF ANIMALS ON THE SCREEN -###
+###############- USE ESCAPE TO REMOVE ALL ANIMALS -##############
 #################################################################
 #################################################################
 
@@ -269,7 +270,9 @@ while not done:
             if event.key == pygame.K_SPACE: # <<<doesn't work yet>>>
                 for i in herbs:
                     i.draw()
-
+            if event.key == pygame.K_ESCAPE:
+                animals=[]
+                
     # --- Game logic --- #
     if key_up == 1:
         animals.append(animal(random.randint(1,42),random.randint(1,42),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
