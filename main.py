@@ -1,9 +1,9 @@
 #################################################################
 ###########################--- SERG ---##########################
-################- USE ARROW_UP TO ADD ONE ANIMAL -###############
-##############- USE ARROW_LEFT TO ADD FIVE ANIMALS -#############
-###- USE ARROW_DOWN TO PRINT AMOUNT OF ANIMALS ON THE SCREEN -###
-###############- USE ESCAPE TO REMOVE ALL ANIMALS -##############
+###################- ARROW_UP: ADD ONE ANIMAL -##################
+#################- ARROW_LEFT: ADD FIVE ANIMALS -################
+####- ARROW_DOWN: PRINT AMOUNT OF THE ANIMALS ON THE SCREEN -####
+################- ESCAPE: REMOVE ALL THE ANIMALS -###############
 #################################################################
 #################################################################
 
