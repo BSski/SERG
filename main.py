@@ -5,7 +5,7 @@
 ####- ARROW_DOWN: PRINT AMOUNT OF THE ANIMALS ON THE SCREEN -####
 ################- ESCAPE: REMOVE ALL THE ANIMALS -###############
 #################################################################
-#################################################################
+
 
 # Imports
 import pygame
