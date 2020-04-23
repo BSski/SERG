@@ -6,7 +6,6 @@
 ################- ESCAPE: REMOVE ALL THE ANIMALS -###############
 #################################################################
 
-
 # Imports
 import pygame
 import random
@@ -39,10 +38,16 @@ RED         = ( 202,   0,   0)
 key_up = 0
 counter = 0
 counter_prev = counter
-animals=[]
-herbs=[]
+big_counter = 0
+big_counter_prev = big_counter
+animals = []
+herbs = []
+herbivores = []
+carnivores = []
+# Settings
+herbs_spawn_rate = 7
 # DNA coding
-color_dict={
+color_dict = {
 0: ORANGE,
 1: YELLOW,
 2: GREEN,
@@ -52,7 +57,14 @@ color_dict={
 6: PINK,
 7: RED
 }
-speed_dict={
+speed_dict = {
+-7: 120,
+-6: 60,
+-5: 40,
+-4: 30,
+-3: 24,
+-2: 20,
+-1: 15,
 0: 12,
 1: 10,
 2: 8,
@@ -147,32 +159,32 @@ class herb:
             self.coord_y = coord_y
             self.index = index
             self.energy = 25
-            for i in range(self.index,len(herbs)):
-                print(i)
-                herbs[i].index-=1
 
     def draw(self):
-        pygame.draw.circle(screen, FORESTGREEN, [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1]], 3)
+        pygame.draw.circle(screen, FORESTGREEN, [(grid[self.coord_y][self.coord_x][0])+4, (grid[self.coord_y][self.coord_x][1])+4], 3)
+
+    def get_energy(self):
+        return self.energy
+
+    def get_coord(self):
+        return self.coord_x, self.coord_y
 
     def got_eaten(self):
         del herbs[self.index]
         for i in range(self.index,len(herbs)):
-            try:
-                herbs[i].index-=1
-            except IndexError:
-                pass
-        for i in herbs:
-            print(i.index)
+            herbs[i].index -= 1
+        #my_event = pygame.event.Event(DIED)
+        #pygame.event.post(my_event)
 
 # Class creating animals
 class animal:
     def __init__(self,coord_x,coord_y,index,dna):
-            self.dna=dna
-            self.index=index
-            self.color=color_dict[int(dna[0])]
-            self.speed=speed_dict[int(dna[1])]
             self.coord_x = coord_x
             self.coord_y = coord_y
+            self.index = index
+            self.dna = dna
+            self.color = color_dict[int(dna[0])]
+            self.speed = speed_dict[int(dna[1])]
             self.energy = 25
 
     def get_index(self):
@@ -181,15 +193,51 @@ class animal:
     def get_dna(self):
         return self.dna
 
+    def get_intention(self): # 1 - breeding, 0 - food
+        if self.energy > 45: return 1
+        else: return 0
+
     def get_state(self):
-        if self.energy>0: return 1 #alive
-        if self.energy<1: return 0 #dead
+        if self.energy > 0: return 1 #alive
+        if self.energy < 1: return 0 #dead
 
     def get_energy(self):
         return self.energy
 
+    def change_energy(self, new_energy):
+        self.energy = new_energy
+
     def get_coord(self):
         return self.coord_x, self.coord_y
+
+    def action(self):
+        if self.get_intention() == 1:
+            self.breeding()
+        else:
+            self.eat()
+
+    def breeding(self):
+        for i in animals:
+            if i.get_intention() == 1:
+                if self.coord_x == i.get_coord()[0] and self.coord_y == i.get_coord()[1]:
+                    if i != animals[self.get_index()]:
+                        self.energy = int(self.energy / 2)
+                        i.change_energy(int(i.get_energy()/2))
+                        animals.append(animal(i.get_coord()[0],i.get_coord()[1],len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
+                        print(i.get_dna(),self.get_dna(),"JUST BRED")
+                    break
+
+    def eat(self):
+        for i in herbs:
+            if self.coord_x == i.get_coord()[0] and self.coord_y == i.get_coord()[1]:
+                self.energy += i.get_energy()
+                i.got_eaten()
+                break
+
+    def starved(self):
+        del animals[self.index]
+        for i in range(self.index,len(animals)):
+            animals[i].index -= 1
 
     def move(self):
         global counter
@@ -198,7 +246,8 @@ class animal:
             #print("ugh")
             pass
         else:
-            if int(counter)%self.speed == 0:
+            if int(counter) % self.speed == 0:
+                self.energy -= 2
                 #print("ani x ani y nie są skrajne")
                 if not (self.coord_x == 0 or self.coord_x == 42 or self.coord_y == 0 or self.coord_y == 42):
                     #print("ruszam")
@@ -228,19 +277,44 @@ class animal:
 
 # Class creating carnivores
 class carnivore(animal):
-    pass
+    def __init__(self):
+        pass
+
+    def starved(self):
+        del carnivores[self.index]
+        for i in range(self.index,len(carnivores)):
+            carnivores[i].index -= 1
+        # turn into a herb
 
 # Class creating herbivores
 class herbivore(animal):
-    pass
+        def __init__(self):
+            pass
+
+        def starved(self):
+            del herbivores[self.index]
+            for i in range(self.index,len(herbivores)):
+                herbivores[i].index -= 1
+            # turn into a herb
+
+        def got_eaten(self):
+            del herbivores[self.index]
+            for i in range(self.index,len(herbivores)):
+                herbivores[i].index -= 1
 
 
-# Add 10 herbs to 'herbs' list
-for i in range(0,10):
-    herbs.append(herb(random.randint(0,43),random.randint(0,43),len(herbs),25,3))
+def spawn_herbs(speed):
+    if int(counter_prev) == int(counter):
+        pass
+    else:
+        if int(counter) % speed_dict[speed] == 0:
+            for i in range(0,3): # adding new herbs each frame
+                herbs.append(herb(random.randint(1,41),random.randint(1,41),len(herbs),25,3))
+
+
 # Add 10 animals to 'animals' list
 for i in range(0,10):
-    animals.append(animal(random.randint(1,42),random.randint(1,42),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
+    animals.append(animal(random.randint(1,41),random.randint(1,41),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
 
 done = False
 clock = pygame.time.Clock()
@@ -248,9 +322,11 @@ clock = pygame.time.Clock()
 # -------- Main Program Loop -------- #
 while not done:
     counter_prev = counter
+    big_counter_prev = big_counter
     delta_t = clock.tick(60)
     counter += 30 * (delta_t/1000)
     if counter > 120:   # 16 possibile speeds:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
+        big_counter += 1
         counter = 0
 
     # --- Main event loop --- #
@@ -261,30 +337,45 @@ while not done:
             if event.key == pygame.K_UP:
                 key_up=1
             if event.key == pygame.K_DOWN:
-                print(len(animals))
-            if event.key == pygame.K_RIGHT:
-                herbs[2].got_eaten()
+                print("current amount of ANIMALS:",len(animals))
+            #if event.key == pygame.K_RIGHT:
+
             if event.key == pygame.K_LEFT:
                 for i in range(0,5):
-                    animals.append(animal(random.randint(1,42),random.randint(1,42),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
-            if event.key == pygame.K_SPACE: # <<<doesn't work yet>>>
-                for i in herbs:
-                    i.draw()
+                    animals.append(animal(random.randint(1,41),random.randint(1,41),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
+        #    if event.key == pygame.K_SPACE: # <<<doesn't work yet>>>
+
             if event.key == pygame.K_ESCAPE:
-                animals=[]
-                
+                animals = []
+                herbs = []
+                omnivores = []
+                carnivores = []
+
     # --- Game logic --- #
+
+    spawn_herbs(herbs_spawn_rate)
     if key_up == 1:
-        animals.append(animal(random.randint(1,42),random.randint(1,42),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
+        animals.append(animal(random.randint(1,41),random.randint(1,41),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
         key_up = 0
 
     # --- Drawing code --- #
     screen.fill(LIGHTGRAY)
     draw_window()
+    for i in animals:
+        if i.get_state()==0:
+            i.starved()
+    for i in animals:
+        i.action()
+    for i in herbs:
+        i.draw()
     for i in range(0,len(animals)):
         animals[i].move()
 
-
-
+    if int(big_counter_prev) == int(big_counter):
+        pass
+    else:
+        if int(big_counter) % 2 == 0:
+            print("..::: Current amount of HERBS:",len(herbs),":::..")
+            print("..::: Current amount of ANIMALS:",len(animals),":::..")
     # --- Update the screen --- #
     pygame.display.flip()
