@@ -1,10 +1,9 @@
-#################################################################
-###########################--- SERG ---##########################
-###################- ARROW_UP: ADD ONE ANIMAL -##################
-#################- ARROW_LEFT: ADD FIVE ANIMALS -################
-####- ARROW_DOWN: PRINT AMOUNT OF THE ANIMALS ON THE SCREEN -####
-################- ESCAPE: REMOVE ALL THE ANIMALS -###############
-#################################################################
+###################################################################
+############################--- SERG ---###########################
+###################- ARROW_UP: ADD ONE CARNIVORE -#################
+#########- ARROW_LEFT: ADD 10 HERBIVORES AND 1 CARNIVORE -#########
+#################- ESCAPE: REMOVE ALL THE ANIMALS -################
+###################################################################
 
 # Imports
 import pygame
@@ -34,18 +33,77 @@ BLUE        = (   0, 102, 204)
 PURPLE      = ( 102,   0, 204)
 PINK        = ( 255,   0, 255)
 RED         = ( 202,   0,   0)
+RED_0       = ( 255, 179, 179)
+RED_1       = ( 255, 128, 128)
+RED_2       = ( 255,  77,  77)
+RED_3       = ( 255,  26,  26)
+RED_4       = ( 230,   0,   0)
+RED_5       = ( 179,   0,   0)
+RED_6       = ( 128,   0,   0)
+RED_7       = (  77,   0,   0)
+GREEN_0     = ( 194, 239, 194)
+GREEN_1     = ( 154, 228, 154)
+GREEN_2     = ( 114, 218, 114)
+GREEN_3     = (  74, 207,  74)
+GREEN_4     = (  48, 181,  48)
+GREEN_5     = (  37, 141,  37)
+GREEN_6     = (  27, 101,  27)
+GREEN_7     = (  16,  60,  16)
+'''
+PURPLE_0    =
+PURPLE_1    =
+PURPLE_2    =
+PURPLE_3    =
+PURPLE_4    =
+PURPLE_5    =
+PURPLE_6    =
+PURPLE_7    =
+BLUE_0      =
+BLUE_1      =
+BLUE_2      =
+BLUE_3      =
+BLUE_4      =
+BLUE_5      =
+BLUE_6      =
+BLUE_7      =
+YELLOW_0    =
+YELLOW_1    =
+YELLOW_2    =
+YELLOW_3    =
+YELLOW_4    =
+YELLOW_5    =
+YELLOW_6    =
+YELLOW_7    =
+ORANGE_0    =
+ORANGE_1    =
+ORANGE_2    =
+ORANGE_3    =
+ORANGE_4    =
+ORANGE_5    =
+ORANGE_6    =
+ORANGE_7    =
+PINK_0      =
+PINK_1      =
+PINK_2      =
+PINK_3      =
+PINK_4      =
+PINK_5      =
+PINK_6      =
+PINK_7      =
+'''
+
 # Define variables and lists
 key_up = 0
 counter = 0
 counter_prev = counter
 big_counter = 0
 big_counter_prev = big_counter
-animals = []
 herbs = []
 herbivores = []
 carnivores = []
 # Settings
-herbs_spawn_rate = 7
+game_speed = 30
+herbs_spawn_rate = 7 # between 7 and -4
 # DNA coding
 color_dict = {
 0: ORANGE,
@@ -57,21 +115,90 @@ color_dict = {
 6: PINK,
 7: RED
 }
+color_dict_red = {
+0: RED_0,
+1: RED_1,
+2: RED_2,
+3: RED_3,
+4: RED_4,
+5: RED_5,
+6: RED_6,
+7: RED_7
+}
+color_dict_green = {
+0: GREEN_0,
+1: GREEN_1,
+2: GREEN_2,
+3: GREEN_3,
+4: GREEN_4,
+5: GREEN_5,
+6: GREEN_6,
+7: GREEN_7
+}
+'''
+color_dict_purple = {
+0: PURPLE_0,
+1: PURPLE_1,
+2: PURPLE_2,
+3: PURPLE_3,
+4: PURPLE_4,
+5: PURPLE_5,
+6: PURPLE_6,
+7: PURPLE_7
+}
+color_dict_blue = {
+0: BLUE_0,
+1: BLUE_1,
+2: BLUE_2,
+3: BLUE_3,
+4: BLUE_4,
+5: BLUE_5,
+6: BLUE_6,
+7: BLUE_7
+}
+color_dict_yellow = {
+0: YELLOW_0,
+1: YELLOW_1,
+2: YELLOW_2,
+3: YELLOW_3,
+4: YELLOW_4,
+5: YELLOW_5,
+6: YELLOW_6,
+7: YELLOW_7
+}
+color_dict_orange = {
+0: ORANGE_0,
+1: ORANGE_1,
+2: ORANGE_2,
+3: ORANGE_3,
+4: ORANGE_4,
+5: ORANGE_5,
+6: ORANGE_6,
+7: ORANGE_7
+}
+color_dict_pink = {
+0: PINK_0,
+1: PINK_1,
+2: PINK_2,
+3: PINK_3,
+4: PINK_4,
+5: PINK_5,
+6: PINK_6,
+7: PINK_7
+}
+'''
 speed_dict = {
--7: 120,
--6: 60,
--5: 40,
--4: 30,
--3: 24,
--2: 20,
--1: 15,
-0: 12,
-1: 10,
-2: 8,
-3: 6,
-4: 5,
-5: 4,
-6: 3,
+-4: 120,
+-3: 60,
+-2: 40,
+-1: 30,
+0: 24,
+1: 20,
+2: 12,
+3: 10,
+4: 8,
+5: 6,
+6: 4,
 7: 2
 }
 # Set size of the screen and create it
@@ -166,7 +293,7 @@ class herb:
     def get_energy(self):
         return self.energy
 
-    def get_coord(self):
+    def get_coords(self):
         return self.coord_x, self.coord_y
 
     def got_eaten(self):
@@ -179,13 +306,16 @@ class herb:
 # Class creating animals
 class animal:
     def __init__(self,coord_x,coord_y,index,dna):
-            self.coord_x = coord_x
-            self.coord_y = coord_y
-            self.index = index
-            self.dna = dna
-            self.color = color_dict[int(dna[0])]
-            self.speed = speed_dict[int(dna[1])]
-            self.energy = 25
+        pass
+
+    def get_type(self):
+        return self.type
+
+    def get_type_list(self):
+        return self.type_list
+
+    def get_food_type(self):
+        return self.food_type
 
     def get_index(self):
         return self.index
@@ -194,7 +324,7 @@ class animal:
         return self.dna
 
     def get_intention(self): # 1 - breeding, 0 - food
-        if self.energy > 45: return 1
+        if self.energy > 35: return 1
         else: return 0
 
     def get_state(self):
@@ -207,47 +337,39 @@ class animal:
     def change_energy(self, new_energy):
         self.energy = new_energy
 
-    def get_coord(self):
-        return self.coord_x, self.coord_y
+    def get_coords(self):
+        return (self.coord_x, self.coord_y)
 
-    def action(self):
+    def action(self, food_type):
         if self.get_intention() == 1:
             self.breeding()
         else:
-            self.eat()
+            self.eat(food_type)
 
-    def breeding(self):
-        for i in animals:
-            if i.get_intention() == 1:
-                if self.coord_x == i.get_coord()[0] and self.coord_y == i.get_coord()[1]:
-                    if i != animals[self.get_index()]:
-                        self.energy = int(self.energy / 2)
-                        i.change_energy(int(i.get_energy()/2))
-                        animals.append(animal(i.get_coord()[0],i.get_coord()[1],len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
-                        print(i.get_dna(),self.get_dna(),"JUST BRED")
-                    break
-
-    def eat(self):
-        for i in herbs:
-            if self.coord_x == i.get_coord()[0] and self.coord_y == i.get_coord()[1]:
+    def eat(self, food_type):
+        for i in food_type:
+            if self.coord_x == i.get_coords()[0] and self.coord_y == i.get_coords()[1]:
                 self.energy += i.get_energy()
                 i.got_eaten()
                 break
 
-    def starved(self):
-        del animals[self.index]
-        for i in range(self.index,len(animals)):
-            animals[i].index -= 1
+    def starved(self, type_list):
+        del type_list[self.index]
+        for i in range(self.index,len(type_list)):
+            type_list[i].index -= 1
+        # and turn into a herb
 
     def move(self):
-        global counter
         pygame.draw.rect(screen, self.color, [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
         if int(counter_prev) == int(counter):
             #print("ugh")
             pass
         else:
             if int(counter) % self.speed == 0:
-                self.energy -= 2
+                if self.get_type() == "carnivore":
+                    self.energy -= 1
+                else:
+                    self.energy -= 1
                 #print("ani x ani y nie są skrajne")
                 if not (self.coord_x == 0 or self.coord_x == 42 or self.coord_y == 0 or self.coord_y == 42):
                     #print("ruszam")
@@ -277,31 +399,63 @@ class animal:
 
 # Class creating carnivores
 class carnivore(animal):
-    def __init__(self):
-        pass
+    def __init__(self,coord_x,coord_y,index,dna):
+            self.coord_x = coord_x
+            self.coord_y = coord_y
+            self.index = index
+            self.dna = dna
+            self.color = color_dict_red[int(dna[0])]
+            self.speed = speed_dict[int(dna[1])]
+            self.energy = 70
+            self.type = carnivore
+            self.type_list = carnivores
+            self.food_type = herbivores
+            self.last_bred_on = 0
 
-    def starved(self):
-        del carnivores[self.index]
-        for i in range(self.index,len(carnivores)):
-            carnivores[i].index -= 1
-        # turn into a herb
+    def breeding(self):
+        for i in carnivores:
+            if i.get_intention() == 1:
+                if (self.coord_x, self.coord_y) == i.get_coords():
+                    if i != carnivores[self.get_index()]:
+                        if not self.last_bred_on == i.get_coords():
+                            self.energy = int(self.energy / 2)
+                            i.change_energy(int(i.get_energy()/2))
+                            carnivores.append(carnivore(i.get_coords()[0],i.get_coords()[1],len(carnivores),str(random.randint(0,7))+str(random.randint(0,7))))
+                            self.last_bred_on = (self.coord_x, self.coord_y)
+                        break
+
 
 # Class creating herbivores
 class herbivore(animal):
-        def __init__(self):
-            pass
+    def __init__(self,coord_x,coord_y,index,dna):
+        self.coord_x = coord_x
+        self.coord_y = coord_y
+        self.index = index
+        self.dna = dna
+        self.color = color_dict_green[int(dna[0])]
+        self.speed = speed_dict[int(dna[1])]
+        self.energy = 70
+        self.type = herbivore
+        self.type_list = herbivores
+        self.food_type = herbs
+        self.last_bred_on = 0
 
-        def starved(self):
-            del herbivores[self.index]
-            for i in range(self.index,len(herbivores)):
-                herbivores[i].index -= 1
-            # turn into a herb
+    def got_eaten(self):
+        del herbivores[self.index]
+        for i in range(self.index,len(herbivores)):
+            herbivores[i].index -= 1
 
-        def got_eaten(self):
-            del herbivores[self.index]
-            for i in range(self.index,len(herbivores)):
-                herbivores[i].index -= 1
-
+    def breeding(self):
+        for i in herbivores:
+            if i.get_intention() == 1:
+                if (self.coord_x, self.coord_y) == i.get_coords():
+                    if i != herbivores[self.get_index()]:
+                        if not self.last_bred_on == i.get_coords():
+                            self.energy = int(self.energy / 2)
+                            i.change_energy(int(i.get_energy()/2))
+                            herbivores.append(herbivore(i.get_coords()[0],i.get_coords()[1],len(herbivores),str(random.randint(0,7))+str(random.randint(0,7))))
+                            self.last_bred_on = (self.coord_x, self.coord_y)
+                        break
 
 def spawn_herbs(speed):
     if int(counter_prev) == int(counter):
@@ -312,9 +466,13 @@ def spawn_herbs(speed):
                 herbs.append(herb(random.randint(1,41),random.randint(1,41),len(herbs),25,3))
 
 
-# Add 10 animals to 'animals' list
-for i in range(0,10):
-    animals.append(animal(random.randint(1,41),random.randint(1,41),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
+# Add starting herbs, herbivores and carnivores
+for i in range(0,100):
+    herbs.append(herb(random.randint(1,41),random.randint(1,41),len(herbs),25,3))
+for i in range(0,25):
+    herbivores.append(herbivore(random.randint(1,41),random.randint(1,41),len(herbivores),str(random.randint(0,7))+str(random.randint(0,7))))
+for i in range(0,7):
+    carnivores.append(carnivore(random.randint(1,41),random.randint(1,41),len(carnivores),str(random.randint(0,7))+str(random.randint(0,7))))
 
 done = False
 clock = pygame.time.Clock()
@@ -324,9 +482,10 @@ while not done:
     counter_prev = counter
     big_counter_prev = big_counter
     delta_t = clock.tick(60)
-    counter += 30 * (delta_t/1000)
+    counter += game_speed * (delta_t/1000)
     if counter > 120:   # 16 possibile speeds:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
         big_counter += 1
+        print(big_counter)
         counter = 0
 
     # --- Main event loop --- #
@@ -336,46 +495,52 @@ while not done:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 key_up=1
-            if event.key == pygame.K_DOWN:
-                print("current amount of ANIMALS:",len(animals))
+            #if event.key == pygame.K_DOWN:
             #if event.key == pygame.K_RIGHT:
 
             if event.key == pygame.K_LEFT:
-                for i in range(0,5):
-                    animals.append(animal(random.randint(1,41),random.randint(1,41),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
+                for i in range(0,10):
+                    herbivores.append(herbivore(random.randint(1,41),random.randint(1,41),len(herbivores),str(random.randint(0,7))+str(random.randint(0,7))))
+                for i in range(0,1):
+                    carnivores.append(carnivore(random.randint(1,41),random.randint(1,41),len(carnivores),str(random.randint(0,7))+str(random.randint(0,7))))
         #    if event.key == pygame.K_SPACE: # <<<doesn't work yet>>>
 
             if event.key == pygame.K_ESCAPE:
-                animals = []
                 herbs = []
                 omnivores = []
                 carnivores = []
 
     # --- Game logic --- #
-
     spawn_herbs(herbs_spawn_rate)
+
     if key_up == 1:
-        animals.append(animal(random.randint(1,41),random.randint(1,41),len(animals),str(random.randint(0,7))+str(random.randint(0,7))))
+        carnivores.append(carnivore(random.randint(1,41),random.randint(1,41),len(carnivores),str(random.randint(0,7))+str(random.randint(0,7))))
         key_up = 0
+
 
     # --- Drawing code --- #
     screen.fill(LIGHTGRAY)
     draw_window()
-    for i in animals:
-        if i.get_state()==0:
-            i.starved()
-    for i in animals:
-        i.action()
     for i in herbs:
         i.draw()
-    for i in range(0,len(animals)):
-        animals[i].move()
+    for i in herbivores:
+        if i.get_state()==0:
+            i.starved(i.get_type_list())
+        i.action(i.get_food_type())
+        i.move()
+    for i in carnivores:
+        if i.get_state()==0:
+            i.starved(i.get_type_list())
+        i.action(i.get_food_type())
+        i.move()
 
     if int(big_counter_prev) == int(big_counter):
         pass
     else:
-        if int(big_counter) % 2 == 0:
+        if int(big_counter) % 1 == 0:
+            print("...")
             print("..::: Current amount of HERBS:",len(herbs),":::..")
-            print("..::: Current amount of ANIMALS:",len(animals),":::..")
+            print("..::: Current amount of HERBIVORES:",len(herbivores),":::..")
+            print("..::: Current amount of CARNIVORES:",len(carnivores),":::..")
     # --- Update the screen --- #
     pygame.display.flip()
