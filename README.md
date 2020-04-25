@@ -1,4 +1,4 @@
-<p align="center">**Changelog**
+<p align="center"><b>Changelog</b>
 
 24.04
 - limited amount of herbs to 1 per field
