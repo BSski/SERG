@@ -1,4 +1,5 @@
-Changelog
+<p align="center">
+  **Changelog**
 
 24.04
 - limited amount of herbs to 1 per field
@@ -57,3 +58,4 @@ Changelog
 
 14.04
 - designed interface of SERG
+</p>
