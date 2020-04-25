@@ -11,7 +11,7 @@
 # 16 possibile speeds with counter max 120:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 # chews too much CPU? change /delta_t = clock.tick_busy_loop(60)/ to /delta_t = clock.tick(60)/
 
-# working on line 314-316, 334. investigate why always [1] and not [1,1]
+# working on line 314-316, 334. investigate why always [1] and not [1,1].
 # problem is in born_carnivore(pos_y,pos_x), or spawn_carnivore(), or update_pos(). most likely in the last one and the order of calling them
 
 # Imports
