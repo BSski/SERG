@@ -5,7 +5,7 @@
 - extraction of main settings to the begginning of the program
 - started working on optimization of breeding process
 - added logo
-</p>
+
 23.04
 - divided animals into carnivores and herbivores
 - carnivores eat herbivores
