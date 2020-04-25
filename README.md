@@ -1,11 +1,11 @@
 <p align="center"><b>Changelog</b>
-<div>
+<p align="center">
 24.04
 - limited amount of herbs to 1 per field
 - extraction of main settings to the begginning of the program
 - started working on optimization of breeding process
 - added logo
-
+</p>
 23.04
 - divided animals into carnivores and herbivores
 - carnivores eat herbivores
@@ -57,5 +57,5 @@
 
 14.04
 - designed interface of SERG
-</div>
+
 </p>
