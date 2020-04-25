@@ -2,7 +2,7 @@
 #######################--- SERG ---######################
 ##############- ARROW_UP: ADD ONE CARNIVORE -############
 ############- ARROW_LEFT: ADD 10 HERBIVORES -############
-###########- ARROW_RIGHT: ADD 10 CARNIVORES -############
+############- ARROW_RIGHT: ADD 10 CARNIVORES -###########
 ############- ESCAPE: REMOVE ALL THE OBJECTS -###########
 #########################################################
 
@@ -312,9 +312,9 @@ class carnivore(animal):
         else: return 0
 
     def breeding(self):
-    #    print("i denied sex cus:",len(carnivores_pos[self.coord_y][self.coord_x]))
+    #    print("i denied breeding cause:",len(carnivores_pos[self.coord_y][self.coord_x]))
         #if len(carnivores_pos[self.coord_y][self.coord_x])>1:
-    #        print("WOOOOOOOOHO:",carnivores_pos[self.coord_y][self.coord_x])
+    #        print("Finally:",carnivores_pos[self.coord_y][self.coord_x])
             for i in carnivores:
                     if (self.coord_x, self.coord_y) == i.get_coords():
                         if i.get_intention() == 1:
