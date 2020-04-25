@@ -3,7 +3,7 @@
 ##############- ARROW_UP: ADD ONE CARNIVORE -############
 ############- ARROW_LEFT: ADD 10 HERBIVORES -############
 ###########- ARROW_RIGHT: ADD 10 CARNIVORES -############
-############- ESCAPE: REMOVE ALL THE ANIMALS -###########
+############- ESCAPE: REMOVE ALL THE OBJECTS -###########
 #########################################################
 
 # Info:
