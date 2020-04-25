@@ -11,7 +11,7 @@
 # 16 possibile speeds with counter max 120:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 # chews too much CPU? change /delta_t = clock.tick_busy_loop(60)/ to /delta_t = clock.tick(60)/
 
-# working on line 314-316, 334. investigate why always [1] and not [1,1].
+# working on line 314-316, 334. investigate why always [1] and not [1,1]
 # problem is in born_carnivore(pos_y,pos_x), or spawn_carnivore(), or update_pos(). most likely in the last one and the order of calling them
 
 # Imports
@@ -69,24 +69,24 @@ herbivores = []
 carnivores = []
 
 # Settings
-game_speed = 30  # min 1 max 60 // 800/150/50 + game_speed 50 and it lags. game_speed 30 seems fine
+game_speed = 30                        # between 1 and 60   [ 800/150/50 + game_speed 50 and it lags. game_speed 30 seems fine ]
 
-herbs_spawn_rate = 7 # between 7 and -4
-herbs_amount_per_spawn = 4
-herb_energy = 125
+herbs_spawn_rate = 7                   # between 7 and -4. higher is faster.
+herbs_amount_per_spawn = 4             # between 0 and a lot
+herb_energy = 125                      # suggested 30-200
 
-herbs_starting_amount = 800
-herbivores_starting_amount = 150
-carnivores_starting_amount = 50
+herbs_starting_amount = 800            # suggested 200-1000
+herbivores_starting_amount = 150       # suggested 50-200
+carnivores_starting_amount = 50        # suggested 15-75
 
-herbivores_spawn_energy = 250
-carnivores_spawn_energy = 260
+herbivores_spawn_energy = 250          # suggested 100-300
+carnivores_spawn_energy = 260          # suggested 100-350
 
-herbivore_breed_level = 300
-carnivore_breed_level = 300
+herbivore_breed_level = 300            # suggested 250-450
+carnivore_breed_level = 300            # suggested 200-450
 
-carnivore_movement_cost = 2
-herbivore_movement_cost = 4
+carnivore_movement_cost = 2            # suggested 1-6 (has big impact)
+herbivore_movement_cost = 4            # suggested 2-8 (has big impact)
 
 # DNA coding
 speed_dict = {
@@ -117,16 +117,15 @@ def draw_window():
     screen.blit(logo,(460,18))
 
     # grid
-    #square=32
-    square=10
-    square_width=square
-    square_height=square
-    y=-square_height+10
-    for i in range(0,43):
-        y+=square_height
-        x=-square_width+13
-        for j in range(0,43):
-            x+=square_width
+    square = 10
+    square_width = square
+    square_height = square
+    y =- square_height + 10
+    for i in range(0, 43):
+        y += square_height
+        x =- square_width + 13
+        for j in range(0, 43):
+            x += square_width
             pygame.draw.rect(screen, GRAY, [x, y, square_width-1, square_height-1])
     # buttons part
         # lines
@@ -204,7 +203,7 @@ class herb:
         return self.coord_x, self.coord_y
 
     def got_eaten(self):
-        herbs_pos[self.coord_y][self.coord_x]=[]
+        herbs_pos[self.coord_y][self.coord_x] = []
         del herbs[self.index]
         for i in range(self.index,len(herbs)):
             herbs[i].index -= 1
@@ -251,7 +250,7 @@ class animal:
 
 
     def move(self):
-        if int(self.get_energy()/100)*2>7:
+        if int(self.get_energy()/100)*2 > 7:
             pygame.draw.rect(screen, colors_list[self.color][7], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
         else:
             pygame.draw.rect(screen, colors_list[self.color][int(self.get_energy()/100)*2], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
@@ -302,7 +301,7 @@ class carnivore(animal):
             self.type_pos_list = carnivores_pos
 
     def update_pos(self):
-        carnivores_pos[self.coord_y][self.coord_x]=carnivores_pos[self.coord_y][self.coord_x][1:]
+        carnivores_pos[self.coord_y][self.coord_x] = carnivores_pos[self.coord_y][self.coord_x][1:]
         carnivores_pos[self.coord_y][self.coord_x].append(1)
 
     def get_type_pos_list(self):
@@ -335,7 +334,7 @@ class carnivore(animal):
 
     def carni_starved(self):
         #print("it is this long:",len(carnivores_pos[self.coord_y][self.coord_x]))
-        carnivores_pos[self.coord_y][self.coord_x]=carnivores_pos[self.coord_y][self.coord_x][1:]
+        carnivores_pos[self.coord_y][self.coord_x] = carnivores_pos[self.coord_y][self.coord_x][1:]
         del carnivores[self.index]
         for i in range(self.index,len(carnivores)):
             carnivores[i].index -= 1
@@ -359,7 +358,7 @@ class herbivore(animal):
         self.type_pos_list = herbivores_pos
 
     def herbi_starved(self):
-        herbivores_pos[self.coord_y][self.coord_x]=herbivores_pos[self.coord_y][self.coord_x][1:]
+        herbivores_pos[self.coord_y][self.coord_x] = herbivores_pos[self.coord_y][self.coord_x][1:]
         del herbivores[self.index]
         for i in range(self.index,len(herbivores)):
             herbivores[i].index -= 1
@@ -400,7 +399,7 @@ class herbivore(animal):
 def create_herb(herb_energy):
     pos_y = random.randint(1,41)
     pos_x = random.randint(1,41)
-    if len(herbs_pos[pos_y][pos_x])<1:
+    if len(herbs_pos[pos_y][pos_x]) < 1:
         herbs.append(herb(pos_y,pos_x,len(herbs),herb_energy))
         herbs_pos[pos_y][pos_x].append(1)
 
@@ -423,7 +422,7 @@ def born_carnivore(pos_y,pos_x):
 def spawn_carnivore():
     pos_y = random.randint(1,41)
     pos_x = random.randint(1,41)
-    if len(carnivores_pos[pos_y][pos_x])<1:
+    if len(carnivores_pos[pos_y][pos_x]) < 1:
         carnivores.append(carnivore(pos_y,pos_x,len(carnivores),str(random.randint(4,7))+str(random.randint(0,7))))
         carnivores_pos[pos_y][pos_x].append(1)
 
@@ -445,14 +444,14 @@ clock = pygame.time.Clock()
 # -------- Main Program Loop -------- #
 #######################################
 #=====================================#
-underseconds_counter=0
-seconds_counter=0
+underseconds_counter = 0
+seconds_counter = 0
 while not done:
-    underseconds_counter+=1
-    if underseconds_counter==60:
-        seconds_counter+=1
+    underseconds_counter += 1
+    if underseconds_counter == 60:
+        seconds_counter += 1
         print("Seconds since start:",seconds_counter)
-        underseconds_counter=0
+        underseconds_counter = 0
     # Increase /counter/ with a step of a size of /game_speed * (delta_t/1000)/. If /counter/ is equal to 120, reset it, and increase /big_counter/ by 1.
     counter_prev = counter
     big_counter_prev = big_counter
@@ -509,7 +508,7 @@ while not done:
         i.draw()
     # Check if any herbivore died out of starvation, try to either breed or eat [optimalisation opportunity over there - they don't have to scan entire list of food/partners every fps], then move.
     for i in herbivores:
-        if i.get_state()==0:
+        if i.get_state() == 0:
             i.herbi_starved()
         else:
             i.action()
@@ -517,7 +516,7 @@ while not done:
 
     # Check if any carnivore died out of starvation, try to either breed or eat [optimalisation opportunity over there - they don't have to scan entire list of food/partners every fps], then move.
     for i in carnivores:
-        if i.get_state()==0:
+        if i.get_state() == 0:
             i.carni_starved()
         else:
             i.update_pos()
