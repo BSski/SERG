@@ -1,5 +1,9 @@
 <b>Changelog</b>
 
+25.04
+- optimized eating and breeding for both carnivores and herbivores
+- new layout design changes
+
 24.04
 - limited amount of herbs to 1 per field
 - extraction of main settings to the begginning of the program
