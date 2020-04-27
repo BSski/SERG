@@ -1,5 +1,8 @@
 <b>Changelog</b>
 
+26.04
+- fixed herbs not spawning on some fields
+
 25.04
 - optimized eating and breeding for both carnivores and herbivores
 - new layout design changes
