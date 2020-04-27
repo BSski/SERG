@@ -59,16 +59,16 @@ big_counter = 0
 big_counter_prev = big_counter
 key_up = 0
 check_grid_herb_pos = 0
-
+del_all = 0
 herbs = []
 herbivores = []
 carnivores = []
 # Settings
 game_speed = 30                        # between 1 and 60   [ 800/150/50 + game_speed 50 and it lags. game_speed 30 seems fine ]
 
-herbs_spawn_rate = 7                  # between 7 and -4. higher is faster.
-herbs_amount_per_spawn = 6            # between 0 and a lot
-herb_energy = 125                        # suggested 30-200
+herbs_spawn_rate = 7                   # between 7 and -4. higher is faster.
+herbs_amount_per_spawn = 7            # suggested 5-20
+herb_energy = 125                      # suggested 30-200
 
 herbs_starting_amount = 800            # suggested 200-1000
 herbivores_starting_amount = 150       # suggested 50-200
@@ -219,7 +219,7 @@ class animal:
     def get_energy(self):
         return self.energy
 
-    def change_energy(self, new_energy):
+    def set_energy(self, new_energy):
         self.energy = new_energy
 
     def get_coords(self):
@@ -258,7 +258,7 @@ class carnivore(animal):
                             if i != carnivores[self.get_index()]:
                                 if not self.last_bred_on == i.get_coords():
                                     self.energy = int(self.energy / 2)
-                                    i.change_energy(int(i.get_energy()/2))
+                                    i.set_energy(int(i.get_energy()/2))
                                     born_carnivore(i.get_coords()[1],i.get_coords()[0])
                                     self.last_bred_on = (self.coord_x, self.coord_y)
                                 break
@@ -365,7 +365,7 @@ class herbivore(animal):
                         if i != herbivores[self.get_index()]:
                             if not self.last_bred_on == i.get_coords():
                                 self.energy = int(self.energy / 2)
-                                i.change_energy(int(i.get_energy()/2))
+                                i.set_energy(int(i.get_energy()/2))
                                 born_herbivore(i.get_coords()[1],i.get_coords()[0])
                                 self.last_bred_on = (self.coord_x, self.coord_y)
                             break
@@ -432,7 +432,7 @@ class herbivore(animal):
 def create_herb(herb_energy):
     pos_y = random.randint(1,41)
     pos_x = random.randint(1,41)
-    if len(herbs_pos[pos_y][pos_x]) < 1:
+    if len(herbs_pos[pos_y][pos_x]) == 0:
         herbs.append(herb(pos_x,pos_y,len(herbs),herb_energy))
         herbs_pos[pos_y][pos_x].append(1)
 
@@ -501,7 +501,7 @@ while not done:
     # Increase /counter/ with a step of a size of /game_speed * (delta_t/1000)/ every frame. If /counter/ is equal to 120, reset it, and increase /big_counter/ by 1.
     counter_prev = counter
     big_counter_prev = big_counter
-    delta_t = clock.tick_busy_loop(60)
+    delta_t = clock.tick(6)
     counter += game_speed * (delta_t/1000)
     if counter > 120:
         big_counter += 1
@@ -529,9 +529,7 @@ while not done:
                     spawn_carnivore()
             if event.key == pygame.K_ESCAPE:
                 # Delete all objects.
-                herbs = []
-                herbivores = []
-                carnivores = []
+                del_all = 1
             if event.key == pygame.K_BACKSPACE:
                 check_grid_herb_pos = 1
 
@@ -578,6 +576,16 @@ while not done:
             check_grid_herb_pos=int(input("Insert 0 to quit, 1 to check one more field:"))
         else:
             check_grid_herb_pos = 0
+
+    if del_all == 1:
+        for i in range(0,5):
+            for i in herbs:
+                i.got_eaten()
+            for i in herbivores:
+                i.set_energy(0)
+            for i in carnivores:
+                i.set_energy(0)
+        del_all = 0
 
     # Print the actual state of the grid every 120 counter ticks (1 big counter tick).
     if int(big_counter_prev) == int(big_counter):
