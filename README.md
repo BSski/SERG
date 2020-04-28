@@ -1,5 +1,10 @@
 <b>Changelog</b>
 
+27.04
+- created a few button sprites and added them
+- added plus, minus, start, pause and clean buttons to the window
+- start, pause and clean buttons work
+
 26.04
 - fixed herbs not spawning on some fields
 
