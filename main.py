@@ -20,7 +20,7 @@ from positions import *
 pygame.init()
 # Set fonts
 font = pygame.font.SysFont("liberationmono", 13)
-font2 = pygame.font.SysFont("liberationmono", 15)
+font2 = pygame.font.SysFont("liberationmono", 11)
 font3 = pygame.font.SysFont("liberationmono", 11)
 font4 = pygame.font.SysFont("humorsans", 70)
 # Define colors
@@ -63,6 +63,7 @@ start_up=pygame.image.load("sprites/start_up.png")
 start_down=pygame.image.load("sprites/start_down.png")
 pause_up=pygame.image.load("sprites/pause_up.png")
 pause_down=pygame.image.load("sprites/pause_down.png")
+
 # Define variables and lists
 counter = 0
 counter_prev = counter
@@ -74,6 +75,11 @@ del_all = 0
 button_start_clicked = 0
 button_pause_clicked = 0
 button_clean_clicked = 0
+button_tempo_plus_clicked = 0
+button_tempo_minus_clicked = 0
+clean_counter = 12
+pause = 0
+start = 0.5
 herbs = []
 herbivores = []
 carnivores = []
@@ -167,10 +173,17 @@ def draw_window():
     screen.blit(minus_up,[726,196])
     #screen.blit(minus_down,[728,128])
 
-    screen.blit(plus_up,[742,230])
-    #screen.blit(plus_down,[744,128])
-    screen.blit(minus_up,[726,230])
-    #screen.blit(minus_down,[728,128])
+    if button_tempo_plus_clicked == 1:
+        screen.blit(plus_down,[742,230])
+    else:
+        screen.blit(plus_up,[742,230])
+
+    if button_tempo_minus_clicked == 1:
+        screen.blit(minus_down,[726,230])
+    else:
+        screen.blit(minus_up,[726,230])
+
+
 
 
     # Start button
@@ -196,9 +209,8 @@ def draw_window():
 
 
     #pygame.draw.rect(screen, DARKGRAY, [726, 128, 20, 20])
-        # buttons 4
-    par_4 = font2.render("1", True, (50, 50, 50))
-    screen.blit(par_4,(684,251))
+    par_4 = font2.render("Tempo    -", True, (50, 50, 50))
+    screen.blit(par_4,(630,230))
     #pygame.draw.rect(screen, DARKGRAY, [631, 249, 20, 20])
     #pygame.draw.rect(screen, DARKGRAY, [653, 249, 20, 20])
     #pygame.draw.rect(screen, DARKGRAY, [704, 249, 20, 20])
@@ -504,11 +516,12 @@ def spawn_herbs(speed):
 
 
 #######################################################################################################################
-
+# Spawn carnivore that was born
 def born_carnivore(pos_y,pos_x):
     carnivores.append(carnivore(pos_y,pos_x,len(carnivores),str(random.randint(4,7))+str(random.randint(0,7))))
     carnivores_pos[pos_y][pos_x].append(1)
 
+# Spawn a new carnivore
 def spawn_carnivore():
     pos_y = random.randint(1,41)
     pos_x = random.randint(1,41)
@@ -516,10 +529,12 @@ def spawn_carnivore():
         carnivores.append(carnivore(pos_y,pos_x,len(carnivores),str(random.randint(4,7))+str(random.randint(0,7))))
         carnivores_pos[pos_y][pos_x].append(1)
 
+# Spawn herbivore that was born
 def born_herbivore(pos_y,pos_x):
     herbivores.append(herbivore(pos_y,pos_x,len(herbivores),str(random.randint(0,3))+str(random.randint(0,7))))
     herbivores_pos[pos_y][pos_x].append(1)
 
+# Spawn a new herbivore
 def spawn_herbivore():
     pos_y = random.randint(1,41)
     pos_x = random.randint(1,41)
@@ -535,7 +550,7 @@ for i in range(0,herbivores_starting_amount):
 for i in range(0,carnivores_starting_amount):
     spawn_carnivore()
 
-#
+# The main loop is not done (is running) and clock is initialized.
 done = False
 clock = pygame.time.Clock()
 
@@ -545,6 +560,7 @@ clock = pygame.time.Clock()
 #######################################################################################
 #=====================================================================================#
 
+# Debug timer's variables.
 underseconds_counter = 0
 seconds_counter = 0
 
@@ -555,24 +571,16 @@ while not done:
         seconds_counter += 1
         print("Seconds since start:",seconds_counter)
         underseconds_counter = 0
-    # Increase /counter/ with a step of a size of /game_speed * (delta_t/1000)/ every frame. If /counter/ is equal to 120, reset it, and increase /big_counter/ by 1.
-    counter_prev = counter
-    big_counter_prev = big_counter
-    delta_t = clock.tick(20)
-    counter += game_speed * (delta_t/1000)
-    if counter > 120:
-        big_counter += 1
-        counter = 0
 
 
     #####################################
     # -------- Main Event loop -------- #
     #####################################
 
+    # Catching events.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-
 
         # If keyboard button clicked
         if event.type == pygame.KEYDOWN:
@@ -611,6 +619,16 @@ while not done:
                 if pygame.mouse.get_pos()[0] <= 754 and pygame.mouse.get_pos()[1] <= 322:
                         button_clean_clicked = 1
 
+            # Tempo plus button clicked
+            if pygame.mouse.get_pos()[0] >= 742 and pygame.mouse.get_pos()[1] >= 230:
+                if pygame.mouse.get_pos()[0] <= 755 and pygame.mouse.get_pos()[1] <= 243:
+                        button_tempo_plus_clicked = 1
+
+            # Tempo minus button clicked
+            if pygame.mouse.get_pos()[0] >= 726 and pygame.mouse.get_pos()[1] >= 230:
+                if pygame.mouse.get_pos()[0] <= 739 and pygame.mouse.get_pos()[1] <= 243:
+                        button_tempo_minus_clicked = 1
+
 
         # If mouse button unclicked
         if event.type == pygame.MOUSEBUTTONUP:
@@ -623,25 +641,60 @@ while not done:
             if not (pygame.mouse.get_pos()[0] >= 715 and pygame.mouse.get_pos()[1] >= 282 and pygame.mouse.get_pos()[0] <= 754 and pygame.mouse.get_pos()[1] <= 322):
                     button_clean_clicked = 0
 
-
             # Pause button off on button
             if pygame.mouse.get_pos()[0] >= 670 and pygame.mouse.get_pos()[1] >= 282:
                 if pygame.mouse.get_pos()[0] <= 709 and pygame.mouse.get_pos()[1] <= 302:
-                        game_speed = 0
+                        start = game_speed
+                        pause = 1
                         button_pause_clicked = 0
             # Pause button unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 670 and pygame.mouse.get_pos()[1] >= 282 and pygame.mouse.get_pos()[0] <= 709 and pygame.mouse.get_pos()[1] <= 302):
                     button_pause_clicked = 0
 
-
             # Start button off on button
             if pygame.mouse.get_pos()[0] >= 625 and pygame.mouse.get_pos()[1] >= 282:
                 if pygame.mouse.get_pos()[0] <= 664 and pygame.mouse.get_pos()[1] <= 302:
-                        game_speed = 30
+                        pause = 0
+                        game_speed = start
                         button_start_clicked = 0
             # Start button unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 625 and pygame.mouse.get_pos()[1] >= 282 and pygame.mouse.get_pos()[0] <= 664 and pygame.mouse.get_pos()[1] <= 302):
                     button_start_clicked = 0
+
+            # Tempo plus button off on button
+            if pygame.mouse.get_pos()[0] >= 742 and pygame.mouse.get_pos()[1] >= 230:
+                if pygame.mouse.get_pos()[0] <= 755 and pygame.mouse.get_pos()[1] <= 243:
+                        game_speed += 0.1
+                        button_tempo_plus_clicked = 0
+            # Tempo plus unclicked not on button
+            if not (pygame.mouse.get_pos()[0] >= 742 and pygame.mouse.get_pos()[1] >= 230 and pygame.mouse.get_pos()[0] <= 755 and pygame.mouse.get_pos()[1] <= 243):
+                    button_tempo_plus_clicked = 0
+
+            # Tempo minus button off on button
+            if pygame.mouse.get_pos()[0] >= 726 and pygame.mouse.get_pos()[1] >= 230:
+                if pygame.mouse.get_pos()[0] <= 739 and pygame.mouse.get_pos()[1] <= 243:
+                        game_speed -= 0.1
+                        button_tempo_minus_clicked = 0
+            # Tempo minus unclicked not on button
+            if not (pygame.mouse.get_pos()[0] >= 726 and pygame.mouse.get_pos()[1] >= 230 and pygame.mouse.get_pos()[0] <= 739 and pygame.mouse.get_pos()[1] <= 243):
+                    button_tempo_minus_clicked = 0
+
+
+    # If /game_speed/ is bigger than 59, set it to 59. Puts '59' limit on the variable.
+    if game_speed > 0.99: game_speed = 0.99
+    # If /game_speed/ is smaller than 1, set it to 1. Puts '1' limit on the variable.
+    if game_speed < 0.01: game_speed = 0.01
+    # If /pause/ is true, sets /game_speed/ to 0.
+    if pause: game_speed = 0
+
+    # Increase /counter/ with a step of a size of /game_speed * (delta_t/1000)/ every frame. If /counter/ is equal to 120, reset it, and increase /big_counter/ by 1.
+    counter_prev = counter
+    big_counter_prev = big_counter
+    clock.tick(30)
+    counter += game_speed
+    if counter > 120:
+        big_counter += 1
+        counter = 0
 
 
     #####################################
@@ -680,32 +733,38 @@ while not done:
         i.move()
 
     # Temporary debug thingy.
-    if check_grid_herb_pos==1:
+    if check_grid_herb_pos == 1:
         while not check_grid_herb_pos == 0:
             print(herbs_pos[int(input("Insert Y:"))][int(input("Insert X:"))])
             check_grid_herb_pos=int(input("Insert 0 to quit, 1 to check one more field:"))
         else:
             check_grid_herb_pos = 0
 
+    # If flag /del_all/ equals 1, remove all objects.
     if del_all == 1:
-        for i in range(0,25):
+        if clean_counter > 0:
             for i in herbs:
                 i.got_eaten()
             for i in herbivores:
                 i.set_energy(0)
             for i in carnivores:
                 i.set_energy(0)
-        del_all = 0
+        clean_counter -= 1
+        print(clean_counter)
+        if clean_counter == 0:
+            del_all = 0
+            clean_counter = 12
 
-    # Print the actual state of the grid every 120 counter ticks (1 big counter tick).
-    if int(big_counter_prev) == int(big_counter):
+    # Print the actual amount of objects every 120 counter ticks (1 big counter tick).
+    if int(counter_prev) == int(counter):
         pass
     else:
-        if int(big_counter) % 1 == 0:
+        if int(counter) % 15 == 0:
             print("...")
             print("..::: Current amount of HERBS:",len(herbs),":::..")
             print("..::: Current amount of HERBIVORES:",len(herbivores),":::..")
             print("..::: Current amount of CARNIVORES:",len(carnivores),":::..")
+            print(game_speed)
 
 
     #####################################
