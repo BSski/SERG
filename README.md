@@ -1,12 +1,14 @@
-"Tempo"
+
 28.08
+"Tempo"
 - modified delta_t time regulation to fit the task better
 - added tempo regulation through buttons
 - minor interface changes
 - fixed cleaning issue
 
-"Buttons I"
+
 27.04
+"Buttons I"
 - created a few button sprites and added them
 - added plus, minus, start, pause and clean buttons
 - start, pause and clean buttons work
@@ -14,27 +16,30 @@
 26.04
 - fixed herbs not spawning on some fields
 
-"Optimization II"
 25.04
+"Optimization II"
 - optimized eating and breeding for both carnivores and herbivores
 - new layout design changes
 
-"Optimization I"
+
 24.04
+"Optimization I"
 - limited amount of herbs to 1 per field
 - extraction of main settings to the begginning of the program
 - started working on optimization of breeding process
 - added logo
 
-"Carni&herbi"
+
 23.04
+"Carni&herbi"
 - divided animals into carnivores and herbivores
 - carnivores eat herbivores
 - preliminary balancing
 - preliminary preparations for regulation of the speed of the simulation
 
-"Herbs, breeding, energy"
+
 22.04
+"Herbs, breeding, energy"
 - added herbs class
 - herbs spawn every X frames now
 - animals can eat herbs now
