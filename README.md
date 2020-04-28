@@ -3,7 +3,9 @@
 28.08
 - modified delta_t time regulation to fit the task better
 - added tempo regulation through buttons
+- minor interface changes
 - fixed cleaning issue
+
 
 27.04
 - created a few button sprites and added them
