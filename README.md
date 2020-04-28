@@ -79,17 +79,11 @@ _"Herbs, breeding, energy"_
 - created code to make events occur every X frames
 
 15.04
-- stworzenie czterowymiarowej listy reprezentującej grid
 - created four-dimensional list representing a grid with its content
 - added coloring certain fields
 - did research about using loops inside of the main PyGame loop
-- kolorowanie po kolei każdego pola z osobna
 - added code that iterates over the fields and colors one at the time
 
 14.04
 - designed interface of SERG
-
-
-
-
 
