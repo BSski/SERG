@@ -1,7 +1,7 @@
 <b>Changelog</b>
 
 28.08
-- modified delta_t time regulation to fit the task more
+- modified delta_t time regulation to better fit the task
 - added tempo regulation through buttons
 - fixed cleaning issue
 
