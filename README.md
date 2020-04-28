@@ -1,5 +1,9 @@
 <b>Changelog</b>
 
+28.08
+- added tempo regulation through buttons
+- fixed cleaning issue
+
 27.04
 - created a few button sprites and added them
 - added plus, minus, start, pause and clean buttons to the window
