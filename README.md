@@ -20,14 +20,14 @@ _"Buttons I"_
 
 
 25.04
-"Optimization II"
+_"Optimization II"_
 - optimized eating and breeding for both carnivores and herbivores
 - color of animals depends on their energy level
 - new layout design changes
 
 
 24.04
-"Optimization I"
+_"Optimization I"_
 - limited amount of herbs to 1 per field
 - extraction of main settings to the begginning of the program
 - started working on optimization of breeding process
@@ -35,7 +35,7 @@ _"Buttons I"_
 
 
 23.04
-"Carni&herbi"
+_"Carni&herbi"_
 - divided animals into carnivores and herbivores
 - carnivores eat herbivores
 - preliminary balancing
@@ -43,7 +43,7 @@ _"Buttons I"_
 
 
 22.04
-"Herbs, breeding, energy"
+_"Herbs, breeding, energy"_
 - added herbs class
 - herbs spawn every X frames now
 - animals can eat herbs now
