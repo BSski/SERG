@@ -1,36 +1,39 @@
-<b>Changelog</b>
-
+"Tempo"
 28.08
 - modified delta_t time regulation to fit the task better
 - added tempo regulation through buttons
 - minor interface changes
 - fixed cleaning issue
 
-
+"Buttons I"
 27.04
 - created a few button sprites and added them
-- added plus, minus, start, pause and clean buttons to the window
+- added plus, minus, start, pause and clean buttons
 - start, pause and clean buttons work
 
 26.04
 - fixed herbs not spawning on some fields
 
+"Optimization II"
 25.04
 - optimized eating and breeding for both carnivores and herbivores
 - new layout design changes
 
+"Optimization I"
 24.04
 - limited amount of herbs to 1 per field
 - extraction of main settings to the begginning of the program
 - started working on optimization of breeding process
 - added logo
 
+"Carni&herbi"
 23.04
 - divided animals into carnivores and herbivores
 - carnivores eat herbivores
 - preliminary balancing
 - preliminary preparations for regulation of the speed of the simulation
 
+"Herbs, breeding, energy"
 22.04
 - added herbs class
 - herbs spawn every X frames now
@@ -67,11 +70,17 @@
 - created code to make events occur every X frames
 
 15.04
+- stworzenie czterowymiarowej listy reprezentującej grid
 - created four-dimensional list representing a grid with its content
 - added coloring certain fields
 - did research about using loops inside of the main PyGame loop
+- kolorowanie po kolei każdego pola z osobna
 - added code that iterates over the fields and colors one at the time
 
 14.04
 - designed interface of SERG
+
+
+
+
 
