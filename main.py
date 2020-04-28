@@ -85,10 +85,10 @@ herbivores = []
 carnivores = []
 
 # Settings
-game_speed = 0                        # between 1 and 60   [ 800/150/50 + game_speed 50 and it lags. game_speed 30 seems fine ]
+game_speed = 0.5                       # between 0.01 and 0.99  [ 60 fps + 800/150/50 + game_speed 0.8 and it lags. game_speed 0.5 seems fine ]
 
 herbs_spawn_rate = 7                   # between 7 and -4. higher is faster.
-herbs_amount_per_spawn = 7            # suggested 5-20
+herbs_amount_per_spawn = 7             # suggested 5-20
 herb_energy = 125                      # suggested 30-200
 
 herbs_starting_amount = 800            # suggested 200-1000
@@ -151,40 +151,44 @@ def draw_window():
     pygame.draw.line(screen, GRAY, (615, 12), (615, 436), 1)
     pygame.draw.line(screen, GRAY, (761, 12), (761, 436), 1)
         # top buttons
-    pygame.draw.rect(screen, FORESTGREEN, [650, 76, 30, 30])
-    pygame.draw.rect(screen, DARKBLUE, [697, 76, 30, 30])
+    #pygame.draw.rect(screen, FORESTGREEN, [650, 76, 30, 30])
+    #pygame.draw.rect(screen, DARKBLUE, [697, 76, 30, 30])
         # buttons 1
 
 #    pygame.draw.rect(screen, DARKGRAY, [630, 128, 20, 20])
 #    pygame.draw.rect(screen, DARKGRAY, [652, 128, 20, 20])
 #    pygame.draw.rect(screen, DARKGRAY, [704, 128, 20, 20])
+
+
+    # Fake buttons 1
     screen.blit(plus_up,[742,128])
     #screen.blit(plus_down,[744,128])
     screen.blit(minus_up,[726,128])
     #screen.blit(minus_down,[728,128])
 
+    # Fake buttons 2
     screen.blit(plus_up,[742,162])
     #screen.blit(plus_down,[744,128])
     screen.blit(minus_up,[726,162])
     #screen.blit(minus_down,[728,128])
 
+    # Fake buttons 3
     screen.blit(plus_up,[742,196])
     #screen.blit(plus_down,[744,128])
     screen.blit(minus_up,[726,196])
     #screen.blit(minus_down,[728,128])
 
+    # Tempo plus button
     if button_tempo_plus_clicked == 1:
         screen.blit(plus_down,[742,230])
     else:
         screen.blit(plus_up,[742,230])
 
+    # Tempo minus button
     if button_tempo_minus_clicked == 1:
         screen.blit(minus_down,[726,230])
     else:
         screen.blit(minus_up,[726,230])
-
-
-
 
     # Start button
     if button_start_clicked == 1:
@@ -205,11 +209,13 @@ def draw_window():
         screen.blit(clean_up,[715,282])
 
 
-
-
-
-    #pygame.draw.rect(screen, DARKGRAY, [726, 128, 20, 20])
-    par_4 = font2.render("Tempo    -", True, (50, 50, 50))
+    par_4 = font2.render("Empty first", True, (50, 50, 50))
+    screen.blit(par_4,(630,128))
+    par_4 = font2.render("Empty second", True, (50, 50, 50))
+    screen.blit(par_4,(630,162))
+    par_4 = font2.render("Empty third", True, (50, 50, 50))
+    screen.blit(par_4,(630,196))
+    par_4 = font2.render("Tempo", True, (50, 50, 50))
     screen.blit(par_4,(630,230))
     #pygame.draw.rect(screen, DARKGRAY, [631, 249, 20, 20])
     #pygame.draw.rect(screen, DARKGRAY, [653, 249, 20, 20])
