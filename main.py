@@ -7,10 +7,11 @@
 #########################################################
 
 # Info:
-# DNA = [COLOR, SPEED]
+# DNA = [COLOR, SPEED, ]
 # 16 possibile speeds with counter max 120:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 # chews too much CPU? change /delta_t = clock.tick_busy_loop(60)/ to /delta_t = clock.tick(60)/
 
+#################################################################################################################################
 # Imports
 import pygame
 import random
@@ -63,6 +64,7 @@ start_up=pygame.image.load("sprites/start_up.png")
 start_down=pygame.image.load("sprites/start_down.png")
 pause_up=pygame.image.load("sprites/pause_up.png")
 pause_down=pygame.image.load("sprites/pause_down.png")
+#################################################################################################################################
 
 # Define variables and lists
 counter = 0
@@ -84,6 +86,8 @@ herbs = []
 herbivores = []
 carnivores = []
 
+#################################################################################################################################
+
 # Settings
 game_speed = 0.5                       # between 0.01 and 0.99  [ 60 fps + 800/150/50 + game_speed 0.8 and it lags. game_speed 0.5 seems fine ]
 
@@ -104,6 +108,8 @@ carnivore_breed_level = 300            # suggested 200-450
 carnivore_movement_cost = 3            # suggested 1-6 (has big impact)
 herbivore_movement_cost = 4            # suggested 2-8 (has big impact)
 
+#################################################################################################################################
+
 # DNA coding
 speed_dict = {
 -4: 120,
@@ -120,12 +126,18 @@ speed_dict = {
 7: 2,
 8: 1  # available only through turbo mode
 }
+
+#################################################################################################################################
+
 # Set size of the screen and create it
 size = (775, 449)
 pygame.display.set_caption("SERG")
 screen = pygame.display.set_mode(size)
 serg_icon = pygame.image.load('sprites/serg.png')
 pygame.display.set_icon(serg_icon)
+
+#################################################################################################################################
+
 # Function to draw the main parts
 def draw_window():
     # logo
@@ -221,9 +233,6 @@ def draw_window():
     #pygame.draw.rect(screen, DARKGRAY, [653, 249, 20, 20])
     #pygame.draw.rect(screen, DARKGRAY, [704, 249, 20, 20])
     #pygame.draw.rect(screen, DARKGRAY, [726, 249, 20, 20])
-        # button reset
-
-
 
 
     # bottom right part
@@ -241,6 +250,7 @@ def draw_window():
     signature = font3.render("bsski 2020", True, (200, 200, 200))
     screen.blit(signature,(654,425))
 
+#################################################################################################################################
 
 # Class creating herbs
 class herb:
@@ -300,7 +310,7 @@ class animal:
     def get_coords(self):
         return (self.coord_x, self.coord_y)
 
-
+#################################################################################################################################
 
 # Class creating carnivores
 class carnivore(animal):
@@ -317,6 +327,7 @@ class carnivore(animal):
             self.food_type = herbivores
             self.last_bred_on = 0
             self.type_pos_list = carnivores_pos
+
 
     def get_type_pos_list(self):
         return self.type_pos_list
@@ -399,6 +410,8 @@ class carnivore(animal):
                     i.got_eaten()
                     break
 
+
+
 # Class creating herbivores
 class herbivore(animal):
     def __init__(self,coord_x,coord_y,index,dna):
@@ -415,13 +428,6 @@ class herbivore(animal):
         self.last_bred_on = 0
         self.type_pos_list = herbivores_pos
 
-    def herbi_starved(self):
-        herbivores_pos[self.coord_y][self.coord_x] = herbivores_pos[self.coord_y][self.coord_x][1:]
-        del herbivores[self.index]
-        for i in range(self.index,len(herbivores)):
-            herbivores[i].index -= 1
-        # and turn into a herb
-
 
     def get_type_pos_list(self):
         return self.type_pos_list
@@ -429,8 +435,6 @@ class herbivore(animal):
     def get_intention(self): # 1 - breeding, 0 - food
         if self.energy > herbivore_breed_level: return 1
         else: return 0
-
-
 
     def breeding(self):
         if len(herbivores_pos[self.coord_y][self.coord_x]) > 1:
@@ -450,6 +454,13 @@ class herbivore(animal):
             self.breeding()
         else:
             self.eat()
+
+    def herbi_starved(self):
+        herbivores_pos[self.coord_y][self.coord_x] = herbivores_pos[self.coord_y][self.coord_x][1:]
+        del herbivores[self.index]
+        for i in range(self.index,len(herbivores)):
+            herbivores[i].index -= 1
+        # and turn into a herb
 
     def move(self):
         herbivores_pos[self.coord_y][self.coord_x] = herbivores_pos[self.coord_y][self.coord_x][1:]
@@ -489,11 +500,6 @@ class herbivore(animal):
                     elif self.coord_y == 42: self.coord_y -= 1
         herbivores_pos[self.coord_y][self.coord_x].append(1)
 
-    def got_eaten(self):
-        del herbivores[self.index]
-        for i in range(self.index,len(herbivores)):
-            herbivores[i].index -= 1
-
     def eat(self):
         if len(herbs_pos[self.coord_y][self.coord_x]) > 0:
             for i in herbs:
@@ -502,7 +508,15 @@ class herbivore(animal):
                     i.got_eaten()
                     break
 
-#######################################################################################################################
+    def got_eaten(self):
+        del herbivores[self.index]
+        for i in range(self.index,len(herbivores)):
+            herbivores[i].index -= 1
+
+
+
+#################################################################################################################################
+
 # Creating a new herb - chooses random xy, checks on the herbs grid whether that xy is free. If it is - creates a new herb (adds 1 to the grid, symbolising that a herb exists there, and creates an object on herbs list).
 def create_herb(herb_energy):
     pos_y = random.randint(1,41)
@@ -520,8 +534,8 @@ def spawn_herbs(speed):
             for i in range(0,herbs_amount_per_spawn):
                 create_herb(herb_energy)
 
+#################################################################################################################################
 
-#######################################################################################################################
 # Spawn carnivore that was born
 def born_carnivore(pos_y,pos_x):
     carnivores.append(carnivore(pos_y,pos_x,len(carnivores),str(random.randint(4,7))+str(random.randint(0,7))))
@@ -548,6 +562,8 @@ def spawn_herbivore():
         herbivores.append(herbivore(pos_y,pos_x,len(herbivores),str(random.randint(0,3))+str(random.randint(0,7))))
         herbivores_pos[pos_y][pos_x].append(1)
 
+#################################################################################################################################
+
 # Add starting herbs, herbivores and carnivores.
 for i in range(0,herbs_starting_amount):
     create_herb(herb_energy)
@@ -566,6 +582,7 @@ clock = pygame.time.Clock()
 #######################################################################################
 #=====================================================================================#
 
+
 # Debug timer's variables.
 underseconds_counter = 0
 seconds_counter = 0
@@ -579,9 +596,11 @@ while not done:
         underseconds_counter = 0
 
 
+
     #####################################
     # -------- Main Event loop -------- #
     #####################################
+
 
     # Catching events.
     for event in pygame.event.get():
@@ -703,9 +722,11 @@ while not done:
         counter = 0
 
 
+
     #####################################
     # --- Game Logic / Drawing Code --- #
     #####################################
+
 
     # If flag /key_up/ is equal to 1, add one carnivore and set the flag back to 0.
     if key_up == 1:
@@ -737,6 +758,8 @@ while not done:
         i.action()   # breed or eat
     for i in carnivores:
         i.move()
+
+
 
     # Temporary debug thingy.
     if check_grid_herb_pos == 1:
