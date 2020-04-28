@@ -20,11 +20,11 @@ from positions import *
 pygame.init()
 # Set fonts
 font = pygame.font.SysFont("liberationmono", 13)
-font2= pygame.font.SysFont("liberationmono", 15)
-font3= pygame.font.SysFont("liberationmono", 11)
-font4= pygame.font.SysFont("humorsans", 70)
+font2 = pygame.font.SysFont("liberationmono", 15)
+font3 = pygame.font.SysFont("liberationmono", 11)
+font4 = pygame.font.SysFont("humorsans", 70)
 # Define colors
-colors_list=[
+colors_list = [
 [(77, 255, 136),(51, 255, 119),(26, 255, 102),(0, 255, 85),(0, 230, 77),(0, 204, 68),(0, 179, 60),(0, 153, 51),(0, 128, 43)],      # DARK 1
 [(77, 255, 77),(51, 255, 51),(26, 255, 26),(0, 255, 0),(0, 230, 0),(0, 204, 0),(0, 179, 0),(0, 153, 0),(0, 128, 0)],               # DARK 2
 [(51, 255, 153),(26, 255, 140),(0, 255, 128),(0, 230, 115),(0, 204, 102),(0, 179, 89),(0, 153, 77),(0, 128, 64)],                  # DARK 3
@@ -52,6 +52,17 @@ BLUE        = (   0, 102, 204)
 PURPLE      = ( 102,   0, 204)
 PINK        = ( 255,   0, 255)
 RED         = ( 202,   0,   0)
+# Load images
+plus_up=pygame.image.load("sprites/plus_up.png")
+plus_down=pygame.image.load("sprites/plus_down.png")
+minus_up=pygame.image.load("sprites/minus_up.png")
+minus_down=pygame.image.load("sprites/minus_down.png")
+clean_up=pygame.image.load("sprites/clean_up.png")
+clean_down=pygame.image.load("sprites/clean_down.png")
+start_up=pygame.image.load("sprites/start_up.png")
+start_down=pygame.image.load("sprites/start_down.png")
+pause_up=pygame.image.load("sprites/pause_up.png")
+pause_down=pygame.image.load("sprites/pause_down.png")
 # Define variables and lists
 counter = 0
 counter_prev = counter
@@ -60,11 +71,15 @@ big_counter_prev = big_counter
 key_up = 0
 check_grid_herb_pos = 0
 del_all = 0
+button_start_clicked = 0
+button_pause_clicked = 0
+button_clean_clicked = 0
 herbs = []
 herbivores = []
 carnivores = []
+
 # Settings
-game_speed = 30                        # between 1 and 60   [ 800/150/50 + game_speed 50 and it lags. game_speed 30 seems fine ]
+game_speed = 0                        # between 1 and 60   [ 800/150/50 + game_speed 50 and it lags. game_speed 30 seems fine ]
 
 herbs_spawn_rate = 7                   # between 7 and -4. higher is faster.
 herbs_amount_per_spawn = 7            # suggested 5-20
@@ -80,7 +95,7 @@ carnivores_spawn_energy = 260          # suggested 100-350
 herbivore_breed_level = 300            # suggested 250-450
 carnivore_breed_level = 300            # suggested 200-450
 
-carnivore_movement_cost = 2            # suggested 1-6 (has big impact)
+carnivore_movement_cost = 3            # suggested 1-6 (has big impact)
 herbivore_movement_cost = 4            # suggested 2-8 (has big impact)
 
 # DNA coding
@@ -103,7 +118,7 @@ speed_dict = {
 size = (775, 449)
 pygame.display.set_caption("SERG")
 screen = pygame.display.set_mode(size)
-serg_icon = pygame.image.load('serg.png')
+serg_icon = pygame.image.load('sprites/serg.png')
 pygame.display.set_icon(serg_icon)
 # Function to draw the main parts
 def draw_window():
@@ -133,21 +148,63 @@ def draw_window():
     pygame.draw.rect(screen, FORESTGREEN, [650, 76, 30, 30])
     pygame.draw.rect(screen, DARKBLUE, [697, 76, 30, 30])
         # buttons 1
-    par_1 = font2.render("5", True, (50, 50, 50))
-    screen.blit(par_1,(664,130))
-    pygame.draw.rect(screen, DARKGRAY, [630, 128, 20, 20])
-    pygame.draw.rect(screen, DARKGRAY, [652, 128, 20, 20])
-    pygame.draw.rect(screen, DARKGRAY, [704, 128, 20, 20])
-    pygame.draw.rect(screen, DARKGRAY, [726, 128, 20, 20])
+
+#    pygame.draw.rect(screen, DARKGRAY, [630, 128, 20, 20])
+#    pygame.draw.rect(screen, DARKGRAY, [652, 128, 20, 20])
+#    pygame.draw.rect(screen, DARKGRAY, [704, 128, 20, 20])
+    screen.blit(plus_up,[742,128])
+    #screen.blit(plus_down,[744,128])
+    screen.blit(minus_up,[726,128])
+    #screen.blit(minus_down,[728,128])
+
+    screen.blit(plus_up,[742,162])
+    #screen.blit(plus_down,[744,128])
+    screen.blit(minus_up,[726,162])
+    #screen.blit(minus_down,[728,128])
+
+    screen.blit(plus_up,[742,196])
+    #screen.blit(plus_down,[744,128])
+    screen.blit(minus_up,[726,196])
+    #screen.blit(minus_down,[728,128])
+
+    screen.blit(plus_up,[742,230])
+    #screen.blit(plus_down,[744,128])
+    screen.blit(minus_up,[726,230])
+    #screen.blit(minus_down,[728,128])
+
+
+    # Start button
+    if button_start_clicked == 1:
+        screen.blit(start_down,[625,282])
+    else:
+        screen.blit(start_up,[625,282])
+
+    # Pause button
+    if button_pause_clicked == 1:
+        screen.blit(pause_down,[670,282])
+    else:
+        screen.blit(pause_up,[670,282])
+
+    # Clean button
+    if button_clean_clicked == 1:
+        screen.blit(clean_down,[715,282])
+    else:
+        screen.blit(clean_up,[715,282])
+
+
+
+
+
+    #pygame.draw.rect(screen, DARKGRAY, [726, 128, 20, 20])
         # buttons 4
     par_4 = font2.render("1", True, (50, 50, 50))
     screen.blit(par_4,(684,251))
-    pygame.draw.rect(screen, DARKGRAY, [631, 249, 20, 20])
-    pygame.draw.rect(screen, DARKGRAY, [653, 249, 20, 20])
-    pygame.draw.rect(screen, DARKGRAY, [704, 249, 20, 20])
-    pygame.draw.rect(screen, DARKGRAY, [726, 249, 20, 20])
+    #pygame.draw.rect(screen, DARKGRAY, [631, 249, 20, 20])
+    #pygame.draw.rect(screen, DARKGRAY, [653, 249, 20, 20])
+    #pygame.draw.rect(screen, DARKGRAY, [704, 249, 20, 20])
+    #pygame.draw.rect(screen, DARKGRAY, [726, 249, 20, 20])
         # button reset
-    pygame.draw.rect(screen, DARKRED, [664, 282, 50, 20])
+
 
 
 
@@ -501,7 +558,7 @@ while not done:
     # Increase /counter/ with a step of a size of /game_speed * (delta_t/1000)/ every frame. If /counter/ is equal to 120, reset it, and increase /big_counter/ by 1.
     counter_prev = counter
     big_counter_prev = big_counter
-    delta_t = clock.tick(6)
+    delta_t = clock.tick(20)
     counter += game_speed * (delta_t/1000)
     if counter > 120:
         big_counter += 1
@@ -515,6 +572,9 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+
+
+        # If keyboard button clicked
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 # Change /key_up/ flag to 1 - spawns 1 carnivore.
@@ -532,6 +592,56 @@ while not done:
                 del_all = 1
             if event.key == pygame.K_BACKSPACE:
                 check_grid_herb_pos = 1
+
+
+        # If mouse button clicked
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # Start button clicked
+            if pygame.mouse.get_pos()[0] >= 625 and pygame.mouse.get_pos()[1] >= 282:
+                if pygame.mouse.get_pos()[0] <= 664 and pygame.mouse.get_pos()[1] <= 302:
+                        button_start_clicked = 1
+
+            # Pause button clicked
+            if pygame.mouse.get_pos()[0] >= 670 and pygame.mouse.get_pos()[1] >= 282:
+                if pygame.mouse.get_pos()[0] <= 709 and pygame.mouse.get_pos()[1] <= 302:
+                        button_pause_clicked = 1
+
+            # Clean button clicked
+            if pygame.mouse.get_pos()[0] >= 715 and pygame.mouse.get_pos()[1] >= 282:
+                if pygame.mouse.get_pos()[0] <= 754 and pygame.mouse.get_pos()[1] <= 322:
+                        button_clean_clicked = 1
+
+
+        # If mouse button unclicked
+        if event.type == pygame.MOUSEBUTTONUP:
+            # Clean button off on button
+            if pygame.mouse.get_pos()[0] >= 715 and pygame.mouse.get_pos()[1] >= 282:
+                if pygame.mouse.get_pos()[0] <= 754 and pygame.mouse.get_pos()[1] <= 322:
+                        del_all = 1
+                        button_clean_clicked = 0
+            # Clean button unclicked not on button
+            if not (pygame.mouse.get_pos()[0] >= 715 and pygame.mouse.get_pos()[1] >= 282 and pygame.mouse.get_pos()[0] <= 754 and pygame.mouse.get_pos()[1] <= 322):
+                    button_clean_clicked = 0
+
+
+            # Pause button off on button
+            if pygame.mouse.get_pos()[0] >= 670 and pygame.mouse.get_pos()[1] >= 282:
+                if pygame.mouse.get_pos()[0] <= 709 and pygame.mouse.get_pos()[1] <= 302:
+                        game_speed = 0
+                        button_pause_clicked = 0
+            # Pause button unclicked not on button
+            if not (pygame.mouse.get_pos()[0] >= 670 and pygame.mouse.get_pos()[1] >= 282 and pygame.mouse.get_pos()[0] <= 709 and pygame.mouse.get_pos()[1] <= 302):
+                    button_pause_clicked = 0
+
+
+            # Start button off on button
+            if pygame.mouse.get_pos()[0] >= 625 and pygame.mouse.get_pos()[1] >= 282:
+                if pygame.mouse.get_pos()[0] <= 664 and pygame.mouse.get_pos()[1] <= 302:
+                        game_speed = 30
+                        button_start_clicked = 0
+            # Start button unclicked not on button
+            if not (pygame.mouse.get_pos()[0] >= 625 and pygame.mouse.get_pos()[1] >= 282 and pygame.mouse.get_pos()[0] <= 664 and pygame.mouse.get_pos()[1] <= 302):
+                    button_start_clicked = 0
 
 
     #####################################
@@ -578,7 +688,7 @@ while not done:
             check_grid_herb_pos = 0
 
     if del_all == 1:
-        for i in range(0,5):
+        for i in range(0,25):
             for i in herbs:
                 i.got_eaten()
             for i in herbivores:
