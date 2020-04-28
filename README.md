@@ -1,3 +1,4 @@
+**Changelog**
 
 28.08
 "Tempo"
@@ -13,12 +14,15 @@
 - added plus, minus, start, pause and clean buttons
 - start, pause and clean buttons work
 
+
 26.04
 - fixed herbs not spawning on some fields
+
 
 25.04
 "Optimization II"
 - optimized eating and breeding for both carnivores and herbivores
+- color of animals depends on their energy level
 - new layout design changes
 
 
