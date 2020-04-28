@@ -1,7 +1,7 @@
 **Changelog**
 
 28.08
-"Tempo"
+_"Tempo"_
 - modified delta_t time regulation to fit the task better
 - added tempo regulation through buttons
 - minor interface changes
@@ -9,7 +9,7 @@
 
 
 27.04
-"Buttons I"
+_"Buttons I"_
 - created a few button sprites and added them
 - added plus, minus, start, pause and clean buttons
 - start, pause and clean buttons work
