@@ -7,7 +7,7 @@
 #########################################################
 
 # Info:
-# DNA = [COLOR, SPEED, ]
+# DNA = [COLOR, SPEED]
 # 16 possibile speeds with counter max 120:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 # chews too much CPU? change /delta_t = clock.tick_busy_loop(60)/ to /delta_t = clock.tick(60)/
 
