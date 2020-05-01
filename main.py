@@ -11,6 +11,13 @@
 # 16 possibile speeds with counter max 120:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 # chews too much CPU? change /delta_t = clock.tick_busy_loop(60)/ to /delta_t = clock.tick(60)/
 
+# to add: dziedziczenie, mutacja, więcej cech, statystyki,   the faster the costier
+
+
+# algorytm zarządzający tym wszystkim
+# dość dokładnie opisać to w overleafie
+# może SI, które sterowałoby każdym z tych obiektów?
+# podziel na osobne pliki
 #################################################################################################################################
 # Imports
 import pygame
@@ -72,7 +79,6 @@ counter_prev = counter
 big_counter = 0
 big_counter_prev = big_counter
 key_up = 0
-check_grid_herb_pos = 0
 del_all = 0
 button_start_clicked = 0
 button_pause_clicked = 0
@@ -81,7 +87,6 @@ button_tempo_plus_clicked = 0
 button_tempo_minus_clicked = 0
 clean_counter = 12
 pause = 0
-start = 0.5
 herbs = []
 herbivores = []
 carnivores = []
@@ -89,42 +94,41 @@ carnivores = []
 #################################################################################################################################
 
 # Settings
-game_speed = 0.5                       # between 0.01 and 0.99  [ 60 fps + 800/150/50 + game_speed 0.8 and it lags. game_speed 0.5 seems fine ]
+program_speed = 0.5                       # between 0.01 and 0.99  [ 60 fps + 800/150/50 + program_speed 0.8 and it lags. program_speed 0.5 seems fine ]
 
 herbs_spawn_rate = 7                   # between 7 and -4. higher is faster.
-herbs_amount_per_spawn = 7             # suggested 5-20
-herb_energy = 125                      # suggested 30-200
+herbs_amount_per_spawn = 9             # suggested 5-20
+herb_energy = 50                      # suggested 30-200
 
 herbs_starting_amount = 800            # suggested 200-1000
 herbivores_starting_amount = 150       # suggested 50-200
 carnivores_starting_amount = 35        # suggested 15-75
 
-herbivores_spawn_energy = 250          # suggested 100-300
-carnivores_spawn_energy = 260          # suggested 100-350
+herbivores_spawn_energy = 290          # suggested 100-300
+carnivores_spawn_energy = 200          # suggested 100-350
 
 herbivore_breed_level = 300            # suggested 250-450
 carnivore_breed_level = 300            # suggested 200-450
 
-carnivore_movement_cost = 3            # suggested 1-6 (has big impact)
-herbivore_movement_cost = 4            # suggested 2-8 (has big impact)
+carnivore_movement_cost = 4            # suggested 1-6 (has big impact)
+herbivore_movement_cost = 5            # suggested 2-8 (has big impact)
 
 #################################################################################################################################
 
 # DNA coding
 speed_dict = {
--4: 120,
--3: 60,
--2: 40,
--1: 30,
-0: 24,
-1: 20,
-2: 12,
-3: 10,
-4: 8,
-5: 6,
-6: 4,
-7: 2,
-8: 1  # available only through turbo mode
+-4: 60,
+-3: 40,
+-2: 30,
+-1: 24,
+0: 20,
+1: 12,
+2: 10,
+3: 8,
+4: 6,
+5: 4,
+6: 2,
+7: 1
 }
 
 #################################################################################################################################
@@ -345,7 +349,7 @@ class carnivore(animal):
                                 if not self.last_bred_on == i.get_coords():
                                     self.energy = int(self.energy / 2)
                                     i.set_energy(int(i.get_energy()/2))
-                                    born_carnivore(i.get_coords()[1],i.get_coords()[0])
+                                    born_carnivore(i.get_coords()[1],i.get_coords()[0], self.get_dna(), i.get_dna())
                                     self.last_bred_on = (self.coord_x, self.coord_y)
                                 break
 
@@ -537,7 +541,8 @@ def spawn_herbs(speed):
 #################################################################################################################################
 
 # Spawn carnivore that was born
-def born_carnivore(pos_y,pos_x):
+def born_carnivore(pos_y,pos_x, dna1, dna2):
+    
     carnivores.append(carnivore(pos_y,pos_x,len(carnivores),str(random.randint(4,7))+str(random.randint(0,7))))
     carnivores_pos[pos_y][pos_x].append(1)
 
@@ -572,9 +577,10 @@ for i in range(0,herbivores_starting_amount):
 for i in range(0,carnivores_starting_amount):
     spawn_carnivore()
 
-# The main loop is not done (is running) and clock is initialized.
+# Set the main loop to not done and initialize a clock.
 done = False
 clock = pygame.time.Clock()
+
 
 #=====================================================================================#
 #######################################################################################
@@ -623,8 +629,6 @@ while not done:
             if event.key == pygame.K_ESCAPE:
                 # Delete all objects.
                 del_all = 1
-            if event.key == pygame.K_BACKSPACE:
-                check_grid_herb_pos = 1
 
 
         # If mouse button clicked
@@ -669,7 +673,7 @@ while not done:
             # Pause button off on button
             if pygame.mouse.get_pos()[0] >= 670 and pygame.mouse.get_pos()[1] >= 282:
                 if pygame.mouse.get_pos()[0] <= 709 and pygame.mouse.get_pos()[1] <= 302:
-                        start = game_speed
+                        start = program_speed
                         pause = 1
                         button_pause_clicked = 0
             # Pause button unclicked not on button
@@ -680,7 +684,6 @@ while not done:
             if pygame.mouse.get_pos()[0] >= 625 and pygame.mouse.get_pos()[1] >= 282:
                 if pygame.mouse.get_pos()[0] <= 664 and pygame.mouse.get_pos()[1] <= 302:
                         pause = 0
-                        game_speed = start
                         button_start_clicked = 0
             # Start button unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 625 and pygame.mouse.get_pos()[1] >= 282 and pygame.mouse.get_pos()[0] <= 664 and pygame.mouse.get_pos()[1] <= 302):
@@ -689,7 +692,7 @@ while not done:
             # Tempo plus button off on button
             if pygame.mouse.get_pos()[0] >= 742 and pygame.mouse.get_pos()[1] >= 230:
                 if pygame.mouse.get_pos()[0] <= 755 and pygame.mouse.get_pos()[1] <= 243:
-                        game_speed += 0.1
+                        program_speed += 0.1
                         button_tempo_plus_clicked = 0
             # Tempo plus unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 742 and pygame.mouse.get_pos()[1] >= 230 and pygame.mouse.get_pos()[0] <= 755 and pygame.mouse.get_pos()[1] <= 243):
@@ -698,25 +701,26 @@ while not done:
             # Tempo minus button off on button
             if pygame.mouse.get_pos()[0] >= 726 and pygame.mouse.get_pos()[1] >= 230:
                 if pygame.mouse.get_pos()[0] <= 739 and pygame.mouse.get_pos()[1] <= 243:
-                        game_speed -= 0.1
+                        program_speed -= 0.1
                         button_tempo_minus_clicked = 0
             # Tempo minus unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 726 and pygame.mouse.get_pos()[1] >= 230 and pygame.mouse.get_pos()[0] <= 739 and pygame.mouse.get_pos()[1] <= 243):
                     button_tempo_minus_clicked = 0
 
 
-    # If /game_speed/ is bigger than 59, set it to 59. Puts '59' limit on the variable.
-    if game_speed > 0.99: game_speed = 0.99
-    # If /game_speed/ is smaller than 1, set it to 1. Puts '1' limit on the variable.
-    if game_speed < 0.01: game_speed = 0.01
-    # If /pause/ is true, sets /game_speed/ to 0.
-    if pause: game_speed = 0
+    # If /program_speed/ is bigger than 59, set it to 59. Puts '59' limit on the variable.
+    if program_speed > 0.99: program_speed = 0.99
+    # If /program_speed/ is smaller than 1, set it to 1. Puts '1' limit on the variable.
+    if program_speed < 0.01: program_speed = 0.01
+    # If /pause/ is true, sets /program_speed/ to 0.
+    #if pause: program_speed = 0
 
-    # Increase /counter/ with a step of a size of /game_speed * (delta_t/1000)/ every frame. If /counter/ is equal to 120, reset it, and increase /big_counter/ by 1.
+    # Increase /counter/ with a step of a size of /program_speed/ every frame, if simulation isn't paused. If /counter/ is equal to 120, reset it, and increase /big_counter/ by 1.
     counter_prev = counter
     big_counter_prev = big_counter
     clock.tick(30)
-    counter += game_speed
+    if not pause:
+        counter += program_speed
     if counter > 120:
         big_counter += 1
         counter = 0
@@ -733,7 +737,7 @@ while not done:
         spawn_carnivore()
         key_up = 0
     screen.fill(LIGHTGRAY)
-    # Draw every part of the interface.
+    # Draw interface.
     draw_window()
     # Spawn herbs every /speed_dict[herbs_spawn_rate]/ frames.
     spawn_herbs(herbs_spawn_rate)
@@ -741,33 +745,28 @@ while not done:
     for i in herbs:
         i.draw()
 
-    # Check if any herbivore died out of starvation, try to either breed or eat [optimalisation opportunity over there - they don't have to scan entire list of food/partners every fps], then move.
-    for i in herbivores:
-        if i.get_state() == 0:
-            i.herbi_starved()
-    for i in herbivores:
-        i.action()   # breed or eat
+
+    if not pause:
+        # Check if any herbivore died out of starvation, try to either breed or eat, then move.
+        for i in herbivores:
+            if i.get_state() == 0:
+                i.herbi_starved()
+        for i in herbivores:
+            i.action()   # breed or eat
     for i in herbivores:
         i.move()
 
-    # Check if any carnivore died out of starvation, try to either breed or eat [optimalisation opportunity over there - they don't have to scan entire list of food/partners every fps], then move.
-    for i in carnivores:
-        if i.get_state() == 0:
-            i.carni_starved()
-    for i in carnivores:
-        i.action()   # breed or eat
+    if not pause:
+        # Check if any carnivore died out of starvation, try to either breed or eat, then move.
+        for i in carnivores:
+            if i.get_state() == 0:
+                i.carni_starved()
+        for i in carnivores:
+            i.action()   # breed or eat
     for i in carnivores:
         i.move()
 
 
-
-    # Temporary debug thingy.
-    if check_grid_herb_pos == 1:
-        while not check_grid_herb_pos == 0:
-            print(herbs_pos[int(input("Insert Y:"))][int(input("Insert X:"))])
-            check_grid_herb_pos=int(input("Insert 0 to quit, 1 to check one more field:"))
-        else:
-            check_grid_herb_pos = 0
 
     # If flag /del_all/ equals 1, remove all objects.
     if del_all == 1:
@@ -793,7 +792,7 @@ while not done:
             print("..::: Current amount of HERBS:",len(herbs),":::..")
             print("..::: Current amount of HERBIVORES:",len(herbivores),":::..")
             print("..::: Current amount of CARNIVORES:",len(carnivores),":::..")
-            print(game_speed)
+            print(program_speed)
 
 
     #####################################
