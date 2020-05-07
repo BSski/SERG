@@ -2,6 +2,7 @@
 
 
 07.05
+- color of the animal depends on its DNA sum now - the higher the darker
 - animals won't go to the last tile they were on now
 - added legs length trait
 
