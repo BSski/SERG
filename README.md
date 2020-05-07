@@ -2,7 +2,7 @@
 
 
 06.05
-__"New traits"__
+_"New traits"_
 - fixed critical birth bug 
 - added bowel length trait
 - added fat limit trait
@@ -13,7 +13,7 @@ __"New traits"__
 
 
 04.05
-__"Inheritance"__
+_"Inheritance"_
 - fixed pause+clean bug
 - added inheritance of genes
 - added possibility of mutation
