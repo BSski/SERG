@@ -7,7 +7,7 @@
 #########################################################
 
 # Info:
-# DNA = [COLOR, SPEED, BOWEL_LENGTH, FAT_LIMIT, ]
+# DNA = [COLOR, SPEED, BOWEL_LENGTH, FAT_LIMIT, LEGS_LENGTH ]
 # 16 possibile speeds with counter max 120:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 # chews too much CPU? change /delta_t = clock.tick_busy_loop(60)/ to /delta_t = clock.tick(60)/
 
@@ -87,7 +87,7 @@ pause_down=pygame.image.load("sprites/pause_down.png")
 #################################################################################################################################
 
 # Define variables and lists
-DNA = ["COLOR","SPEED", "BOWEL_LENGTH", "FAT_LIMIT"]
+DNA = ["COLOR","SPEED", "BOWEL_LENGTH", "FAT_LIMIT", "LEGS_LENGTH"]
 
 counter = 0
 counter_prev = counter
@@ -167,6 +167,16 @@ fat_limit_dict = {
 5: 5100,
 6: 5300,
 7: 5500
+}
+legs_length_dict = {
+0: 0.98,
+1: 0.96,
+2: 0.94,
+3: 0.92,
+4: 0.90,
+5: 0.88,
+6: 0.86,
+7: 0.84
 }
 #################################################################################################################################
 
@@ -354,9 +364,10 @@ class carnivore(animal):
             self.color = int(dna[0])
             self.speed = speed_dict[int(dna[1])]
             self.energy = carnivores_spawn_energy
-            self.last_bred_on = 0
+            self.last_move = random.choice(("x-","x+","y-","y+"))
             self.bowel_length = bowel_length_dict[int(dna[2])]
             self.fat_limit = fat_limit_dict[int(dna[3])]
+            self.legs_length = legs_length_dict[int(dna[4])]
 
     def get_intention(self): # 1 - breeding, 0 - food
         if self.energy > carnivore_breed_level: return 1
@@ -368,12 +379,10 @@ class carnivore(animal):
                     if (self.coord_x, self.coord_y) == i.get_coords():
                         if i.get_intention() == 1:
                             if i != carnivores[self.get_index()]:
-                                if not self.last_bred_on == i.get_coords():
-                                    self.energy = int(self.energy / 2)
-                                    i.set_energy(int(i.get_energy()/2))
-                                    born_carnivore(i.get_coords()[0],i.get_coords()[1], self.get_dna(), i.get_dna())
-                                    self.last_bred_on = (self.coord_x, self.coord_y)
-                                break
+                                self.energy = int(self.energy / 2)
+                                i.set_energy(int(i.get_energy()/2))
+                                born_carnivore(i.get_coords()[0],i.get_coords()[1], self.get_dna(), i.get_dna())
+                            break
 
     def action(self):
         if self.get_energy() > self.fat_limit:
@@ -405,23 +414,65 @@ class carnivore(animal):
 
         if not int(counter_prev) == int(counter):
             if int(counter) % self.speed == 0:
-                self.energy -= carnivore_movement_cost
+                self.energy -= carnivore_movement_cost * self.legs_length
                 if not (self.coord_x == 0 or self.coord_x == 42 or self.coord_y == 0 or self.coord_y == 42):
-                    if random.randint(0,1) == 0:
+                    if self.last_move == "x-":
                         if random.randint(0,1) == 0:
-                            self.coord_x -= 1
+                                self.coord_x -= 1
+                                self.last_move = "x-"
                         else:
-                            self.coord_x += 1
-                    else:
+                            if random.randint(0,1) == 0:
+                                self.coord_y -= 1
+                                self.last_move = "y-"
+                            else:
+                                self.coord_y += 1
+                                self.last_move = "y+"
+                    elif self.last_move == "x+":
                         if random.randint(0,1) == 0:
-                            self.coord_y -= 1
+                                self.coord_x += 1
+                                self.last_move = "x+"
                         else:
-                            self.coord_y += 1
+                            if random.randint(0,1) == 0:
+                                self.coord_y -= 1
+                                self.last_move = "y-"
+                            else:
+                                self.coord_y += 1
+                                self.last_move = "y+"
+                    elif self.last_move == "y-":
+                        if random.randint(0,1) == 0:
+                            if random.randint(0,1) == 0:
+                                self.coord_x -= 1
+                                self.last_move = "x-"
+                            else:
+                                self.coord_x += 1
+                                self.last_move = "x+"
+                        else:
+                                self.coord_y -= 1
+                                self.last_move = "y-"
+                    elif self.last_move == "y+":
+                        if random.randint(0,1) == 0:
+                            if random.randint(0,1) == 0:
+                                self.coord_x -= 1
+                                self.last_move = "x-"
+                            else:
+                                self.coord_x += 1
+                                self.last_move = "x+"
+                        else:
+                                self.coord_y += 1
+                                self.last_move = "y+"
                 else:
-                    if self.coord_x == 0: self.coord_x += 1
-                    elif self.coord_x == 42: self.coord_x -= 1
-                    elif self.coord_y == 0: self.coord_y += 1
-                    elif self.coord_y == 42: self.coord_y -= 1
+                    if self.coord_x == 0:
+                        self.coord_x += 1
+                        self.last_move = "x+"
+                    elif self.coord_x == 42:
+                        self.coord_x -= 1
+                        self.last_move = "x-"
+                    elif self.coord_y == 0:
+                        self.coord_y += 1
+                        self.last_move = "y+"
+                    elif self.coord_y == 42:
+                        self.coord_y -= 1
+                        self.last_move = "y-"
         carnivores_pos[self.coord_y][self.coord_x].append(1)
 
     def eat(self):
@@ -444,9 +495,10 @@ class herbivore(animal):
         self.color = int(dna[0])
         self.speed = speed_dict[int(dna[1])]
         self.energy = herbivores_spawn_energy
-        self.last_bred_on = 0
+        self.last_move = random.choice(("x-","x+","y-","y+"))
         self.bowel_length = bowel_length_dict[int(dna[2])]
         self.fat_limit = fat_limit_dict[int(dna[3])]
+        self.legs_length = legs_length_dict[int(dna[4])]
 
     def get_intention(self): # 1 - breeding, 0 - food
         if self.energy > herbivore_breed_level: return 1
@@ -458,12 +510,10 @@ class herbivore(animal):
                 if (self.coord_x, self.coord_y) == i.get_coords():
                     if i.get_intention() == 1:
                         if i != herbivores[self.get_index()]:
-                            if not self.last_bred_on == i.get_coords():
-                                self.energy = int(self.energy / 2)
-                                i.set_energy(int(i.get_energy()/2))
-                                born_herbivore(i.get_coords()[0],i.get_coords()[1], self.get_dna(), i.get_dna())
-                                self.last_bred_on = (self.coord_x, self.coord_y)
-                            break
+                            self.energy = int(self.energy / 2)
+                            i.set_energy(int(i.get_energy()/2))
+                            born_herbivore(i.get_coords()[0],i.get_coords()[1], self.get_dna(), i.get_dna())
+                        break
 
     def action(self):
         if self.get_energy() > self.fat_limit:
@@ -493,23 +543,65 @@ class herbivore(animal):
 
         if not int(counter_prev) == int(counter):
             if int(counter) % self.speed == 0:
-                self.energy -= herbivore_movement_cost
+                self.energy -= herbivore_movement_cost * self.legs_length
                 if not (self.coord_x == 0 or self.coord_x == 42 or self.coord_y == 0 or self.coord_y == 42):
-                    if random.randint(0,1) == 0:
+                    if self.last_move == "x-":
                         if random.randint(0,1) == 0:
-                            self.coord_x -= 1
+                                self.coord_x -= 1
+                                self.last_move = "x-"
                         else:
-                            self.coord_x += 1
-                    else:
+                            if random.randint(0,1) == 0:
+                                self.coord_y -= 1
+                                self.last_move = "y-"
+                            else:
+                                self.coord_y += 1
+                                self.last_move = "y+"
+                    elif self.last_move == "x+":
                         if random.randint(0,1) == 0:
-                            self.coord_y -= 1
+                                self.coord_x += 1
+                                self.last_move = "x+"
                         else:
-                            self.coord_y += 1
+                            if random.randint(0,1) == 0:
+                                self.coord_y -= 1
+                                self.last_move = "y-"
+                            else:
+                                self.coord_y += 1
+                                self.last_move = "y+"
+                    elif self.last_move == "y-":
+                        if random.randint(0,1) == 0:
+                            if random.randint(0,1) == 0:
+                                self.coord_x -= 1
+                                self.last_move = "x-"
+                            else:
+                                self.coord_x += 1
+                                self.last_move = "x+"
+                        else:
+                                self.coord_y -= 1
+                                self.last_move = "y-"
+                    elif self.last_move == "y+":
+                        if random.randint(0,1) == 0:
+                            if random.randint(0,1) == 0:
+                                self.coord_x -= 1
+                                self.last_move = "x-"
+                            else:
+                                self.coord_x += 1
+                                self.last_move = "x+"
+                        else:
+                                self.coord_y += 1
+                                self.last_move = "y+"
                 else:
-                    if self.coord_x == 0: self.coord_x += 1
-                    elif self.coord_x == 42: self.coord_x -= 1
-                    elif self.coord_y == 0: self.coord_y += 1
-                    elif self.coord_y == 42: self.coord_y -= 1
+                    if self.coord_x == 0:
+                        self.coord_x += 1
+                        self.last_move = "x+"
+                    elif self.coord_x == 42:
+                        self.coord_x -= 1
+                        self.last_move = "x-"
+                    elif self.coord_y == 0:
+                        self.coord_y += 1
+                        self.last_move = "y+"
+                    elif self.coord_y == 42:
+                        self.coord_y -= 1
+                        self.last_move = "y-"
         herbivores_pos[self.coord_y][self.coord_x].append(1)
 
     def eat(self):
@@ -559,7 +651,7 @@ def born_carnivore(pos_x, pos_y, dna1, dna2):
             print("MUTATION OCCURED!", i, new_dna[i])
     print("CARNIVORE:", dna1, dna2, new_dna)
 
-    carnivores.append(carnivore(pos_x, pos_y, len(carnivores), new_dna[0] + new_dna[1] + new_dna[2] + new_dna[3]))
+    carnivores.append(carnivore(pos_x, pos_y, len(carnivores), new_dna[0] + new_dna[1] + new_dna[2] + new_dna[3] + new_dna[4]))
     carnivores_pos[pos_y][pos_x].append(1)
 
 # Spawn a new carnivore
@@ -567,21 +659,21 @@ def spawn_carnivore():
     pos_y = random.randint(1,41)
     pos_x = random.randint(1,41)
     if len(carnivores_pos[pos_y][pos_x]) < 1:
-        carnivores.append(carnivore(pos_x,pos_y,len(carnivores),str(random.randint(4,7))+str(random.randint(0,7))+str(random.randint(0,7))+str(random.randint(0,7))))
+        carnivores.append(carnivore(pos_x, pos_y, len(carnivores), str(random.randint(4,7)) + str(random.randint(0,7)) + str(random.randint(0,7)) + str(random.randint(0,7)) + str(random.randint(0,7))))
         carnivores_pos[pos_y][pos_x].append(1)
 
 # Spawn herbivore that was born
 def born_herbivore(pos_x, pos_y, dna1, dna2):
     new_dna = []
     for i in range(0, int(len(DNA))):
-        if random.randint(0,100) > mutation_chance:
+        if random.randint(0,99) >= mutation_chance:
             new_dna.append(random.choice(dna1[i] + dna2[i]))
         else:
             new_dna.append(str(random.randint(0,7)))
             print("MUTATION OCCURED!", i, new_dna[i])
     print("HERBIVORE:", dna1, dna2, new_dna)
 
-    herbivores.append(herbivore(pos_x, pos_y, len(herbivores), new_dna[0] + new_dna[1] + new_dna[2] + new_dna[3]))
+    herbivores.append(herbivore(pos_x, pos_y, len(herbivores), new_dna[0] + new_dna[1] + new_dna[2] + new_dna[3] + new_dna[4]))
     herbivores_pos[pos_y][pos_x].append(1)
 
 # Spawn a new herbivore
@@ -589,7 +681,7 @@ def spawn_herbivore():
     pos_y = random.randint(1,41)
     pos_x = random.randint(1,41)
     if len(herbivores_pos[pos_y][pos_x]) < 1:
-        herbivores.append(herbivore(pos_x,pos_y,len(herbivores),str(random.randint(0,3))+str(random.randint(0,7))+str(random.randint(0,7))+str(random.randint(0,7))))
+        herbivores.append(herbivore(pos_x, pos_y, len(herbivores), str(random.randint(0,3)) + str(random.randint(0,7)) + str(random.randint(0,7)) + str(random.randint(0,7)) + str(random.randint(0,7))))
         herbivores_pos[pos_y][pos_x].append(1)
 
 #################################################################################################################################
