@@ -7,17 +7,19 @@
 #########################################################
 
 # Info:
-# DNA = [COLOR, SPEED, ]
+# DNA = [COLOR, SPEED, BOWEL_LENGTH, FAT_LIMIT, ]
 # 16 possibile speeds with counter max 120:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 # chews too much CPU? change /delta_t = clock.tick_busy_loop(60)/ to /delta_t = clock.tick(60)/
 
-# to add: dziedziczenie, mutacja, więcej cech, statystyki,   the faster the costier
+# to add: więcej cech, statystyki,   the faster the costier
 
 
 # algorytm zarządzający tym wszystkim
 # dość dokładnie opisać to w overleafie
 # może SI, które sterowałoby każdym z tych obiektów?
 # podziel na osobne pliki
+# chunks
+
 #################################################################################################################################
 # Imports
 import pygame
@@ -32,16 +34,27 @@ font2 = pygame.font.SysFont("liberationmono", 11)
 font3 = pygame.font.SysFont("liberationmono", 11)
 font4 = pygame.font.SysFont("humorsans", 70)
 # Define colors
-colors_list = [
-[(77, 255, 136),(51, 255, 119),(26, 255, 102),(0, 255, 85),(0, 230, 77),(0, 204, 68),(0, 179, 60),(0, 153, 51),(0, 128, 43)],      # DARK 1
-[(77, 255, 77),(51, 255, 51),(26, 255, 26),(0, 255, 0),(0, 230, 0),(0, 204, 0),(0, 179, 0),(0, 153, 0),(0, 128, 0)],               # DARK 2
-[(51, 255, 153),(26, 255, 140),(0, 255, 128),(0, 230, 115),(0, 204, 102),(0, 179, 89),(0, 153, 77),(0, 128, 64)],                  # DARK 3
-[(51, 255, 204),(26, 255, 198),(0, 255, 191),(0, 230, 172),(0, 204, 153),(0, 179, 134),(0, 153, 115),(0, 128, 96)],                # DARK 4
-[(255, 173, 153),(255, 153, 128),(255, 133, 102),(255, 112, 77),(255, 92, 51),(255, 71, 26),(255, 51, 0),(230, 46, 0)],            # FAIR 1
-[(255, 194, 153),(255, 179, 128),(255, 163, 102),(255, 148, 77),(255, 133, 51),(255, 117, 26),(255, 102, 0),(230, 92, 0)],         # FAIR 2
-[(255, 153, 153),(255, 128, 128),(255, 102, 102),(255, 77, 77),(255, 51, 51),(255, 26, 26),(255, 0, 0),(230, 0, 0)],               # FAIR 3
-[(255, 153, 187),(255, 128, 170),(255, 102, 153),(255, 77, 136),(255, 51, 119),(255, 26, 102),(255, 0, 85),(230, 0, 76)]           # FAIR 4
+colors_list_red = [
+[(255, 173, 153),(255, 153, 128),(255, 133, 102),(255, 112, 77),(255, 92, 51),(255, 71, 26),(255, 51, 0),(230, 46, 0)],            # RED 1
+[(255, 194, 153),(255, 179, 128),(255, 163, 102),(255, 148, 77),(255, 133, 51),(255, 117, 26),(255, 102, 0),(230, 92, 0)],         # RED 2
+[(255, 153, 153),(255, 128, 128),(255, 102, 102),(255, 77, 77),(255, 51, 51),(255, 26, 26),(255, 0, 0),(230, 0, 0)],               # RED 3
+[(255, 153, 187),(255, 128, 170),(255, 102, 153),(255, 77, 136),(255, 51, 119),(255, 26, 102),(255, 0, 85),(230, 0, 76)],          # RED 4
+[(255, 173, 153),(255, 153, 128),(255, 133, 102),(255, 112, 77),(255, 92, 51),(255, 71, 26),(255, 51, 0),(230, 46, 0)],            # RED 1
+[(255, 194, 153),(255, 179, 128),(255, 163, 102),(255, 148, 77),(255, 133, 51),(255, 117, 26),(255, 102, 0),(230, 92, 0)],         # RED 2
+[(255, 153, 153),(255, 128, 128),(255, 102, 102),(255, 77, 77),(255, 51, 51),(255, 26, 26),(255, 0, 0),(230, 0, 0)],               # RED 3
+[(255, 153, 187),(255, 128, 170),(255, 102, 153),(255, 77, 136),(255, 51, 119),(255, 26, 102),(255, 0, 85),(230, 0, 76)]           # RED 4
 ]
+colors_list_green = [
+[(77, 255, 136),(51, 255, 119),(26, 255, 102),(0, 255, 85),(0, 230, 77),(0, 204, 68),(0, 179, 60),(0, 153, 51),(0, 128, 43)],      # GREEN 1
+[(77, 255, 77),(51, 255, 51),(26, 255, 26),(0, 255, 0),(0, 230, 0),(0, 204, 0),(0, 179, 0),(0, 153, 0),(0, 128, 0)],               # GREEN 2
+[(51, 255, 153),(26, 255, 140),(0, 255, 128),(0, 230, 115),(0, 204, 102),(0, 179, 89),(0, 153, 77),(0, 128, 64)],                  # GREEN 3
+[(51, 255, 204),(26, 255, 198),(0, 255, 191),(0, 230, 172),(0, 204, 153),(0, 179, 134),(0, 153, 115),(0, 128, 96)],                # GREEN 4
+[(77, 255, 136),(51, 255, 119),(26, 255, 102),(0, 255, 85),(0, 230, 77),(0, 204, 68),(0, 179, 60),(0, 153, 51),(0, 128, 43)],      # GREEN 1
+[(77, 255, 77),(51, 255, 51),(26, 255, 26),(0, 255, 0),(0, 230, 0),(0, 204, 0),(0, 179, 0),(0, 153, 0),(0, 128, 0)],               # GREEN 2
+[(51, 255, 153),(26, 255, 140),(0, 255, 128),(0, 230, 115),(0, 204, 102),(0, 179, 89),(0, 153, 77),(0, 128, 64)],                  # GREEN 3
+[(51, 255, 204),(26, 255, 198),(0, 255, 191),(0, 230, 172),(0, 204, 153),(0, 179, 134),(0, 153, 115),(0, 128, 96)]                # GREEN 4
+]
+
 BLACK       = (   0,   0,   0)
 WHITE       = ( 255, 255, 255)
 GRAY        = ( 210, 210, 210)
@@ -74,6 +87,8 @@ pause_down=pygame.image.load("sprites/pause_down.png")
 #################################################################################################################################
 
 # Define variables and lists
+DNA = ["COLOR","SPEED", "BOWEL_LENGTH", "FAT_LIMIT"]
+
 counter = 0
 counter_prev = counter
 big_counter = 0
@@ -94,29 +109,32 @@ carnivores = []
 #################################################################################################################################
 
 # Settings
-program_speed = 0.5                       # between 0.01 and 0.99  [ 60 fps + 800/150/50 + program_speed 0.8 and it lags. program_speed 0.5 seems fine ]
+fps = 180                               # between 20-60, suggested 30.   60 might lag when under load.  [it's possible to go over 60, but it will lag a lot]
+program_speed = 0.3                    # between 0.01 and 0.99  [ 60 fps + 800/150/50 + program_speed 0.8 and it lags. program_speed 0.5 seems fine ]
 
-herbs_spawn_rate = 7                   # between 7 and -4. higher is faster.
-herbs_amount_per_spawn = 9             # suggested 5-20
-herb_energy = 50                      # suggested 30-200
+herbs_spawn_rate = 7                   # between 7 and -5. higher is faster.
+herbs_amount_per_spawn = 5            # suggested 5-20
+herb_energy = 1000                      # suggested 30-200
 
-herbs_starting_amount = 800            # suggested 200-1000
+herbs_starting_amount = 400            # suggested 200-1000
 herbivores_starting_amount = 150       # suggested 50-200
-carnivores_starting_amount = 35        # suggested 15-75
+carnivores_starting_amount = 30        # suggested 15-75
 
-herbivores_spawn_energy = 290          # suggested 100-300
-carnivores_spawn_energy = 200          # suggested 100-350
+herbivores_spawn_energy = 2900          # suggested 100-300
+carnivores_spawn_energy = 2000          # suggested 100-350
 
-herbivore_breed_level = 300            # suggested 250-450
-carnivore_breed_level = 300            # suggested 200-450
+herbivore_breed_level = 3000            # suggested 250-450
+carnivore_breed_level = 3000            # suggested 200-450
 
-carnivore_movement_cost = 4            # suggested 1-6 (has big impact)
-herbivore_movement_cost = 5            # suggested 2-8 (has big impact)
+carnivore_movement_cost = 80            # suggested 1-6 (has big impact)
+herbivore_movement_cost = 10            # suggested 2-8 (has big impact)
 
+mutation_chance = 0                    # between 0 and 100, percent
 #################################################################################################################################
 
 # DNA coding
 speed_dict = {
+-5: 120,
 -4: 60,
 -3: 40,
 -2: 30,
@@ -130,7 +148,26 @@ speed_dict = {
 6: 2,
 7: 1
 }
-
+bowel_length_dict = {
+0: 0.6,
+1: 0.65,
+2: 0.7,
+3: 0.75,
+4: 0.8,
+5: 0.85,
+6: 0.9,
+7: 0.95
+}
+fat_limit_dict = {
+0: 4100,
+1: 4300,
+2: 4500,
+3: 4700,
+4: 4900,
+5: 5100,
+6: 5300,
+7: 5500
+}
 #################################################################################################################################
 
 # Set size of the screen and create it
@@ -286,15 +323,6 @@ class animal:
     def __init__(self,coord_x,coord_y,index,dna):
         pass
 
-    def get_type(self):
-        return self.type
-
-    def get_type_list(self):
-        return self.type_list
-
-    def get_food_type(self):
-        return self.food_type
-
     def get_index(self):
         return self.index
 
@@ -326,15 +354,9 @@ class carnivore(animal):
             self.color = int(dna[0])
             self.speed = speed_dict[int(dna[1])]
             self.energy = carnivores_spawn_energy
-            self.type = carnivore
-            self.type_list = carnivores
-            self.food_type = herbivores
             self.last_bred_on = 0
-            self.type_pos_list = carnivores_pos
-
-
-    def get_type_pos_list(self):
-        return self.type_pos_list
+            self.bowel_length = bowel_length_dict[int(dna[2])]
+            self.fat_limit = fat_limit_dict[int(dna[3])]
 
     def get_intention(self): # 1 - breeding, 0 - food
         if self.energy > carnivore_breed_level: return 1
@@ -349,11 +371,13 @@ class carnivore(animal):
                                 if not self.last_bred_on == i.get_coords():
                                     self.energy = int(self.energy / 2)
                                     i.set_energy(int(i.get_energy()/2))
-                                    born_carnivore(i.get_coords()[1],i.get_coords()[0], self.get_dna(), i.get_dna())
+                                    born_carnivore(i.get_coords()[0],i.get_coords()[1], self.get_dna(), i.get_dna())
                                     self.last_bred_on = (self.coord_x, self.coord_y)
                                 break
 
     def action(self):
+        if self.get_energy() > self.fat_limit:
+            self.set_energy(self.fat_limit)
         if self.get_intention() == 1:
             self.breeding()
         else:
@@ -371,23 +395,17 @@ class carnivore(animal):
     def move(self):
         carnivores_pos[self.coord_y][self.coord_x] = carnivores_pos[self.coord_y][self.coord_x][1:]
         # If energy is higher than 80, still display color as if it had 80 energy
-        if int(self.get_energy()/100)*2 > 7:
-            pygame.draw.rect(screen, colors_list[self.color][7], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+        if int(self.get_energy()/1000)*2 > 7:
+            pygame.draw.rect(screen, colors_list_red[self.color][7], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
         # Change the animal's color depending on its energy
         else:
-            pygame.draw.rect(screen, colors_list[self.color][int(self.get_energy()/100)*2], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+            pygame.draw.rect(screen, colors_list_red[self.color][int(self.get_energy()/1000)*2], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
         # Draw its border
         pygame.draw.rect(screen, DARKERGRAY, [grid[self.coord_y][self.coord_x][0]-1, grid[self.coord_y][self.coord_x][1]-1, 11,11],1)
 
-        if int(counter_prev) == int(counter):
-            #print("ugh")
-            pass
-        else:
+        if not int(counter_prev) == int(counter):
             if int(counter) % self.speed == 0:
-                if self.get_type() == "carnivore":
-                    self.energy -= carnivore_movement_cost
-                else:
-                    self.energy -= herbivore_movement_cost
+                self.energy -= carnivore_movement_cost
                 if not (self.coord_x == 0 or self.coord_x == 42 or self.coord_y == 0 or self.coord_y == 42):
                     if random.randint(0,1) == 0:
                         if random.randint(0,1) == 0:
@@ -410,7 +428,7 @@ class carnivore(animal):
         if len(herbivores_pos[self.coord_y][self.coord_x]) > 0:
             for i in herbivores:
                 if self.coord_x == i.get_coords()[0] and self.coord_y == i.get_coords()[1]:
-                    self.energy += i.get_energy()
+                    self.energy += i.get_energy() * self.bowel_length
                     i.got_eaten()
                     break
 
@@ -426,15 +444,9 @@ class herbivore(animal):
         self.color = int(dna[0])
         self.speed = speed_dict[int(dna[1])]
         self.energy = herbivores_spawn_energy
-        self.type = herbivore
-        self.type_list = herbivores
-        self.food_type = herbs
         self.last_bred_on = 0
-        self.type_pos_list = herbivores_pos
-
-
-    def get_type_pos_list(self):
-        return self.type_pos_list
+        self.bowel_length = bowel_length_dict[int(dna[2])]
+        self.fat_limit = fat_limit_dict[int(dna[3])]
 
     def get_intention(self): # 1 - breeding, 0 - food
         if self.energy > herbivore_breed_level: return 1
@@ -449,11 +461,13 @@ class herbivore(animal):
                             if not self.last_bred_on == i.get_coords():
                                 self.energy = int(self.energy / 2)
                                 i.set_energy(int(i.get_energy()/2))
-                                born_herbivore(i.get_coords()[1],i.get_coords()[0])
+                                born_herbivore(i.get_coords()[0],i.get_coords()[1], self.get_dna(), i.get_dna())
                                 self.last_bred_on = (self.coord_x, self.coord_y)
                             break
 
     def action(self):
+        if self.get_energy() > self.fat_limit:
+            self.set_energy(self.fat_limit)
         if self.get_intention() == 1:
             self.breeding()
         else:
@@ -469,23 +483,17 @@ class herbivore(animal):
     def move(self):
         herbivores_pos[self.coord_y][self.coord_x] = herbivores_pos[self.coord_y][self.coord_x][1:]
         # If energy is higher than 80, still display color as if it had 80 energy
-        if int(self.get_energy()/100)*2 > 7:
-            pygame.draw.rect(screen, colors_list[self.color][7], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+        if int(self.get_energy()/1000)*2 > 7:
+            pygame.draw.rect(screen, colors_list_green[self.color][7], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
         # Change the animal's color depending on its energy
         else:
-            pygame.draw.rect(screen, colors_list[self.color][int(self.get_energy()/100)*2], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+            pygame.draw.rect(screen, colors_list_green[self.color][int(self.get_energy()/1000)*2], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
         # Draw its border
         pygame.draw.rect(screen, DARKERGRAY, [grid[self.coord_y][self.coord_x][0]-1, grid[self.coord_y][self.coord_x][1]-1, 11,11],1)
 
-        if int(counter_prev) == int(counter):
-            #print("ugh")
-            pass
-        else:
+        if not int(counter_prev) == int(counter):
             if int(counter) % self.speed == 0:
-                if self.get_type() == "carnivore":
-                    self.energy -= carnivore_movement_cost
-                else:
-                    self.energy -= herbivore_movement_cost
+                self.energy -= herbivore_movement_cost
                 if not (self.coord_x == 0 or self.coord_x == 42 or self.coord_y == 0 or self.coord_y == 42):
                     if random.randint(0,1) == 0:
                         if random.randint(0,1) == 0:
@@ -508,7 +516,7 @@ class herbivore(animal):
         if len(herbs_pos[self.coord_y][self.coord_x]) > 0:
             for i in herbs:
                 if self.coord_x == i.get_coords()[0] and self.coord_y == i.get_coords()[1]:
-                    self.energy += i.get_energy()
+                    self.energy += i.get_energy()*self.bowel_length
                     i.got_eaten()
                     break
 
@@ -541,9 +549,17 @@ def spawn_herbs(speed):
 #################################################################################################################################
 
 # Spawn carnivore that was born
-def born_carnivore(pos_y,pos_x, dna1, dna2):
-    
-    carnivores.append(carnivore(pos_y,pos_x,len(carnivores),str(random.randint(4,7))+str(random.randint(0,7))))
+def born_carnivore(pos_x, pos_y, dna1, dna2):
+    new_dna = []
+    for i in range(0, int(len(DNA))):
+        if random.randint(0,99) >= mutation_chance:
+            new_dna.append(random.choice(dna1[i] + dna2[i]))
+        else:
+            new_dna.append(str(random.randint(0,7)))
+            print("MUTATION OCCURED!", i, new_dna[i])
+    print("CARNIVORE:", dna1, dna2, new_dna)
+
+    carnivores.append(carnivore(pos_x, pos_y, len(carnivores), new_dna[0] + new_dna[1] + new_dna[2] + new_dna[3]))
     carnivores_pos[pos_y][pos_x].append(1)
 
 # Spawn a new carnivore
@@ -551,12 +567,21 @@ def spawn_carnivore():
     pos_y = random.randint(1,41)
     pos_x = random.randint(1,41)
     if len(carnivores_pos[pos_y][pos_x]) < 1:
-        carnivores.append(carnivore(pos_y,pos_x,len(carnivores),str(random.randint(4,7))+str(random.randint(0,7))))
+        carnivores.append(carnivore(pos_x,pos_y,len(carnivores),str(random.randint(4,7))+str(random.randint(0,7))+str(random.randint(0,7))+str(random.randint(0,7))))
         carnivores_pos[pos_y][pos_x].append(1)
 
 # Spawn herbivore that was born
-def born_herbivore(pos_y,pos_x):
-    herbivores.append(herbivore(pos_y,pos_x,len(herbivores),str(random.randint(0,3))+str(random.randint(0,7))))
+def born_herbivore(pos_x, pos_y, dna1, dna2):
+    new_dna = []
+    for i in range(0, int(len(DNA))):
+        if random.randint(0,100) > mutation_chance:
+            new_dna.append(random.choice(dna1[i] + dna2[i]))
+        else:
+            new_dna.append(str(random.randint(0,7)))
+            print("MUTATION OCCURED!", i, new_dna[i])
+    print("HERBIVORE:", dna1, dna2, new_dna)
+
+    herbivores.append(herbivore(pos_x, pos_y, len(herbivores), new_dna[0] + new_dna[1] + new_dna[2] + new_dna[3]))
     herbivores_pos[pos_y][pos_x].append(1)
 
 # Spawn a new herbivore
@@ -564,7 +589,7 @@ def spawn_herbivore():
     pos_y = random.randint(1,41)
     pos_x = random.randint(1,41)
     if len(herbivores_pos[pos_y][pos_x]) < 1:
-        herbivores.append(herbivore(pos_y,pos_x,len(herbivores),str(random.randint(0,3))+str(random.randint(0,7))))
+        herbivores.append(herbivore(pos_x,pos_y,len(herbivores),str(random.randint(0,3))+str(random.randint(0,7))+str(random.randint(0,7))+str(random.randint(0,7))))
         herbivores_pos[pos_y][pos_x].append(1)
 
 #################################################################################################################################
@@ -620,11 +645,11 @@ while not done:
                 key_up = 1
             if event.key == pygame.K_LEFT:
                 # Add 10 herbivores.
-                for i in range(0,10):
+                for i in range(0,100):
                     spawn_herbivore()
             if event.key == pygame.K_RIGHT:
                 # Add 10 carnivores.
-                for i in range(0,10):
+                for i in range(0,25):
                     spawn_carnivore()
             if event.key == pygame.K_ESCAPE:
                 # Delete all objects.
@@ -718,7 +743,7 @@ while not done:
     # Increase /counter/ with a step of a size of /program_speed/ every frame, if simulation isn't paused. If /counter/ is equal to 120, reset it, and increase /big_counter/ by 1.
     counter_prev = counter
     big_counter_prev = big_counter
-    clock.tick(30)
+    clock.tick(fps)
     if not pause:
         counter += program_speed
     if counter > 120:
@@ -734,7 +759,7 @@ while not done:
 
     # If flag /key_up/ is equal to 1, add one carnivore and set the flag back to 0.
     if key_up == 1:
-        spawn_carnivore()
+        spawn_herbivore()
         key_up = 0
     screen.fill(LIGHTGRAY)
     # Draw interface.
@@ -746,21 +771,23 @@ while not done:
         i.draw()
 
 
-    if not pause:
+
         # Check if any herbivore died out of starvation, try to either breed or eat, then move.
-        for i in herbivores:
-            if i.get_state() == 0:
-                i.herbi_starved()
+    for i in herbivores:
+        if i.get_state() == 0:
+            i.herbi_starved()
+    if not pause:
         for i in herbivores:
             i.action()   # breed or eat
     for i in herbivores:
         i.move()
 
-    if not pause:
+
         # Check if any carnivore died out of starvation, try to either breed or eat, then move.
-        for i in carnivores:
-            if i.get_state() == 0:
-                i.carni_starved()
+    for i in carnivores:
+        if i.get_state() == 0:
+            i.carni_starved()
+    if not pause:
         for i in carnivores:
             i.action()   # breed or eat
     for i in carnivores:
