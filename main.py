@@ -108,27 +108,27 @@ carnivores = []
 #################################################################################################################################
 
 # Settings
-fps = 180                               # between 20-60, suggested 30.   60 might lag when under load.  [it's possible to go over 60, but it will lag a lot]
+fps = 60                               # between 20-60, suggested 30.   60 might lag when under load.  [it's possible to go over 60, but it will lag a lot]
 program_speed = 0.3                    # between 0.01 and 0.99  [ 60 fps + 800/150/50 + program_speed 0.8 and it lags. program_speed 0.5 seems fine ]
 
 herbs_spawn_rate = 7                   # between 7 and -5. higher is faster.
-herbs_amount_per_spawn = 5            # suggested 5-20
-herb_energy = 1000                      # suggested 30-200
+herbs_amount_per_spawn = 5             # suggested 5-20
+herb_energy = 1000                     # suggested 300-2000
 
 herbs_starting_amount = 400            # suggested 200-1000
-herbivores_starting_amount = 150       # suggested 50-200
+herbivores_starting_amount = 150       # suggested 50-20
 carnivores_starting_amount = 30        # suggested 15-75
 
-herbivores_spawn_energy = 2900          # suggested 100-300
-carnivores_spawn_energy = 2000          # suggested 100-350
+herbivores_spawn_energy = 2900          # suggested 1000-3000
+carnivores_spawn_energy = 2000          # suggested 1000-3500
 
-herbivore_breed_level = 3000            # suggested 250-450
-carnivore_breed_level = 3000            # suggested 200-450
+herbivore_breed_level = 3000            # suggested 2500-4500
+carnivore_breed_level = 3000            # suggested 2000-4500
 
-carnivore_movement_cost = 80            # suggested 1-6 (has big impact)
-herbivore_movement_cost = 10            # suggested 2-8 (has big impact)
+carnivore_movement_cost = 80            # suggested 10-80 (has big impact)
+herbivore_movement_cost = 10            # suggested 10-80 (has big impact)
 
-mutation_chance = 0                    # between 0 and 100, percent
+mutation_chance = 2                     # between 0 and 99, percents
 #################################################################################################################################
 
 # DNA coding
