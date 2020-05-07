@@ -1,6 +1,11 @@
 **Changelog**
 
 
+07.05
+- animals won't go to the last tile they were on now
+- added legs length trait
+
+
 06.05
 _"New traits"_
 - fixed critical birth bug 
