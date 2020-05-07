@@ -9,7 +9,7 @@ _"New traits"_
 
 
 05.05
-- chunks update planning
+- chunks update planning (optimization attempt - failed)
 
 
 04.05
