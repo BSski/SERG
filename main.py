@@ -1,22 +1,21 @@
-#########################################################
-#######################--- SERG ---######################
-##############- ARROW_UP: ADD ONE CARNIVORE -############
-############- ARROW_LEFT: ADD 10 HERBIVORES -############
-###########- ARROW_RIGHT: ADD 10 CARNIVORES -############
-###########- ESCAPE: REMOVE ALL THE OBJECTS -############
-#########################################################
+##########################################################
+#######################--- SERG ---#######################
+##############- ARROW_UP: ADD ONE CARNIVORE -#############
+############- ARROW_LEFT: ADD 100 HERBIVORES -############
+###########- ARROW_RIGHT: ADD 100 CARNIVORES -############
+###########- ESCAPE: REMOVE ALL THE OBJECTS -#############
+##########################################################
 
 # Info:
 # DNA = [COLOR, SPEED, BOWEL_LENGTH, FAT_LIMIT, LEGS_LENGTH ]
 # 16 possibile speeds with counter max 120:  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 # chews too much CPU? change /delta_t = clock.tick_busy_loop(60)/ to /delta_t = clock.tick(60)/
 
-# to add: więcej cech, statystyki,   the faster the costier
+# to add: więcej cech, statystyki, the faster the costier
 
 
 # algorytm zarządzający tym wszystkim
 # dość dokładnie opisać to w overleafie
-# może SI, które sterowałoby każdym z tych obiektów?
 # podziel na osobne pliki
 # chunks
 
@@ -400,18 +399,24 @@ class carnivore(animal):
             carnivores[i].index -= 1
         # and turn into a herb
 
-
-    def move(self):
-        carnivores_pos[self.coord_y][self.coord_x] = carnivores_pos[self.coord_y][self.coord_x][1:]
-        # If energy is higher than 80, still display color as if it had 80 energy
-        if int(self.get_energy()/1000)*2 > 7:
+    def draw(self):
+        dna_sum = 0
+        for i in range(len(self.dna)):
+            dna_sum += int(self.dna[i])
+        if dna_sum <= int(len(self.dna)*7/4):
+            pygame.draw.rect(screen, colors_list_red[self.color][1], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+        elif dna_sum <= int(len(self.dna)*7/4*2):
+            pygame.draw.rect(screen, colors_list_red[self.color][3], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+        elif dna_sum <= int(len(self.dna)*7/4*3):
+            pygame.draw.rect(screen, colors_list_red[self.color][5], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+        elif dna_sum > int(len(self.dna)*7/4*3):
             pygame.draw.rect(screen, colors_list_red[self.color][7], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
-        # Change the animal's color depending on its energy
-        else:
-            pygame.draw.rect(screen, colors_list_red[self.color][int(self.get_energy()/1000)*2], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
         # Draw its border
         pygame.draw.rect(screen, DARKERGRAY, [grid[self.coord_y][self.coord_x][0]-1, grid[self.coord_y][self.coord_x][1]-1, 11,11],1)
 
+    def move(self):
+        self.draw()
+        carnivores_pos[self.coord_y][self.coord_x] = carnivores_pos[self.coord_y][self.coord_x][1:]
         if not int(counter_prev) == int(counter):
             if int(counter) % self.speed == 0:
                 self.energy -= carnivore_movement_cost * self.legs_length
@@ -530,17 +535,25 @@ class herbivore(animal):
             herbivores[i].index -= 1
         # and turn into a herb
 
-    def move(self):
-        herbivores_pos[self.coord_y][self.coord_x] = herbivores_pos[self.coord_y][self.coord_x][1:]
-        # If energy is higher than 80, still display color as if it had 80 energy
-        if int(self.get_energy()/1000)*2 > 7:
+    def draw(self):
+        dna_sum = 0
+        for i in range(len(self.dna)):
+            dna_sum += int(self.dna[i])
+        if dna_sum <= int(len(self.dna)*7/4):
+            pygame.draw.rect(screen, colors_list_green[self.color][1], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+        elif dna_sum <= int(len(self.dna)*7/4*2):
+            pygame.draw.rect(screen, colors_list_green[self.color][3], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+        elif dna_sum <= int(len(self.dna)*7/4*3):
+            pygame.draw.rect(screen, colors_list_green[self.color][5], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
+        elif dna_sum > int(len(self.dna)*7/4*3):
             pygame.draw.rect(screen, colors_list_green[self.color][7], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
-        # Change the animal's color depending on its energy
-        else:
-            pygame.draw.rect(screen, colors_list_green[self.color][int(self.get_energy()/1000)*2], [grid[self.coord_y][self.coord_x][0], grid[self.coord_y][self.coord_x][1], 9, 9])
         # Draw its border
         pygame.draw.rect(screen, DARKERGRAY, [grid[self.coord_y][self.coord_x][0]-1, grid[self.coord_y][self.coord_x][1]-1, 11,11],1)
 
+
+    def move(self):
+        self.draw()
+        herbivores_pos[self.coord_y][self.coord_x] = herbivores_pos[self.coord_y][self.coord_x][1:]
         if not int(counter_prev) == int(counter):
             if int(counter) % self.speed == 0:
                 self.energy -= herbivore_movement_cost * self.legs_length
