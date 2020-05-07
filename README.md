@@ -1,5 +1,27 @@
 **Changelog**
 
+
+06.05
+__"New traits"__
+- fixed critical birth bug 
+- added bowel length trait
+- added fat limit trait
+
+
+05.05
+- chunks update planning
+
+
+04.05
+__"Inheritance"__
+- fixed pause+clean bug
+- added inheritance of genes
+- added possibility of mutation
+
+
+-break-
+
+
 28.08
 _"Tempo"_
 - modified delta_t time regulation to fit the task better
@@ -86,4 +108,6 @@ _"Herbs, breeding, energy"_
 
 14.04
 - designed interface of SERG
+
+
 
