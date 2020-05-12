@@ -1,6 +1,21 @@
 **Changelog**
 
 
+12.05
+- some steps towards code compatibility with PEP8
+
+
+11.05
+- new HUD
+- the animals can only have 2 shades of red/green now:
+   - fair if they are hungry,
+   - dark if they are ready to breed
+
+
+08.05
+- implemented a better movement method
+
+
 07.05
 - color of the animal depends on its DNA sum now - the higher the darker
 - animals won't go to the last tile they were on now
@@ -114,6 +129,3 @@ _"Herbs, breeding, energy"_
 
 14.04
 - designed interface of SERG
-
-
-
