@@ -6,7 +6,7 @@
 
 
 11.05
-- new HUD
+- interface changes
 - the animals can only have 2 shades of red/green now:
    - fair if they are hungry,
    - dark if they are ready to breed
