@@ -1,15 +1,20 @@
 **Changelog**
 
+19.05
+- further steps towards code compatibility with PEP8
+- the higher animal's trait rank, the bigger its movement cost
+
 
 12.05
 - some steps towards code compatibility with PEP8
+- if an animal die, a herb will appear on the field it died on
 
 
 11.05
-- interface changes
+- new HUD
 - the animals can only have 2 shades of red/green now:
-   - fair if they are hungry,
-   - dark if they are ready to breed
+      fair if they are hungry,
+      dark if they are ready to breed
 
 
 08.05
@@ -129,3 +134,4 @@ _"Herbs, breeding, energy"_
 
 14.04
 - designed interface of SERG
+
