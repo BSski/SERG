@@ -7,7 +7,7 @@
 
 12.05
 - some steps towards code compatibility with PEP8
-- if an animal die, a herb will appear on the field it died on
+- if an animal dies, a herb will appear on the field it died on
 
 
 11.05
