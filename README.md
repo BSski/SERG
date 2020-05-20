@@ -1,8 +1,13 @@
 **Changelog**
 
+20.05
+- fixed major bug that was causing problems with excessive breeding and reset
+
+
 19.05
 - further steps towards code compatibility with PEP8
 - the higher animal's trait rank, the bigger its movement cost
+- added proto-charts
 
 
 12.05
@@ -134,4 +139,3 @@ _"Herbs, breeding, energy"_
 
 14.04
 - designed interface of SERG
-
