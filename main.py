@@ -25,6 +25,7 @@ font = pygame.font.SysFont("liberationmono", 13)
 font2 = pygame.font.SysFont("liberationmono", 11)
 font3 = pygame.font.SysFont("liberationmono", 11)
 font4 = pygame.font.SysFont("humorsans", 70)
+font5 = pygame.font.SysFont("liberationmono", 14)
 # Define colors
 colors_list_red = [
 [(255, 173, 153), (255, 153, 128), (255, 133, 102), (255, 112, 77), (255, 92, 51), (255, 71, 26), (255, 51, 0), (230, 46, 0)],            # RED 1
@@ -79,7 +80,7 @@ pause_down=pygame.image.load("sprites/pause_down.png")
 ###############################################################################
 
 # Set size of the screen and create it
-size = (815, 449)
+size = (815, 569)
 pygame.display.set_caption("SERG")
 screen = pygame.display.set_mode(size)
 serg_icon = pygame.image.load('sprites/serg.png')
@@ -101,6 +102,19 @@ herbs = []
 herbivores = []
 carnivores = []
 
+herbivores_amount_list = []
+carnivores_amount_list = []
+herbs_amount_list = []
+herbivores_mean_speed_list = []
+herbivores_mean_bowel_length_list = []
+herbivores_mean_fat_limit_list = []
+herbivores_mean_legs_length_list = []
+
+carnivores_mean_speed_list = []
+carnivores_mean_bowel_length_list = []
+carnivores_mean_fat_limit_list = []
+carnivores_mean_legs_length_list = []
+
 button_start_clicked = 0
 button_pause_clicked = 0
 button_reset_clicked = 0
@@ -114,9 +128,9 @@ fps = 120                           # between 20-60. 60+ might lag.
 tempo = 0.22                        # between 0.01 and 0.99
 # [60 fps + 800/150/50 + tempo 0.8 and it lags. 0.5 seems ok, no lags]
 
-herbs_spawn_rate = 7                # higher is faster.
-herbs_amount_per_spawn = 4          # suggested 5-20
-herbs_energy = 1000                 # suggested 300-2000
+herbs_spawn_rate = 3               # higher is faster.
+herbs_amount_per_spawn = 1          # suggested 5-20
+herbs_energy = 5000                 # suggested 300-2000
 
 herbs_starting_amount = 400         # suggested 200-1000
 herbivores_starting_amount = 150    # suggested 50-20
@@ -247,6 +261,17 @@ def draw_window():
     pygame.draw.line(screen, GRAY, (159, 12), (159, 436), 1)
     pygame.draw.line(screen, GRAY, (615, 12), (615, 436), 1)
     pygame.draw.line(screen, GRAY, (801, 12), (801, 436), 1)
+    pygame.draw.line(screen, GRAY, (60, 115), (60, 170), 1)
+
+    pygame.draw.line(screen, DARKGRAY, (14, 550), (801, 550), 1)
+    pygame.draw.line(screen, GRAY, (270, 540), (755, 540), 1)
+    pygame.draw.line(screen, GRAY, (270, 530), (755, 530), 1)
+    pygame.draw.line(screen, GRAY, (270, 520), (755, 520), 1)
+    pygame.draw.line(screen, GRAY, (270, 510), (755, 510), 1)
+    pygame.draw.line(screen, GRAY, (270, 500), (755, 500), 1)
+    pygame.draw.line(screen, GRAY, (270, 490), (755, 490), 1)
+    pygame.draw.line(screen, GRAY, (270, 480), (755, 480), 1)
+
 
     # Start button
     if button_start_clicked == 1:
@@ -265,6 +290,19 @@ def draw_window():
         screen.blit(reset_down, [113, 80])
     else:
         screen.blit(reset_up, [113, 80])
+
+    par_4 = font5.render(("H:"
+                          + str(len(herbs))),
+                         True, (50, 50, 50))
+    screen.blit(par_4, (64, 115))
+    par_4 = font5.render(("HV:"
+                          + str(len(herbivores))),
+                         True, (50, 50, 50))
+    screen.blit(par_4, (64, 135))
+    par_4 = font5.render(("CV:"
+                          + str(len(carnivores))),
+                         True, (50, 50, 50))
+    screen.blit(par_4, (64, 155))
 
     par_4 = font2.render("Settings",
                          True, (50, 50, 50))
@@ -345,18 +383,24 @@ def draw_window():
                          True, (50, 50, 50))
     screen.blit(par_4, (622, 395))
 
-    par_4 = font2.render(("H:"
-                          + str(len(herbs))),
+
+    par_4 = font2.render("AMOUNT",
                          True, (50, 50, 50))
-    screen.blit(par_4, (21, 135))
-    par_4 = font2.render(("HV:"
-                          + str(len(herbivores))),
+    screen.blit(par_4, (57, 553))
+    par_4 = font2.render("SPEED",
                          True, (50, 50, 50))
-    screen.blit(par_4, (66, 135))
-    par_4 = font2.render(("CV:"
-                          + str(len(carnivores))),
+    screen.blit(par_4, (310, 553))
+    par_4 = font2.render("BOWEL LENGTH",
                          True, (50, 50, 50))
-    screen.blit(par_4, (115, 135))
+    screen.blit(par_4, (409, 553))
+    par_4 = font2.render("FAT LIMIT",
+                         True, (50, 50, 50))
+    screen.blit(par_4, (540, 553))
+    par_4 = font2.render("LEGS LENGTH",
+                         True, (50, 50, 50))
+    screen.blit(par_4, (670, 553))
+
+
 
     # Tempo plus button.
     if button_tempo_plus_clicked == 1:
@@ -495,7 +539,7 @@ class Carnivore(animal):
             self.eat()
 
     def carni_starved(self):
-        # Remove one "1" from list's (herbivores_pos) cell of this tile.
+        # Remove one "1" from list's (carnivores_pos) cell of this tile.
         carnivores_pos[self.coord_y][self.coord_x] = \
             carnivores_pos[self.coord_y][self.coord_x][1:]
         # Create a herb on the tile the animal died on.
@@ -522,11 +566,11 @@ class Carnivore(animal):
                           grid[self.coord_y][self.coord_x][1]-1, 11, 11], 1)
 
     def move(self):
-        carnivores_pos[self.coord_y][self.coord_x] = \
-            carnivores_pos[self.coord_y][self.coord_x][1:]
-
         if not int(counter_prev) == int(counter):
             if int(counter) % self.speed == 0:
+                carnivores_pos[self.coord_y][self.coord_x] = \
+                    carnivores_pos[self.coord_y][self.coord_x][1:]
+
                 self.energy -= carnivores_movement_cost \
                                * self.legs_length \
                                * speed_dict_cost[int(self.dna[0])] \
@@ -566,8 +610,8 @@ class Carnivore(animal):
                     elif self.coord_y == 42:
                         self.coord_y -= 1
                         self.forbidden_move = "s"
-        self.possible_moves = ["e", "w", "s", "n"]
-        carnivores_pos[self.coord_y][self.coord_x].append(1)
+                self.possible_moves = ["e", "w", "s", "n"]
+                carnivores_pos[self.coord_y][self.coord_x].append(1)
 
     def eat(self):
         if len(herbivores_pos[self.coord_y][self.coord_x]) > 0:
@@ -652,11 +696,11 @@ class Herbivore(animal):
                           grid[self.coord_y][self.coord_x][1]-1, 11, 11], 1)
 
     def move(self):
-        herbivores_pos[self.coord_y][self.coord_x] = \
-            herbivores_pos[self.coord_y][self.coord_x][1:]
-
         if not int(counter_prev) == int(counter):
             if int(counter) % self.speed == 0:
+                herbivores_pos[self.coord_y][self.coord_x] = \
+                    herbivores_pos[self.coord_y][self.coord_x][1:]
+
                 self.energy -= herbivores_movement_cost \
                                * self.legs_length \
                                * speed_dict_cost[int(self.dna[0])] \
@@ -696,8 +740,8 @@ class Herbivore(animal):
                     elif self.coord_y == 42:
                         self.coord_y -= 1
                         self.forbidden_move = "s"
-        self.possible_moves = ["e", "w", "s", "n"]
-        herbivores_pos[self.coord_y][self.coord_x].append(1)
+                self.possible_moves = ["e", "w", "s", "n"]
+                herbivores_pos[self.coord_y][self.coord_x].append(1)
 
     def eat(self):
         if len(herbs_pos[self.coord_y][self.coord_x]) > 0:
@@ -710,6 +754,8 @@ class Herbivore(animal):
                     break
 
     def got_eaten(self):
+        herbivores_pos[self.coord_y][self.coord_x] = \
+            herbivores_pos[self.coord_y][self.coord_x][1:]
         del herbivores[self.index]
         for i in range(self.index, len(herbivores)):
             herbivores[i].index -= 1
@@ -848,13 +894,14 @@ while not done:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 # Add 10 herbivores.
-                for i in range(0, 100):
-                    spawn_herbivore()
+                #for i in range(0, 100):
+                    #spawn_herbivore()
+                print(herbivores)
             if event.key == pygame.K_RIGHT:
                 # Add 10 carnivores.
-                for i in range(0, 25):
-                    spawn_carnivore()
-
+                #for i in range(0, 25):
+                    #spawn_carnivore()
+                print(herbivores_pos)
         # If mouse button clicked
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Start button clicked
@@ -1020,6 +1067,49 @@ while not done:
     # Draw interface.
     draw_window()
 
+    # Drawing charts.
+
+    a = 0
+    for i in herbivores_amount_list:
+        pygame.draw.rect(screen, colors_list_green[2][3], [25 + a, 550 - int(i/4), 3, 3])
+        a += 1
+    b = 0
+    for i in carnivores_amount_list:
+        pygame.draw.rect(screen, colors_list_red[2][3], [25 + b, 550 - int(i/4), 3, 3])
+        b += 1
+    c = 0
+    for i in herbivores_mean_speed_list:
+        pygame.draw.rect(screen, colors_list_green[4][3], [275 + c, 550 - int(i*10), 3, 3])
+        c += 1
+    d = 0
+    for i in herbivores_mean_bowel_length_list:
+        pygame.draw.rect(screen, colors_list_green[4][3], [400 + d, 550 - int(i*10), 3, 3])
+        d += 1
+    e = 0
+    for i in herbivores_mean_fat_limit_list:
+        pygame.draw.rect(screen, colors_list_green[4][3], [525 + e, 550 - int(i*10), 3, 3])
+        e += 1
+    f = 0
+    for i in herbivores_mean_legs_length_list:
+        pygame.draw.rect(screen, colors_list_green[4][3], [650 + f, 550 - int(i*10), 3, 3])
+        f += 1
+    g = 0
+    for i in carnivores_mean_speed_list:
+        pygame.draw.rect(screen, colors_list_red[4][3], [275 + g, 550 - int(i*10), 3, 3])
+        g += 1
+    h = 0
+    for i in carnivores_mean_bowel_length_list:
+        pygame.draw.rect(screen, colors_list_red[4][3], [400 + h, 550 - int(i*10), 3, 3])
+        h += 1
+    ids = 0
+    for i in carnivores_mean_fat_limit_list:
+        pygame.draw.rect(screen, colors_list_red[4][3], [525 + ids, 550 - int(i*10), 3, 3])
+        ids += 1
+    j = 0
+    for i in carnivores_mean_legs_length_list:
+        pygame.draw.rect(screen, colors_list_red[4][3], [650 + j, 550 - int(i*10), 3, 3])
+        j += 1
+
     # Spawn herbs every /speed_dict[herbs_spawn_rate]/ frames.
     spawn_herbs(herbs_spawn_rate)
 
@@ -1072,11 +1162,11 @@ while not done:
             reset = 0
             reset_counter = 12
 
-    # Print actual amount of objects.
+    # Info handling.
     if int(counter_prev) == int(counter):
         pass
     else:
-        if int(counter) % 15 == 0:
+        if int(counter) % 30 == 0:
             print("")
             print("---")
             print("--- Amount of HERBS:", len(herbs))
@@ -1084,6 +1174,94 @@ while not done:
             print("--- Amount of CARNIVORES:", len(carnivores))
             print("---")
             print("")
+
+            if len(herbivores_amount_list) > 100:
+                herbivores_amount_list = herbivores_amount_list[1:]
+            herbivores_amount_list.append(len(herbivores))
+            if len(carnivores_amount_list) > 100:
+                carnivores_amount_list = carnivores_amount_list[1:]
+            carnivores_amount_list.append(len(carnivores))
+
+            if len(herbivores_mean_speed_list) > 100:
+                herbivores_mean_speed_list = herbivores_mean_speed_list[1:]
+            local_sum = 0
+            for i in herbivores:
+                local_sum += int(i.dna[0])
+            if not len(herbivores) == 0:
+                herbivores_mean_speed_list.append(local_sum/len(herbivores))
+            else:
+                herbivores_mean_speed_list = herbivores_mean_speed_list[1:]
+
+            if len(herbivores_mean_bowel_length_list) > 100:
+                herbivores_mean_bowel_length_list = herbivores_mean_bowel_length_list[1:]
+            local_sum = 0
+            for i in herbivores:
+                local_sum += int(i.dna[1])
+            if not len(herbivores) == 0:
+                herbivores_mean_bowel_length_list.append(local_sum/len(herbivores))
+            else:
+                herbivores_mean_bowel_length_list = herbivores_mean_bowel_length_list[1:]
+
+            if len(herbivores_mean_fat_limit_list) > 100:
+                herbivores_mean_fat_limit_list = herbivores_mean_fat_limit_list[1:]
+            local_sum = 0
+            for i in herbivores:
+                local_sum += int(i.dna[2])
+            if not len(herbivores) == 0:
+                herbivores_mean_fat_limit_list.append(local_sum/len(herbivores))
+            else:
+                herbivores_mean_fat_limit_list = herbivores_mean_fat_limit_list[1:]
+
+            if len(herbivores_mean_legs_length_list) > 100:
+                herbivores_mean_legs_length_list = herbivores_mean_legs_length_list[1:]
+            local_sum = 0
+            for i in herbivores:
+                local_sum += int(i.dna[3])
+            if not len(herbivores) == 0:
+                herbivores_mean_legs_length_list.append(local_sum/len(herbivores))
+            else:
+                herbivores_mean_legs_length_list = herbivores_mean_legs_length_list[1:]
+
+            if len(carnivores_mean_speed_list) > 100:
+                carnivores_mean_speed_list = carnivores_mean_speed_list[1:]
+            local_sum = 0
+            for i in carnivores:
+                local_sum += int(i.dna[0])
+            if not len(carnivores) == 0:
+                print("mean, not i",local_sum/len(carnivores))
+                carnivores_mean_speed_list.append(local_sum/len(carnivores))
+            else:
+                carnivores_mean_speed_list = carnivores_mean_speed_list[1:]
+
+            if len(carnivores_mean_bowel_length_list) > 100:
+                carnivores_mean_bowel_length_list = carnivores_mean_bowel_length_list[1:]
+            local_sum = 0
+            for i in carnivores:
+                local_sum += int(i.dna[1])
+            if not len(carnivores) == 0:
+                carnivores_mean_bowel_length_list.append(local_sum/len(carnivores))
+            else:
+                carnivores_mean_bowel_length_list = carnivores_mean_bowel_length_list[1:]
+
+            if len(carnivores_mean_fat_limit_list) > 100:
+                carnivores_mean_fat_limit_list = carnivores_mean_fat_limit_list[1:]
+            local_sum = 0
+            for i in carnivores:
+                local_sum += int(i.dna[2])
+            if not len(carnivores) == 0:
+                carnivores_mean_fat_limit_list.append(local_sum/len(carnivores))
+            else:
+                carnivores_mean_fat_limit_list = carnivores_mean_fat_limit_list[1:]
+
+            if len(carnivores_mean_legs_length_list) > 100:
+                carnivores_mean_legs_length_list = carnivores_mean_legs_length_list[1:]
+            local_sum = 0
+            for i in carnivores:
+                local_sum += int(i.dna[3])
+            if not len(carnivores) == 0:
+                carnivores_mean_legs_length_list.append(local_sum/len(carnivores))
+            else:
+                carnivores_mean_legs_length_list = carnivores_mean_legs_length_list[1:]
 
     #####################################
     # ------- Update The Screen ------- #
