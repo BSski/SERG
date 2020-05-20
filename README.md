@@ -1,7 +1,7 @@
 **Changelog**
 
 20.05
-- fixed major bug that was causing problems with excessive breeding and reset
+- fixed major bug that was causing problems with excessive breeding and resetting
 
 
 19.05
