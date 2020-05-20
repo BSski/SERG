@@ -2,6 +2,7 @@
 
 20.05
 - fixed major bug that was causing problems with excessive breeding and resetting
+- interface changes
 
 
 19.05
@@ -16,7 +17,7 @@
 
 
 11.05
-- new HUD
+- new interface
 - the animals can only have 2 shades of red/green now:
       fair if they are hungry,
       dark if they are ready to breed
