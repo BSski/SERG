@@ -237,9 +237,9 @@ legs_length_dict_cost = {
 7: 1.035
 }
 ###############################################################################
-# Function to draw the main parts
+# Function drawing the main parts of the interface.
 def draw_window():
-    # logo
+    # Logo.
     logo = font4.render("SERG", True, (80, 80, 80))
     screen.blit(logo, (39, 18))
     signature = font3.render("bsski 2020", True, (200, 200, 200))
