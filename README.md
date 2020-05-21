@@ -1,5 +1,9 @@
 **Changelog**
 
+21.05
+- separated simulation speed from FPS, from now on SERG's interface runs on steady 30 FPS
+
+
 20.05
 - fixed major bug that was causing problems with excessive breeding and resetting
 - interface changes
@@ -140,3 +144,6 @@ _"Herbs, breeding, energy"_
 
 14.04
 - designed interface of SERG
+
+
+
