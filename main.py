@@ -67,16 +67,16 @@ PURPLE      = ( 102,   0, 204)
 PINK        = ( 255,   0, 255)
 RED         = ( 202,   0,   0)
 # Load images
-plus_up=pygame.image.load("sprites/plus_up.png")
-plus_down=pygame.image.load("sprites/plus_down.png")
-minus_up=pygame.image.load("sprites/minus_up.png")
-minus_down=pygame.image.load("sprites/minus_down.png")
-reset_up=pygame.image.load("sprites/reset_up.png")
-reset_down=pygame.image.load("sprites/reset_down.png")
-start_up=pygame.image.load("sprites/start_up.png")
-start_down=pygame.image.load("sprites/start_down.png")
-pause_up=pygame.image.load("sprites/pause_up.png")
-pause_down=pygame.image.load("sprites/pause_down.png")
+plus_up = pygame.image.load("sprites/plus_up.png")
+plus_down = pygame.image.load("sprites/plus_down.png")
+minus_up = pygame.image.load("sprites/minus_up.png")
+minus_down = pygame.image.load("sprites/minus_down.png")
+reset_up = pygame.image.load("sprites/reset_up.png")
+reset_down = pygame.image.load("sprites/reset_down.png")
+start_up = pygame.image.load("sprites/start_up.png")
+start_down = pygame.image.load("sprites/start_down.png")
+pause_up = pygame.image.load("sprites/pause_up.png")
+pause_down = pygame.image.load("sprites/pause_down.png")
 
 ###############################################################################
 
@@ -98,10 +98,18 @@ big_counter_prev = big_counter
 reset = 0
 pause = 1
 reset_counter = 12
+chosen_cycles_per_second = 4
+counter_for_fps = 0
+total_cycles_counter = 0
 
 herbs = []
 herbivores = []
 carnivores = []
+
+cycles_per_sec_list = [30, 60, 90, 120, 150, 180, 240, 300, 360, 450, 600,
+                       720, 900, 1200, 1800]
+cycles_per_sec_dividers_list = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20,
+                                24, 30, 40, 60]
 
 herbivores_amount_list = []
 carnivores_amount_list = []
@@ -125,13 +133,14 @@ button_tempo_minus_clicked = 0
 ###############################################################################
 
 # Settings
-fps = 120                           # between 20-60. 60+ might lag.
-tempo = 0.22                        # between 0.01 and 0.99
-# [60 fps + 800/150/50 + tempo 0.8 and it lags. 0.5 seems ok, no lags]
+# Main loop's cycles per second, between 0-14.
+cycles_per_sec = cycles_per_sec_list[chosen_cycles_per_second]
 
-herbs_spawn_rate = 3                # higher is faster.
-herbs_amount_per_spawn = 1          # suggested 5-20
-herbs_energy = 5000                 # suggested 300-2000
+tempo = 0.22                        # between 0.01 and 0.99
+
+herbs_spawn_rate = 4                # higher is faster.
+herbs_amount_per_spawn = 2          # suggested 5-20
+herbs_energy = 3000                 # suggested 300-2000
 
 herbs_starting_amount = 400         # suggested 200-1000
 herbivores_starting_amount = 150    # suggested 50-20
@@ -144,7 +153,7 @@ herbivores_breed_level = 3000       # suggested 2500-4500
 carnivores_breed_level = 3000       # suggested 2000-4500
 
 herbivores_movement_cost = 10       # suggested 10-80 (has big impact)
-carnivores_movement_cost = 100      # suggested 10-80 (has big impact)
+carnivores_movement_cost = 80       # suggested 10-80 (has big impact)
 
 mutation_chance = 2                 # between 0 and 99, percents
 
@@ -187,14 +196,14 @@ bowel_length_dict = {
 7: 0.95
 }
 bowel_length_dict_cost = {
-0: 1.01,
-1: 1.02,
-2: 1.03,
-3: 1.04,
-4: 1.05,
-5: 1.06,
-6: 1.07,
-7: 1.08
+0: 1.00,
+1: 1.01,
+2: 1.02,
+3: 1.03,
+4: 1.04,
+5: 1.05,
+6: 1.06,
+7: 1.07
 }
 fat_limit_dict = {
 0: 4100,
@@ -208,23 +217,23 @@ fat_limit_dict = {
 }
 fat_limit_dict_cost = {
 0: 1.000,
-1: 1.005,
-2: 1.010,
-3: 1.015,
-4: 1.020,
-5: 1.025,
-6: 1.030,
-7: 1.035
+1: 1.007,
+2: 1.014,
+3: 1.021,
+4: 1.028,
+5: 1.035,
+6: 1.042,
+7: 1.049
 }
 legs_length_dict = {
-0: 0.98,
-1: 0.96,
-2: 0.94,
-3: 0.92,
-4: 0.90,
-5: 0.88,
-6: 0.86,
-7: 0.84
+0: 1.00,
+1: 0.98,
+2: 0.96,
+3: 0.94,
+4: 0.92,
+5: 0.90,
+6: 0.88,
+7: 0.86
 }
 legs_length_dict_cost = {
 0: 1.000,
@@ -326,23 +335,15 @@ def draw_window():
     pygame.draw.line(screen, DARKGRAY, (649, 551), (649, 480), 1)
     pygame.draw.line(screen, DARKGRAY, (649, 551), (750, 551), 1)
 
-    # Start button.
-    if button_start_clicked == 1:
-        screen.blit(start_down, [23, 80])
-    else:
-        screen.blit(start_up, [23, 80])
+    # Herbs icon.
+    pygame.draw.circle(screen, FORESTGREEN, [703, 22], 3, 0)
+    # Herbivores icon.
+    pygame.draw.rect(screen, colors_list_green[7][7], [676 , 33, 9, 9])
+    pygame.draw.rect(screen, DARKERGRAY, [676-1, 33-1, 11, 11], 1)
+    # Carnivores icon.
+    pygame.draw.rect(screen, colors_list_red[7][7], [676, 48, 9, 9])
+    pygame.draw.rect(screen, DARKERGRAY, [676-1, 48-1, 11, 11], 1)
 
-    # Pause button.
-    if button_pause_clicked == 1:
-        screen.blit(pause_down, [68, 80])
-    else:
-        screen.blit(pause_up, [68, 80])
-
-    # Reset button.
-    if button_reset_clicked == 1:
-        screen.blit(reset_down, [113, 80])
-    else:
-        screen.blit(reset_up, [113, 80])
 
     par_4 = font6.render(("HERBS: "
                           + str(len(herbs))),
@@ -360,8 +361,8 @@ def draw_window():
     par_4 = font5.render("SETTINGS",
                          True, (50, 50, 50))
     screen.blit(par_4, (661, 69))
-    par_4 = font2.render(("FPS: "
-                          + str(fps)),
+    par_4 = font2.render(("Cycles per sec: "
+                          + str(cycles_per_sec)),
                          True, (50, 50, 50))
     screen.blit(par_4, (664, 85))
     par_4 = font2.render(("Tempo: "
@@ -433,7 +434,6 @@ def draw_window():
                          True, (50, 50, 50))
     screen.blit(par_4, (664, 425))
 
-
     par_4 = font2.render("AMOUNT",
                          True, (50, 50, 50))
     screen.blit(par_4, (57, 553))
@@ -445,12 +445,28 @@ def draw_window():
     screen.blit(par_4, (409, 553))
     par_4 = font2.render("FAT LIMIT",
                          True, (50, 50, 50))
-    screen.blit(par_4, (540, 553))
+    screen.blit(par_4, (547, 553))
     par_4 = font2.render("LEGS LENGTH",
                          True, (50, 50, 50))
-    screen.blit(par_4, (670, 553))
+    screen.blit(par_4, (663, 553))
 
+    # Start button.
+    if button_start_clicked == 1:
+        screen.blit(start_down, [23, 80])
+    else:
+        screen.blit(start_up, [23, 80])
 
+    # Pause button.
+    if button_pause_clicked == 1:
+        screen.blit(pause_down, [68, 80])
+    else:
+        screen.blit(pause_up, [68, 80])
+
+    # Reset button.
+    if button_reset_clicked == 1:
+        screen.blit(reset_down, [113, 80])
+    else:
+        screen.blit(reset_up, [113, 80])
 
     # Tempo plus button.
     if button_tempo_plus_clicked == 1:
@@ -915,17 +931,8 @@ clock = pygame.time.Clock()
 ###############################################################################
 #=============================================================================#
 
-# Debug timer's variables.
-underseconds_counter = 0
-seconds_counter = 0
 
 while not done:
-    # Not real seconds.
-    underseconds_counter += 1
-    if underseconds_counter == 60:
-        seconds_counter += 1
-        print("Seconds since start:", seconds_counter)
-        underseconds_counter = 0
 
     #####################################
     # -------- Main Event loop -------- #
@@ -1084,74 +1091,79 @@ while not done:
     # reset it, and increase /big_counter/ by 1.
     counter_prev = counter
     big_counter_prev = big_counter
-    clock.tick(fps)
+    clock.tick(cycles_per_sec)
     if not pause:
         counter += tempo
     if counter > 120:
         big_counter += 1
         counter = 0
 
+    counter_for_fps += 1
+    if counter_for_fps > 120:
+        counter_for_fps = 0
+
     #####################################
     # --- Game Logic / Drawing Code --- #
     #####################################
 
     # Draw interface.
-    screen.fill(LIGHTGRAY)
-    draw_window()
-
-    # Drawing charts.
-    # Amount of herbivores and carnivores charts.
-    for i in range(0, len(herbivores_amount_list)):
-        pygame.draw.rect(screen, colors_list_green[2][3],
-            [25 + i, 550 - int(herbivores_amount_list[i] / 4),
-            2, 2])
-    for i in range(0, len(carnivores_amount_list)):
-        pygame.draw.rect(screen, colors_list_red[2][3],
-            [25 + i, 550 - int(carnivores_amount_list[i] / 4),
-            2, 2])
-    # Drawing charts.
-    # Mean value of herbivores traits charts.
-    for i in range(0, len(herbivores_mean_speed_list)):
-        pygame.draw.rect(screen, colors_list_green[4][3],
-            [275 + i, 550 - int(herbivores_mean_speed_list[i] * 10),
-            2, 2])
-    for i in range(0, len(herbivores_mean_bowel_length_list)):
-        pygame.draw.rect(screen, colors_list_green[4][3],
-            [400 + i, 550 - int(herbivores_mean_bowel_length_list[i] * 10),
-            2, 2])
-    for i in range(0, len(herbivores_mean_fat_limit_list)):
-        pygame.draw.rect(screen, colors_list_green[4][3],
-            [525 + i, 550 - int(herbivores_mean_fat_limit_list[i] * 10),
-            2, 2])
-    for i in range(0, len(herbivores_mean_legs_length_list)):
-        pygame.draw.rect(screen, colors_list_green[4][3],
-            [650 + i, 550 - int(herbivores_mean_legs_length_list[i] * 10),
-            2, 2])
-    # Drawing charts.
-    # Mean value of herbivores traits charts.
-    for i in range(0, len(carnivores_mean_speed_list)):
-        pygame.draw.rect(screen, colors_list_red[4][3],
-            [275 + i, 550 - int(carnivores_mean_speed_list[i] * 10),
-            2, 2])
-    for i in range(0, len(carnivores_mean_bowel_length_list)):
-        pygame.draw.rect(screen, colors_list_red[4][3],
-            [400 + i, 550 - int(carnivores_mean_bowel_length_list[i] * 10),
-            2, 2])
-    for i in range(0, len(carnivores_mean_fat_limit_list)):
-        pygame.draw.rect(screen, colors_list_red[4][3],
-            [525 + i, 550 - int(carnivores_mean_fat_limit_list[i] * 10),
-            2, 2])
-    for i in range(0, len(carnivores_mean_legs_length_list)):
-        pygame.draw.rect(screen, colors_list_red[4][3],
-            [650 + i, 550 - int(carnivores_mean_legs_length_list[i] * 10),
-            2, 2])
+    if counter_for_fps % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
+        screen.fill(LIGHTGRAY)
+        draw_window()
+        # Drawing charts.
+        # Amount of herbivores and carnivores charts.
+        for i in range(0, len(herbivores_amount_list)):
+            pygame.draw.rect(screen, colors_list_green[2][3],
+                [25 + i, 550 - int(herbivores_amount_list[i] / 4),
+                2, 2])
+        for i in range(0, len(carnivores_amount_list)):
+            pygame.draw.rect(screen, colors_list_red[2][3],
+                [25 + i, 550 - int(carnivores_amount_list[i] / 4),
+                2, 2])
+        # Drawing charts.
+        # Mean value of herbivores traits charts.
+        for i in range(0, len(herbivores_mean_speed_list)):
+            pygame.draw.rect(screen, colors_list_green[4][3],
+                [275 + i, 550 - int(herbivores_mean_speed_list[i] * 10),
+                2, 2])
+        for i in range(0, len(herbivores_mean_bowel_length_list)):
+            pygame.draw.rect(screen, colors_list_green[4][3],
+                [400 + i, 550 - int(herbivores_mean_bowel_length_list[i] * 10),
+                2, 2])
+        for i in range(0, len(herbivores_mean_fat_limit_list)):
+            pygame.draw.rect(screen, colors_list_green[4][3],
+                [525 + i, 550 - int(herbivores_mean_fat_limit_list[i] * 10),
+                2, 2])
+        for i in range(0, len(herbivores_mean_legs_length_list)):
+            pygame.draw.rect(screen, colors_list_green[4][3],
+                [650 + i, 550 - int(herbivores_mean_legs_length_list[i] * 10),
+                2, 2])
+        # Drawing charts.
+        # Mean value of herbivores traits charts.
+        for i in range(0, len(carnivores_mean_speed_list)):
+            pygame.draw.rect(screen, colors_list_red[4][3],
+                [275 + i, 550 - int(carnivores_mean_speed_list[i] * 10),
+                2, 2])
+        for i in range(0, len(carnivores_mean_bowel_length_list)):
+            pygame.draw.rect(screen, colors_list_red[4][3],
+                [400 + i, 550 - int(carnivores_mean_bowel_length_list[i] * 10),
+                2, 2])
+        for i in range(0, len(carnivores_mean_fat_limit_list)):
+            pygame.draw.rect(screen, colors_list_red[4][3],
+                [525 + i, 550 - int(carnivores_mean_fat_limit_list[i] * 10),
+                2, 2])
+        for i in range(0, len(carnivores_mean_legs_length_list)):
+            pygame.draw.rect(screen, colors_list_red[4][3],
+                [650 + i, 550 - int(carnivores_mean_legs_length_list[i] * 10),
+                2, 2])
 
     # Spawn herbs every /speed_dict[herbs_spawn_rate]/ frames.
     spawn_herbs(herbs_spawn_rate)
 
     # Draw herbs.
-    for i in herbs:
-        i.draw()
+    if counter_for_fps % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
+        for i in herbs:
+            i.draw()
 
     # Check if any carnivore died out of starvation,
     # try to either breed or eat, then move.
@@ -1162,8 +1174,10 @@ while not done:
         for i in herbivores:
             i.action()
     for i in herbivores:
-        i.draw()
-        i.move()
+        if counter_for_fps % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
+            i.draw()
+        if not pause:
+            i.move()
 
     # Check if any carnivore died out of starvation,
     # try to either breed or eat, then move.
@@ -1174,8 +1188,10 @@ while not done:
         for i in carnivores:
             i.action()
     for i in carnivores:
-        i.draw()
-        i.move()
+        if counter_for_fps % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
+            i.draw()
+        if not pause:
+            i.move()
 
     # Reseting the simulation.
     if reset == 1:
@@ -1198,17 +1214,22 @@ while not done:
             reset = 0
             reset_counter = 12
 
-    # Info handling.
+    # Increase total cycles number by 1.
+    if not pause:
+        total_cycles_counter += 1
+
+    # Displaying info.
     if int(counter_prev) == int(counter):
         pass
     else:
-        if int(counter) % 30 == 0:
+        if int(counter) % 60 == 0:
             print("")
             print("---")
             print("--- Amount of HERBS:", len(herbs))
             print("--- Amount of HERBIVORES:", len(herbivores))
             print("--- Amount of CARNIVORES:", len(carnivores))
             print("---")
+            print("Cycles since start:", total_cycles_counter)
             print("")
 
             if len(herbivores_amount_list) > 100:
