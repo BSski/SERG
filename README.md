@@ -2,6 +2,7 @@
 
 21.05
 - separated simulation speed from FPS, from now on SERG's interface runs on steady 30 FPS
+- added an anti-hanging and lag indicating mechanism
 
 
 20.05
@@ -144,6 +145,3 @@ _"Herbs, breeding, energy"_
 
 14.04
 - designed interface of SERG
-
-
-
