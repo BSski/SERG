@@ -59,7 +59,7 @@ _"Inheritance"_
 -break-
 
 
-28.08
+28.04
 _"Tempo"_
 - modified delta_t time regulation to fit the task better
 - added tempo regulation through buttons
