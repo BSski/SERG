@@ -27,6 +27,7 @@ font3 = pygame.font.SysFont("liberationmono", 11)
 font4 = pygame.font.SysFont("humorsans", 70)
 font5 = pygame.font.SysFont("liberationmono", 12)
 font6 = pygame.font.SysFont("liberationmono", 14)
+font7 = pygame.font.SysFont("liberationmono", 18)
 # Define colors
 colors_list_red = [
 [(255, 173, 153), (255, 153, 128), (255, 133, 102), (255, 112, 77), (255, 92, 51), (255, 71, 26), (255, 51, 0), (230, 46, 0)],            # RED 1
@@ -90,6 +91,7 @@ pygame.display.set_icon(serg_icon)
 ###############################################################################
 
 # Define variables and lists
+animation = "|/-\\"
 DNA = ["SPEED", "BOWEL_LENGTH", "FAT_LIMIT", "LEGS_LENGTH"]
 counter = 0
 counter_prev = counter
@@ -107,9 +109,9 @@ herbivores = []
 carnivores = []
 
 cycles_per_sec_list = [30, 60, 90, 120, 150, 180, 240, 300, 360, 450, 600,
-                       720, 900, 1200, 1800]
+                       720, 900, 1200]
 cycles_per_sec_dividers_list = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20,
-                                24, 30, 40, 60]
+                                24, 30, 40]
 
 herbivores_amount_list = []
 carnivores_amount_list = []
@@ -130,6 +132,9 @@ button_reset_clicked = 0
 button_tempo_plus_clicked = 0
 button_tempo_minus_clicked = 0
 
+# cps - Cycles Per Second
+button_cps_plus_clicked = 0
+button_cps_minus_clicked = 0
 ###############################################################################
 
 # Settings
@@ -470,16 +475,27 @@ def draw_window():
 
     # Tempo plus button.
     if button_tempo_plus_clicked == 1:
-        screen.blit(plus_down, [785, 48])
+        screen.blit(plus_down, [826, 105])
     else:
-        screen.blit(plus_up, [785, 48])
+        screen.blit(plus_up, [826, 105])
 
     # Tempo minus button.
     if button_tempo_minus_clicked == 1:
-        screen.blit(minus_down, [769, 48])
+        screen.blit(minus_down, [811, 105])
     else:
-        screen.blit(minus_up, [769, 48])
+        screen.blit(minus_up, [811, 105])
 
+    # cps plus button.
+    if button_cps_plus_clicked == 1:
+        screen.blit(plus_down, [826, 85])
+    else:
+        screen.blit(plus_up, [826, 85])
+
+    # cps minus button.
+    if button_cps_minus_clicked == 1:
+        screen.blit(minus_down, [811, 85])
+    else:
+        screen.blit(minus_up, [811, 85])
     '''
     # bottom right part
     cornertext_1 = font.render("Use buttons on", True, (50, 50, 50))
@@ -933,7 +949,6 @@ clock = pygame.time.Clock()
 
 
 while not done:
-
     #####################################
     # -------- Main Event loop -------- #
     #####################################
@@ -947,11 +962,11 @@ while not done:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 # Add 10 herbivores.
-                for i in range(0, 100):
+                for i in range(0, 50):
                     spawn_herbivore()
             if event.key == pygame.K_RIGHT:
                 # Add 10 carnivores.
-                for i in range(0, 25):
+                for i in range(0, 20):
                     spawn_carnivore()
 
         # If mouse button clicked.
@@ -981,22 +996,38 @@ while not done:
                    # If all conditions satisfied:
                         button_reset_clicked = 1
             # Tempo plus button clicked.
-            if pygame.mouse.get_pos()[0] >= 785 and \
-               pygame.mouse.get_pos()[1] >= 48:
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[1] >= 105:
                # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 798 and \
-                   pygame.mouse.get_pos()[1] <= 61:
+                if pygame.mouse.get_pos()[0] <= 839 and \
+                   pygame.mouse.get_pos()[1] <= 118:
                    # If all conditions satisfied:
                         button_tempo_plus_clicked = 1
             # Tempo minus button clicked.
-            if pygame.mouse.get_pos()[0] >= 769 and \
-               pygame.mouse.get_pos()[1] >= 48:
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[1] >= 105:
                # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 782 and \
-                   pygame.mouse.get_pos()[1] <= 61:
+                if pygame.mouse.get_pos()[0] <= 824 and \
+                   pygame.mouse.get_pos()[1] <= 118:
                    # If all conditions satisfied:
                         button_tempo_minus_clicked = 1
 
+            # Cycles Per Second plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[1] >= 85:
+               # If all conditions satisfied:
+                if pygame.mouse.get_pos()[0] <= 839 and \
+                   pygame.mouse.get_pos()[1] <= 98:
+                   # If all conditions satisfied:
+                        button_cps_plus_clicked = 1
+            # Cycles Per Second minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[1] >= 85:
+               # If all conditions satisfied:
+                if pygame.mouse.get_pos()[0] <= 824 and \
+                   pygame.mouse.get_pos()[1] <= 98:
+                   # If all conditions satisfied:
+                        button_cps_minus_clicked = 1
         # If mouse button unclicked.
         if event.type == pygame.MOUSEBUTTONUP:
             # Reset button off on button.
@@ -1049,48 +1080,82 @@ while not done:
                     # If all conditions satisfied:
                     button_start_clicked = 0
             # Tempo plus button off on button
-            if pygame.mouse.get_pos()[0] >= 785 and \
-               pygame.mouse.get_pos()[1] >= 48:
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[1] >= 105:
                # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 798 and \
-                   pygame.mouse.get_pos()[1] <= 61:
+                if pygame.mouse.get_pos()[0] <= 839 and \
+                   pygame.mouse.get_pos()[1] <= 118:
                    # If all conditions satisfied:
                         tempo += 0.09
+                        # If /tempo/ > 59, set it to 59. Puts '59' limit on the variable.
+                        if tempo > 1.00: tempo = 1.00
                         button_tempo_plus_clicked = 0
             # Tempo plus unclicked not on button
-            if not (pygame.mouse.get_pos()[0] >= 785 and \
-                    pygame.mouse.get_pos()[1] >= 48 and \
-                    pygame.mouse.get_pos()[0] <= 798 and \
-                    pygame.mouse.get_pos()[1] <= 61):
+            if not (pygame.mouse.get_pos()[0] >= 826 and \
+                    pygame.mouse.get_pos()[1] >= 105 and \
+                    pygame.mouse.get_pos()[0] <= 839 and \
+                    pygame.mouse.get_pos()[1] <= 118):
                     # If all conditions satisfied:
                     button_tempo_plus_clicked = 0
             # Tempo minus button off on button
-            if pygame.mouse.get_pos()[0] >= 769 and \
-               pygame.mouse.get_pos()[1] >= 48:
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[1] >= 105:
                # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 782 and \
-                   pygame.mouse.get_pos()[1] <= 61:
+                if pygame.mouse.get_pos()[0] <= 824 and \
+                   pygame.mouse.get_pos()[1] <= 118:
                    # If all conditions satisfied:
                         tempo -= 0.09
+                        # If /tempo/ < 1, set it to 1. Puts '1' limit on the variable.
+                        if tempo < 0.01: tempo = 0.01
                         button_tempo_minus_clicked = 0
             # Tempo minus unclicked not on button
-            if not (pygame.mouse.get_pos()[0] >= 769 and \
-                    pygame.mouse.get_pos()[1] >= 48 and \
-                    pygame.mouse.get_pos()[0] <= 782 and \
-                    pygame.mouse.get_pos()[1] <= 61):
+            if not (pygame.mouse.get_pos()[0] >= 811 and \
+                    pygame.mouse.get_pos()[1] >= 105 and \
+                    pygame.mouse.get_pos()[0] <= 824 and \
+                    pygame.mouse.get_pos()[1] <= 118):
                     # If all conditions satisfied:
                     button_tempo_minus_clicked = 0
-
-    # If /tempo/ > 59, set it to 59. Puts '59' limit on the variable.
-    if tempo > 1.00: tempo = 1.00
-    # If /tempo/ < 1, set it to 1. Puts '1' limit on the variable.
-    if tempo < 0.01: tempo = 0.01
+            # Cycles Per Second plus button off on button
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[1] >= 85:
+               # If all conditions satisfied:
+                if pygame.mouse.get_pos()[0] <= 839 and \
+                   pygame.mouse.get_pos()[1] <= 98:
+                   # If all conditions satisfied:
+                        chosen_cycles_per_second += 1
+                        if chosen_cycles_per_second > 13: chosen_cycles_per_second = 13
+                        button_cps_plus_clicked = 0
+            # Cycles Per Second plus unclicked not on button
+            if not (pygame.mouse.get_pos()[0] >= 826 and \
+                    pygame.mouse.get_pos()[1] >= 85 and \
+                    pygame.mouse.get_pos()[0] <= 839 and \
+                    pygame.mouse.get_pos()[1] <= 98):
+                    # If all conditions satisfied:
+                    button_cps_plus_clicked = 0
+            # Cycles Per Second minus button off on button
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[1] >= 85:
+               # If all conditions satisfied:
+                if pygame.mouse.get_pos()[0] <= 824 and \
+                   pygame.mouse.get_pos()[1] <= 98:
+                   # If all conditions satisfied:
+                        chosen_cycles_per_second -= 1
+                        if chosen_cycles_per_second < 0: chosen_cycles_per_second = 0
+                        button_cps_minus_clicked = 0
+            # Cycles Per Second minus unclicked not on button
+            if not (pygame.mouse.get_pos()[0] >= 811 and \
+                    pygame.mouse.get_pos()[1] >= 85 and \
+                    pygame.mouse.get_pos()[0] <= 824 and \
+                    pygame.mouse.get_pos()[1] <= 98):
+                    # If all conditions satisfied:
+                    button_cps_minus_clicked = 0
 
     # Increase /counter/ with a step of a size of /tempo/ every frame,
-    # if simulation isn't paused. If /counter/ is equal to 120,
+    # if simulation isn't paused. If /counter/ is bigger than 120,
     # reset it, and increase /big_counter/ by 1.
     counter_prev = counter
     big_counter_prev = big_counter
+    cycles_per_sec = cycles_per_sec_list[chosen_cycles_per_second]
     clock.tick(cycles_per_sec)
     if not pause:
         counter += tempo
@@ -1098,6 +1163,9 @@ while not done:
         big_counter += 1
         counter = 0
 
+    # Increase /counter_for_fps/ by 1.
+    # If /counter_for_fps/ is bigger than 120,
+    # reset it.
     counter_for_fps += 1
     if counter_for_fps > 120:
         counter_for_fps = 0
@@ -1110,6 +1178,15 @@ while not done:
     if counter_for_fps % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
         screen.fill(LIGHTGRAY)
         draw_window()
+
+        # Animation to prevent Windows from hanging the window when paused.
+        # Also useful in approximating lag.
+        par_4 = font7.render(animation[0],
+                             True, (50, 50, 50))
+        screen.blit(par_4, (837, 545))
+        animation = animation + animation[0]
+        animation = animation[1:]
+
         # Drawing charts.
         # Amount of herbivores and carnivores charts.
         for i in range(0, len(herbivores_amount_list)):
