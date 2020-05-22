@@ -1,3 +1,4 @@
+# Generate three 43x43 empty grid lists.
 new_list = []
 for i in range(0,43):
     new_list.append([])
