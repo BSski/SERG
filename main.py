@@ -67,17 +67,17 @@ BLUE        = (   0, 102, 204)
 PURPLE      = ( 102,   0, 204)
 PINK        = ( 255,   0, 255)
 RED         = ( 202,   0,   0)
-# Load images
-plus_up = pygame.image.load("sprites/plus_up.png")
-plus_down = pygame.image.load("sprites/plus_down.png")
-minus_up = pygame.image.load("sprites/minus_up.png")
-minus_down = pygame.image.load("sprites/minus_down.png")
-reset_up = pygame.image.load("sprites/reset_up.png")
-reset_down = pygame.image.load("sprites/reset_down.png")
-start_up = pygame.image.load("sprites/start_up.png")
-start_down = pygame.image.load("sprites/start_down.png")
-pause_up = pygame.image.load("sprites/pause_up.png")
-pause_down = pygame.image.load("sprites/pause_down.png")
+# Load images            # - make those constants
+PLUS_UP = pygame.image.load("sprites/PLUS_UP.png")
+PLUS_DOWN = pygame.image.load("sprites/PLUS_DOWN.png")
+MINUS_UP = pygame.image.load("sprites/MINUS_UP.png")
+MINUS_DOWN = pygame.image.load("sprites/MINUS_DOWN.png")
+RESET_UP = pygame.image.load("sprites/RESET_UP.png")
+RESET_DOWN = pygame.image.load("sprites/RESET_DOWN.png")
+START_UP = pygame.image.load("sprites/START_UP.png")
+START_DOWN = pygame.image.load("sprites/START_DOWN.png")
+PAUSE_UP = pygame.image.load("sprites/PAUSE_UP.png")
+PAUSE_DOWN = pygame.image.load("sprites/PAUSE_DOWN.png")
 
 ###############################################################################
 
@@ -115,6 +115,9 @@ cycles_per_sec_dividers_list = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20,
 
 herbivores_amount_list = []
 carnivores_amount_list = []
+herbivores_total_amount_list = []
+carnivores_total_amount_list = []
+
 herbs_amount_list = []
 herbivores_mean_speed_list = []
 herbivores_mean_bowel_length_list = []
@@ -131,10 +134,12 @@ button_pause_clicked = 0
 button_reset_clicked = 0
 button_tempo_plus_clicked = 0
 button_tempo_minus_clicked = 0
+bigger_screen = 0
 
 # cps - Cycles Per Second
 button_cps_plus_clicked = 0
 button_cps_minus_clicked = 0
+
 ###############################################################################
 
 # Settings
@@ -143,9 +148,9 @@ cycles_per_sec = cycles_per_sec_list[chosen_cycles_per_second]
 
 tempo = 0.22                        # between 0.01 and 0.99
 
-herbs_spawn_rate = 4                # higher is faster.
+herbs_spawn_rate = 2                # higher is faster.
 herbs_amount_per_spawn = 2          # suggested 5-20
-herbs_energy = 3000                 # suggested 300-2000
+herbs_energy = 4200                 # suggested 300-2000
 
 herbs_starting_amount = 400         # suggested 200-1000
 herbivores_starting_amount = 150    # suggested 50-20
@@ -158,9 +163,9 @@ herbivores_breed_level = 3000       # suggested 2500-4500
 carnivores_breed_level = 3000       # suggested 2000-4500
 
 herbivores_movement_cost = 10       # suggested 10-80 (has big impact)
-carnivores_movement_cost = 80       # suggested 10-80 (has big impact)
+carnivores_movement_cost = 100       # suggested 10-80 (has big impact)
 
-mutation_chance = 2                 # between 0 and 99, percents
+mutation_chance = 0                 # between 0 and 99, percents
 
 ###############################################################################
 
@@ -180,7 +185,7 @@ speed_dict = {
 6: 2,
 7: 1
 }
-speed_dict_cost = {
+speed_cost_dict = {
 0: 1.000,
 1: 1.003,
 2: 1.006,
@@ -220,7 +225,7 @@ fat_limit_dict = {
 6: 5300,
 7: 5500
 }
-fat_limit_dict_cost = {
+fat_limit_cost_dict = {
 0: 1.000,
 1: 1.007,
 2: 1.014,
@@ -240,19 +245,29 @@ legs_length_dict = {
 6: 0.88,
 7: 0.86
 }
-legs_length_dict_cost = {
+legs_length_cost_dict = {
 0: 1.000,
-1: 1.005,
-2: 1.010,
-3: 1.015,
-4: 1.020,
-5: 1.025,
-6: 1.030,
-7: 1.035
+1: 1.007,
+2: 1.014,
+3: 1.021,
+4: 1.028,
+5: 1.035,
+6: 1.042,
+7: 1.049
 }
 ###############################################################################
 # Function drawing the main parts of the interface.
-def draw_window():
+def draw_window(colors_list_green, colors_list_red, herbs, herbivores,
+                carnivores, cycles_per_sec, tempo, herbs_spawn_rate,
+                herbs_amount_per_spawn, herbs_energy, herbs_starting_amount,
+                herbivores_starting_amount, carnivores_starting_amount,
+                herbivores_spawn_energy, carnivores_spawn_energy,
+                herbivores_breed_level, carnivores_breed_level,
+                herbivores_movement_cost, carnivores_movement_cost,
+                mutation_chance, button_start_clicked, button_pause_clicked,
+                button_reset_clicked, button_tempo_plus_clicked,
+                button_tempo_minus_clicked, button_cps_plus_clicked,
+                button_cps_minus_clicked):
     # Logo.
     logo = font4.render("SERG", True, (80, 80, 80))
     screen.blit(logo, (39, 18))
@@ -272,12 +287,19 @@ def draw_window():
             pygame.draw.rect(screen, GRAY, [x, y, square_width-1,
                                                   square_height-1])
 
-    # Lines.
+    # Charts backgrounds.
+    pygame.draw.rect(screen, WHITE, [25, 360, 101, 191])
+    pygame.draw.rect(screen, WHITE, [275, 480, 101, 71])
+    pygame.draw.rect(screen, WHITE, [400, 480, 101, 71])
+    pygame.draw.rect(screen, WHITE, [525, 480, 101, 71])
+    pygame.draw.rect(screen, WHITE, [650, 480, 101, 71])
+    pygame.draw.rect(screen, WHITE, [25, 590, 801, 191])
+    # Main interface lines.
     pygame.draw.line(screen, GRAY, (12, 12), (12, 436), 1)
     pygame.draw.line(screen, GRAY, (198, 12), (198, 436), 1)
     pygame.draw.line(screen, GRAY, (656, 12), (656, 436), 1)
     pygame.draw.line(screen, GRAY, (842, 12), (842, 436), 1)
-    # Amount chart.
+    # Amounts chart.
     pygame.draw.line(screen, GRAY, (24, 540), (125, 540), 1)
     pygame.draw.line(screen, GRAY, (24, 530), (125, 530), 1)
     pygame.draw.line(screen, GRAY, (24, 520), (125, 520), 1)
@@ -299,6 +321,29 @@ def draw_window():
     pygame.draw.line(screen, GRAY, (24, 360), (125, 360), 1)
     pygame.draw.line(screen, DARKGRAY, (24, 551), (24, 360), 1)
     pygame.draw.line(screen, DARKGRAY, (24, 551), (125, 551), 1)
+    # All amount history chart.
+    pygame.draw.line(screen, GRAY, (24, 770), (825, 770), 1)
+    pygame.draw.line(screen, GRAY, (24, 760), (825, 760), 1)
+    pygame.draw.line(screen, GRAY, (24, 750), (825, 750), 1)
+    pygame.draw.line(screen, GRAY, (24, 740), (825, 740), 1)
+    pygame.draw.line(screen, GRAY, (24, 730), (825, 730), 1)
+    pygame.draw.line(screen, GRAY, (24, 720), (825, 720), 1)
+    pygame.draw.line(screen, GRAY, (24, 710), (825, 710), 1)
+    pygame.draw.line(screen, GRAY, (24, 700), (825, 700), 1)
+    pygame.draw.line(screen, GRAY, (24, 690), (825, 690), 1)
+    pygame.draw.line(screen, GRAY, (24, 680), (825, 680), 1)
+    pygame.draw.line(screen, GRAY, (24, 670), (825, 670), 1)
+    pygame.draw.line(screen, GRAY, (24, 660), (825, 660), 1)
+    pygame.draw.line(screen, GRAY, (24, 650), (825, 650), 1)
+    pygame.draw.line(screen, GRAY, (24, 640), (825, 640), 1)
+    pygame.draw.line(screen, GRAY, (24, 630), (825, 630), 1)
+    pygame.draw.line(screen, GRAY, (24, 620), (825, 620), 1)
+    pygame.draw.line(screen, GRAY, (24, 610), (825, 610), 1)
+    pygame.draw.line(screen, GRAY, (24, 600), (825, 600), 1)
+    pygame.draw.line(screen, GRAY, (24, 590), (825, 590), 1)
+    pygame.draw.line(screen, DARKGRAY, (24, 781), (24, 590), 1)
+    pygame.draw.line(screen, DARKGRAY, (24, 781), (825, 781), 1)
+
     # Speed chart.
     pygame.draw.line(screen, GRAY, (274, 540), (375, 540), 1)
     pygame.draw.line(screen, GRAY, (274, 530), (375, 530), 1)
@@ -349,166 +394,152 @@ def draw_window():
     pygame.draw.rect(screen, colors_list_red[7][7], [676, 48, 9, 9])
     pygame.draw.rect(screen, DARKERGRAY, [676-1, 48-1, 11, 11], 1)
 
-
-    par_4 = font6.render(("HERBS: "
+    text_to_blit = font6.render(("HERBS: "
                           + str(len(herbs))),
                          True, (50, 50, 50))
-    screen.blit(par_4, (710, 15))
-    par_4 = font6.render(("HERBIVORES: "
+    screen.blit(text_to_blit, (710, 15))
+    text_to_blit = font6.render(("HERBIVORES: "
                           + str(len(herbivores))),
                          True, (50, 50, 50))
-    screen.blit(par_4, (689, 30))
-    par_4 = font6.render(("CARNIVORES: "
+    screen.blit(text_to_blit, (689, 30))
+    text_to_blit = font6.render(("CARNIVORES: "
                           + str(len(carnivores))),
                          True, (50, 50, 50))
-    screen.blit(par_4, (689, 45))
+    screen.blit(text_to_blit, (689, 45))
 
-    par_4 = font5.render("SETTINGS",
+    text_to_blit = font5.render("SETTINGS",
                          True, (50, 50, 50))
-    screen.blit(par_4, (661, 69))
-    par_4 = font2.render(("Cycles per sec: "
+    screen.blit(text_to_blit, (661, 69))
+    text_to_blit = font2.render(("Cycles per sec: "
                           + str(cycles_per_sec)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 85))
-    par_4 = font2.render(("Tempo: "
+    screen.blit(text_to_blit, (664, 85))
+    text_to_blit = font2.render(("Tempo: "
                           + str("{:.2f}".format(tempo))),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 105))
-    par_4 = font2.render(("Mutation %: "
+    screen.blit(text_to_blit, (664, 105))
+    text_to_blit = font2.render(("Mutation %: "
                           + str(mutation_chance)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 125))
+    screen.blit(text_to_blit, (664, 125))
 
-    par_4 = font5.render("HERBS",
+    text_to_blit = font5.render("HERBS",
                          True, (50, 50, 50))
-    screen.blit(par_4, (662, 149))
-    par_4 = font2.render(("Start. amount: "
+    screen.blit(text_to_blit, (662, 149))
+    text_to_blit = font2.render(("Start. amount: "
                           + str(herbs_starting_amount)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 165))
-    par_4 = font2.render(("Energy: "
+    screen.blit(text_to_blit, (664, 165))
+    text_to_blit = font2.render(("Energy: "
                           + str(herbs_energy)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 185))
-    par_4 = font2.render(("Per spawn: "
+    screen.blit(text_to_blit, (664, 185))
+    text_to_blit = font2.render(("Per spawn: "
                           + str(herbs_amount_per_spawn)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 205))
-    par_4 = font2.render(("Spawn rate: "
+    screen.blit(text_to_blit, (664, 205))
+    text_to_blit = font2.render(("Spawn rate: "
                           + str(herbs_spawn_rate)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 225))
+    screen.blit(text_to_blit, (664, 225))
 
-    par_4 = font5.render("HERBIVORES",
+    text_to_blit = font5.render("HERBIVORES",
                          True, (50, 50, 50))
-    screen.blit(par_4, (662, 249))
-    par_4 = font2.render(("Start. amount: "
+    screen.blit(text_to_blit, (662, 249))
+    text_to_blit = font2.render(("Start. amount: "
                           + str(herbivores_starting_amount)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 265))
-    par_4 = font2.render(("Spawn energy: "
+    screen.blit(text_to_blit, (664, 265))
+    text_to_blit = font2.render(("Spawn energy: "
                           + str(herbivores_spawn_energy)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 285))
-    par_4 = font2.render(("Breed. level: "
+    screen.blit(text_to_blit, (664, 285))
+    text_to_blit = font2.render(("Breed. level: "
                           + str(herbivores_breed_level)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 305))
-    par_4 = font2.render(("Movement cost: "
+    screen.blit(text_to_blit, (664, 305))
+    text_to_blit = font2.render(("Movement cost: "
                           + str(herbivores_movement_cost)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 325))
+    screen.blit(text_to_blit, (664, 325))
 
-    par_4 = font5.render("CARNIVORES",
+    text_to_blit = font5.render("CARNIVORES",
                          True, (50, 50, 50))
-    screen.blit(par_4, (662, 349))
-    par_4 = font2.render(("Start. amount: "
+    screen.blit(text_to_blit, (662, 349))
+    text_to_blit = font2.render(("Start. amount: "
                           + str(carnivores_starting_amount)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 365))
-    par_4 = font2.render(("Spawn energy: "
+    screen.blit(text_to_blit, (664, 365))
+    text_to_blit = font2.render(("Spawn energy: "
                           + str(carnivores_spawn_energy)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 385))
-    par_4 = font2.render(("Breed. level: "
+    screen.blit(text_to_blit, (664, 385))
+    text_to_blit = font2.render(("Breed. level: "
                           + str(carnivores_breed_level)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 405))
-    par_4 = font2.render(("Movement cost: "
+    screen.blit(text_to_blit, (664, 405))
+    text_to_blit = font2.render(("Movement cost: "
                           + str(carnivores_movement_cost)),
                          True, (50, 50, 50))
-    screen.blit(par_4, (664, 425))
+    screen.blit(text_to_blit, (664, 425))
 
-    par_4 = font2.render("AMOUNT",
+    text_to_blit = font2.render("AMOUNT",
                          True, (50, 50, 50))
-    screen.blit(par_4, (57, 553))
-    par_4 = font2.render("SPEED",
+    screen.blit(text_to_blit, (57, 553))
+    text_to_blit = font2.render("SPEED",
                          True, (50, 50, 50))
-    screen.blit(par_4, (310, 553))
-    par_4 = font2.render("BOWEL LENGTH",
+    screen.blit(text_to_blit, (310, 553))
+    text_to_blit = font2.render("BOWEL LENGTH",
                          True, (50, 50, 50))
-    screen.blit(par_4, (409, 553))
-    par_4 = font2.render("FAT LIMIT",
+    screen.blit(text_to_blit, (409, 553))
+    text_to_blit = font2.render("FAT LIMIT",
                          True, (50, 50, 50))
-    screen.blit(par_4, (547, 553))
-    par_4 = font2.render("LEGS LENGTH",
+    screen.blit(text_to_blit, (547, 553))
+    text_to_blit = font2.render("LEGS LENGTH",
                          True, (50, 50, 50))
-    screen.blit(par_4, (663, 553))
+    screen.blit(text_to_blit, (663, 553))
 
     # Start button.
     if button_start_clicked == 1:
-        screen.blit(start_down, [23, 80])
+        screen.blit(START_DOWN, [23, 80])
     else:
-        screen.blit(start_up, [23, 80])
+        screen.blit(START_UP, [23, 80])
 
     # Pause button.
     if button_pause_clicked == 1:
-        screen.blit(pause_down, [68, 80])
+        screen.blit(PAUSE_DOWN, [68, 80])
     else:
-        screen.blit(pause_up, [68, 80])
+        screen.blit(PAUSE_UP, [68, 80])
 
     # Reset button.
     if button_reset_clicked == 1:
-        screen.blit(reset_down, [113, 80])
+        screen.blit(RESET_DOWN, [113, 80])
     else:
-        screen.blit(reset_up, [113, 80])
+        screen.blit(RESET_UP, [113, 80])
 
     # Tempo plus button.
     if button_tempo_plus_clicked == 1:
-        screen.blit(plus_down, [826, 105])
+        screen.blit(PLUS_DOWN, [826, 105])
     else:
-        screen.blit(plus_up, [826, 105])
+        screen.blit(PLUS_UP, [826, 105])
 
     # Tempo minus button.
     if button_tempo_minus_clicked == 1:
-        screen.blit(minus_down, [811, 105])
+        screen.blit(MINUS_DOWN, [811, 105])
     else:
-        screen.blit(minus_up, [811, 105])
+        screen.blit(MINUS_UP, [811, 105])
 
     # cps plus button.
     if button_cps_plus_clicked == 1:
-        screen.blit(plus_down, [826, 85])
+        screen.blit(PLUS_DOWN, [826, 85])
     else:
-        screen.blit(plus_up, [826, 85])
+        screen.blit(PLUS_UP, [826, 85])
 
     # cps minus button.
     if button_cps_minus_clicked == 1:
-        screen.blit(minus_down, [811, 85])
+        screen.blit(MINUS_DOWN, [811, 85])
     else:
-        screen.blit(minus_up, [811, 85])
-    '''
-    # bottom right part
-    cornertext_1 = font.render("Use buttons on", True, (50, 50, 50))
-    screen.blit(cornertext_1, (632, 320))
-    cornertext_2 = font.render("the right side", True, (50, 50, 50))
-    screen.blit(cornertext_2, (632, 340))
-    cornertext_3 = font.render("of the window", True, (50, 50, 50))
-    screen.blit(cornertext_3, (636, 360))
-    cornertext_4 = font.render("to modify", True, (50, 50, 50))
-    screen.blit(cornertext_4, (652, 380))
-    cornertext_5 = font.render("the habitat.", True, (50, 50, 50))
-    screen.blit(cornertext_5, (645, 400))
-    '''
+        screen.blit(MINUS_UP, [811, 85])
 
 ###############################################################################
 
@@ -527,11 +558,10 @@ class Herb:
         '''
          You can unhash this line for fancier look of the herbs.
          It is also possible to experiment a bit
-         with /2, 0/ and /2/ parts to get different effects.
-         pygame.draw.circle(screen, GRAY,
-                            [(grid[self.coord_y][self.coord_x][0])+4,
-                             (grid[self.coord_y][self.coord_x][1])+4], 2)
-        '''
+         with /2, 0/ and /2/ parts to get different effects. '''
+         # pygame.draw.circle(screen, GRAY,
+                            # [(grid[self.coord_y][self.coord_x][0])+4,
+                             # (grid[self.coord_y][self.coord_x][1])+4], 2)
 
     def get_energy(self):
         return self.energy
@@ -652,10 +682,10 @@ class Carnivore(animal):
 
                 self.energy -= carnivores_movement_cost \
                                * self.legs_length \
-                               * speed_dict_cost[int(self.dna[0])] \
+                               * speed_cost_dict[int(self.dna[0])] \
                                * bowel_length_dict_cost[int(self.dna[1])] \
-                               * fat_limit_dict_cost[int(self.dna[2])] \
-                               * legs_length_dict_cost[int(self.dna[3])]
+                               * fat_limit_cost_dict[int(self.dna[2])] \
+                               * legs_length_cost_dict[int(self.dna[3])]
 
                 if not (self.coord_x == 0 or
                         self.coord_x == 42 or
@@ -782,10 +812,10 @@ class Herbivore(animal):
 
                 self.energy -= herbivores_movement_cost \
                                * self.legs_length \
-                               * speed_dict_cost[int(self.dna[0])] \
+                               * speed_cost_dict[int(self.dna[0])] \
                                * bowel_length_dict_cost[int(self.dna[1])] \
-                               * fat_limit_dict_cost[int(self.dna[2])] \
-                               * legs_length_dict_cost[int(self.dna[3])]
+                               * fat_limit_cost_dict[int(self.dna[2])] \
+                               * legs_length_cost_dict[int(self.dna[3])]
 
                 if not (self.coord_x == 0 or
                         self.coord_x == 42 or
@@ -861,7 +891,7 @@ def create_herb_on_field(herbs_energy, pos_x, pos_y):
 
 # Spawning herbs every /speed_dict[speed]/ frames
 # in the amount of /herbs_amount_per_spawn/.
-def spawn_herbs(speed):
+def grow_herbs(herbs_energy, speed):
     if int(counter_prev) == int(counter):
         pass
     else:
@@ -869,6 +899,15 @@ def spawn_herbs(speed):
             for i in range(0, herbs_amount_per_spawn):
                 create_herb(herbs_energy)
 
+def spawn_herbs(herbs_energy, amount):
+    amount_left_to_spawn = amount
+    while amount_left_to_spawn != 0:
+        pos_y = random.randint(1, 41)
+        pos_x = random.randint(1, 41)
+        if len(herbs_pos[pos_y][pos_x]) == 0:
+            herbs.append(Herb(pos_x, pos_y, len(herbs), herbs_energy))
+            herbs_pos[pos_y][pos_x].append(1)
+            amount_left_to_spawn -= 1
 ###############################################################################
 
 # Spawn carnivore that was born.
@@ -888,16 +927,19 @@ def born_carnivore(pos_x, pos_y, dna1, dna2):
     carnivores_pos[pos_y][pos_x].append(1)
 
 # Spawn a new carnivore.
-def spawn_carnivore():
-    pos_y = random.randint(1, 41)
-    pos_x = random.randint(1, 41)
-    if len(carnivores_pos[pos_y][pos_x]) < 1:
-        carnivores.append(Carnivore(pos_x, pos_y, len(carnivores),
-                                      str(random.randint(0, 7))
-                                    + str(random.randint(0, 7))
-                                    + str(random.randint(0, 7))
-                                    + str(random.randint(0, 7))))
-        carnivores_pos[pos_y][pos_x].append(1)
+def spawn_carnivore(amount):
+    amount_left_to_spawn = amount
+    while amount_left_to_spawn != 0:
+        pos_y = random.randint(1, 41)
+        pos_x = random.randint(1, 41)
+        if len(carnivores_pos[pos_y][pos_x]) < 1:
+            carnivores.append(Carnivore(pos_x, pos_y, len(carnivores),
+                                          str(random.randint(0, 7))
+                                        + str(random.randint(0, 7))
+                                        + str(random.randint(0, 7))
+                                        + str(random.randint(0, 7))))
+            carnivores_pos[pos_y][pos_x].append(1)
+            amount_left_to_spawn -= 1
 
 # Spawn herbivore that was born.
 def born_herbivore(pos_x, pos_y, dna1, dna2):
@@ -916,26 +958,26 @@ def born_herbivore(pos_x, pos_y, dna1, dna2):
     herbivores_pos[pos_y][pos_x].append(1)
 
 # Spawn a new herbivore.
-def spawn_herbivore():
-    pos_y = random.randint(1, 41)
-    pos_x = random.randint(1, 41)
-    if len(herbivores_pos[pos_y][pos_x]) < 1:
-        herbivores.append(Herbivore(pos_x, pos_y, len(herbivores),
-                                      str(random.randint(0, 7))
-                                    + str(random.randint(0, 7))
-                                    + str(random.randint(0, 7))
-                                    + str(random.randint(0, 7))))
-        herbivores_pos[pos_y][pos_x].append(1)
+def spawn_herbivore(amount):
+    amount_left_to_spawn = amount
+    while amount_left_to_spawn != 0:
+        pos_y = random.randint(1, 41)
+        pos_x = random.randint(1, 41)
+        if len(herbivores_pos[pos_y][pos_x]) < 1:
+            herbivores.append(Herbivore(pos_x, pos_y, len(herbivores),
+                                          str(random.randint(0, 7))
+                                        + str(random.randint(0, 7))
+                                        + str(random.randint(0, 7))
+                                        + str(random.randint(0, 7))))
+            herbivores_pos[pos_y][pos_x].append(1)
+            amount_left_to_spawn -= 1
 
 ###############################################################################
 
 # Add starting herbs, herbivores and carnivores.
-for i in range(0, herbs_starting_amount):
-    create_herb(herbs_energy)
-for i in range(0, herbivores_starting_amount):
-    spawn_herbivore()
-for i in range(0, carnivores_starting_amount):
-    spawn_carnivore()
+spawn_herbs(herbs_energy, herbs_starting_amount)
+spawn_herbivore(herbivores_starting_amount)
+spawn_carnivore(carnivores_starting_amount)
 
 # Set the main loop to not done and initialize a clock.
 done = False
@@ -961,191 +1003,183 @@ while not done:
         # If keyboard button clicked.
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                # Add 10 herbivores.
-                for i in range(0, 50):
-                    spawn_herbivore()
+                # Add 50 herbivores.
+                spawn_herbivore(50)
             if event.key == pygame.K_RIGHT:
-                # Add 10 carnivores.
-                for i in range(0, 20):
-                    spawn_carnivore()
+                # Add 20 carnivores.
+                spawn_carnivore(20)
+            if event.key == pygame.K_UP:
+                screen = pygame.display.set_mode((855, 569))
+                bigger_screen = 0
+            if event.key == pygame.K_DOWN:
+                screen = pygame.display.set_mode((855, 800))
+                bigger_screen = 1
 
         # If mouse button clicked.
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Start button clicked.
             if pygame.mouse.get_pos()[0] >= 23 and \
-               pygame.mouse.get_pos()[1] >= 80:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 62 and \
-                   pygame.mouse.get_pos()[1] <= 100:
+               pygame.mouse.get_pos()[0] <= 62 and \
+               pygame.mouse.get_pos()[1] >= 80 and \
+               pygame.mouse.get_pos()[1] <= 100:
                    # If all conditions satisfied:
-                        button_start_clicked = 1
+                   button_start_clicked = 1
             # Pause button clicked.
             if pygame.mouse.get_pos()[0] >= 68 and \
-               pygame.mouse.get_pos()[1] >= 80:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 107 and \
-                   pygame.mouse.get_pos()[1] <= 100:
+               pygame.mouse.get_pos()[0] <= 107 and \
+               pygame.mouse.get_pos()[1] >= 80 and \
+               pygame.mouse.get_pos()[1] <= 100:
                    # If all conditions satisfied:
-                        button_pause_clicked = 1
+                   button_pause_clicked = 1
             # Reset button clicked.
             if pygame.mouse.get_pos()[0] >= 113 and \
-               pygame.mouse.get_pos()[1] >= 80:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 152 and \
-                   pygame.mouse.get_pos()[1] <= 100:
+               pygame.mouse.get_pos()[0] <= 152 and \
+               pygame.mouse.get_pos()[1] >= 80 and \
+               pygame.mouse.get_pos()[1] <= 100:
                    # If all conditions satisfied:
-                        button_reset_clicked = 1
+                   button_reset_clicked = 1
             # Tempo plus button clicked.
             if pygame.mouse.get_pos()[0] >= 826 and \
-               pygame.mouse.get_pos()[1] >= 105:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 839 and \
-                   pygame.mouse.get_pos()[1] <= 118:
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 105 and \
+               pygame.mouse.get_pos()[1] <= 118:
                    # If all conditions satisfied:
-                        button_tempo_plus_clicked = 1
+                   button_tempo_plus_clicked = 1
             # Tempo minus button clicked.
             if pygame.mouse.get_pos()[0] >= 811 and \
-               pygame.mouse.get_pos()[1] >= 105:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 824 and \
-                   pygame.mouse.get_pos()[1] <= 118:
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 105 and \
+               pygame.mouse.get_pos()[1] <= 118:
                    # If all conditions satisfied:
-                        button_tempo_minus_clicked = 1
+                   button_tempo_minus_clicked = 1
 
             # Cycles Per Second plus button clicked.
             if pygame.mouse.get_pos()[0] >= 826 and \
-               pygame.mouse.get_pos()[1] >= 85:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 839 and \
-                   pygame.mouse.get_pos()[1] <= 98:
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 85 and \
+               pygame.mouse.get_pos()[1] <= 98:
                    # If all conditions satisfied:
-                        button_cps_plus_clicked = 1
+                   button_cps_plus_clicked = 1
             # Cycles Per Second minus button clicked.
             if pygame.mouse.get_pos()[0] >= 811 and \
-               pygame.mouse.get_pos()[1] >= 85:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 824 and \
-                   pygame.mouse.get_pos()[1] <= 98:
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 85 and \
+               pygame.mouse.get_pos()[1] <= 98:
                    # If all conditions satisfied:
-                        button_cps_minus_clicked = 1
+                   button_cps_minus_clicked = 1
         # If mouse button unclicked.
         if event.type == pygame.MOUSEBUTTONUP:
             # Reset button off on button.
             if pygame.mouse.get_pos()[0] >= 113 and \
-               pygame.mouse.get_pos()[1] >= 80:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 152 and \
-                   pygame.mouse.get_pos()[1] <= 100:
+               pygame.mouse.get_pos()[0] <= 152 and \
+               pygame.mouse.get_pos()[1] >= 80 and \
+               pygame.mouse.get_pos()[1] <= 100:
                    # If all conditions satisfied:
-                        reset = 1
-                        button_reset_clicked = 0
+                   reset = 1
+                   button_reset_clicked = 0
             # reset button unclicked not on button.
             if not (pygame.mouse.get_pos()[0] >= 113 and \
-                    pygame.mouse.get_pos()[1] >= 80 and \
                     pygame.mouse.get_pos()[0] <= 152 and \
+                    pygame.mouse.get_pos()[1] >= 80 and \
                     pygame.mouse.get_pos()[1] <= 100):
                     # If all conditions satisfied:
                     button_reset_clicked = 0
             # Pause button off on button.
             if pygame.mouse.get_pos()[0] >= 68 and \
-               pygame.mouse.get_pos()[1] >= 80:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 107 and \
-                   pygame.mouse.get_pos()[1] <= 100:
+               pygame.mouse.get_pos()[0] <= 107 and \
+               pygame.mouse.get_pos()[1] >= 80 and \
+               pygame.mouse.get_pos()[1] <= 100:
                    # If all conditions satisfied:
-                        start = tempo
-                        pause = 1
-                        button_pause_clicked = 0
+                   start = tempo
+                   pause = 1
+                   button_pause_clicked = 0
             # Pause button unclicked not on button.
             if not (pygame.mouse.get_pos()[0] >= 68 and \
-                    pygame.mouse.get_pos()[1] >= 80 and \
                     pygame.mouse.get_pos()[0] <= 107 and \
+                    pygame.mouse.get_pos()[1] >= 80 and \
                     pygame.mouse.get_pos()[1] <= 100):
                     # If all conditions satisfied:
                     button_pause_clicked = 0
             # Start button off on button
             if pygame.mouse.get_pos()[0] >= 23 and \
-               pygame.mouse.get_pos()[1] >= 80:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 62 and \
-                   pygame.mouse.get_pos()[1] <= 100:
+               pygame.mouse.get_pos()[0] <= 62 and \
+               pygame.mouse.get_pos()[1] >= 80 and \
+               pygame.mouse.get_pos()[1] <= 100:
                    # If all conditions satisfied:
-                        pause = 0
-                        button_start_clicked = 0
+                   pause = 0
+                   button_start_clicked = 0
             # Start button unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 23 and \
-                    pygame.mouse.get_pos()[1] >= 80 and \
                     pygame.mouse.get_pos()[0] <= 62 and \
+                    pygame.mouse.get_pos()[1] >= 80 and \
                     pygame.mouse.get_pos()[1] <= 100):
                     # If all conditions satisfied:
                     button_start_clicked = 0
             # Tempo plus button off on button
             if pygame.mouse.get_pos()[0] >= 826 and \
-               pygame.mouse.get_pos()[1] >= 105:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 839 and \
-                   pygame.mouse.get_pos()[1] <= 118:
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 105 and \
+               pygame.mouse.get_pos()[1] <= 118:
                    # If all conditions satisfied:
-                        tempo += 0.09
-                        # If /tempo/ > 59, set it to 59. Puts '59' limit on the variable.
-                        if tempo > 1.00: tempo = 1.00
-                        button_tempo_plus_clicked = 0
+                   tempo += 0.09
+                   # If /tempo/ > 1, set it to 1. Makes '1' a min value.
+                   if tempo > 1.00: tempo = 1.00
+                   button_tempo_plus_clicked = 0
             # Tempo plus unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 826 and \
-                    pygame.mouse.get_pos()[1] >= 105 and \
                     pygame.mouse.get_pos()[0] <= 839 and \
+                    pygame.mouse.get_pos()[1] >= 105 and \
                     pygame.mouse.get_pos()[1] <= 118):
                     # If all conditions satisfied:
                     button_tempo_plus_clicked = 0
             # Tempo minus button off on button
             if pygame.mouse.get_pos()[0] >= 811 and \
-               pygame.mouse.get_pos()[1] >= 105:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 824 and \
-                   pygame.mouse.get_pos()[1] <= 118:
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 105 and \
+               pygame.mouse.get_pos()[1] <= 118:
                    # If all conditions satisfied:
-                        tempo -= 0.09
-                        # If /tempo/ < 1, set it to 1. Puts '1' limit on the variable.
-                        if tempo < 0.01: tempo = 0.01
-                        button_tempo_minus_clicked = 0
+                   tempo -= 0.09
+                   # If /tempo/ < 0, set it to 0. Makes '0' a min value.
+                   if tempo < 0.01: tempo = 0.01
+                   button_tempo_minus_clicked = 0
             # Tempo minus unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 811 and \
-                    pygame.mouse.get_pos()[1] >= 105 and \
                     pygame.mouse.get_pos()[0] <= 824 and \
+                    pygame.mouse.get_pos()[1] >= 105 and \
                     pygame.mouse.get_pos()[1] <= 118):
                     # If all conditions satisfied:
                     button_tempo_minus_clicked = 0
             # Cycles Per Second plus button off on button
             if pygame.mouse.get_pos()[0] >= 826 and \
-               pygame.mouse.get_pos()[1] >= 85:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 839 and \
-                   pygame.mouse.get_pos()[1] <= 98:
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 85 and \
+               pygame.mouse.get_pos()[1] <= 98:
                    # If all conditions satisfied:
-                        chosen_cycles_per_second += 1
-                        if chosen_cycles_per_second > 13: chosen_cycles_per_second = 13
-                        button_cps_plus_clicked = 0
+                   chosen_cycles_per_second += 1
+                   if chosen_cycles_per_second > 13:
+                       chosen_cycles_per_second = 13
+                   button_cps_plus_clicked = 0
             # Cycles Per Second plus unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 826 and \
-                    pygame.mouse.get_pos()[1] >= 85 and \
                     pygame.mouse.get_pos()[0] <= 839 and \
+                    pygame.mouse.get_pos()[1] >= 85 and \
                     pygame.mouse.get_pos()[1] <= 98):
                     # If all conditions satisfied:
                     button_cps_plus_clicked = 0
             # Cycles Per Second minus button off on button
             if pygame.mouse.get_pos()[0] >= 811 and \
-               pygame.mouse.get_pos()[1] >= 85:
-               # If all conditions satisfied:
-                if pygame.mouse.get_pos()[0] <= 824 and \
-                   pygame.mouse.get_pos()[1] <= 98:
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 85 and \
+               pygame.mouse.get_pos()[1] <= 98:
                    # If all conditions satisfied:
-                        chosen_cycles_per_second -= 1
-                        if chosen_cycles_per_second < 0: chosen_cycles_per_second = 0
-                        button_cps_minus_clicked = 0
+                   chosen_cycles_per_second -= 1
+                   if chosen_cycles_per_second < 0:
+                       chosen_cycles_per_second = 0
+                   button_cps_minus_clicked = 0
             # Cycles Per Second minus unclicked not on button
             if not (pygame.mouse.get_pos()[0] >= 811 and \
-                    pygame.mouse.get_pos()[1] >= 85 and \
                     pygame.mouse.get_pos()[0] <= 824 and \
+                    pygame.mouse.get_pos()[1] >= 85 and \
                     pygame.mouse.get_pos()[1] <= 98):
                     # If all conditions satisfied:
                     button_cps_minus_clicked = 0
@@ -1177,13 +1211,50 @@ while not done:
     # Draw interface.
     if counter_for_fps % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
         screen.fill(LIGHTGRAY)
-        draw_window()
+        draw_window(colors_list_green, colors_list_red, herbs, herbivores,
+                    carnivores, cycles_per_sec, tempo, herbs_spawn_rate,
+                    herbs_amount_per_spawn, herbs_energy,
+                    herbs_starting_amount, herbivores_starting_amount,
+                    carnivores_starting_amount, herbivores_spawn_energy,
+                    carnivores_spawn_energy, herbivores_breed_level,
+                    carnivores_breed_level, herbivores_movement_cost,
+                    carnivores_movement_cost, mutation_chance,
+                    button_start_clicked, button_pause_clicked,
+                    button_reset_clicked, button_tempo_plus_clicked,
+                    button_tempo_minus_clicked, button_cps_plus_clicked,
+                    button_cps_minus_clicked)
 
+        if bigger_screen == 1:
+            x_herbi = 25
+            for i in range(0, len(herbivores_total_amount_list)):
+                if len(herbivores_total_amount_list) > 800:
+                    if i % (int(len(herbivores_total_amount_list)/800)+1) == 0:
+                        x_herbi += 1
+                        pygame.draw.rect(screen, colors_list_green[2][3],
+                            [x_herbi, 780 - int(herbivores_total_amount_list[i] / 4),
+                            2, 2])
+                else:
+                    pygame.draw.rect(screen, colors_list_green[2][3],
+                        [25 + i, 780 - int(herbivores_total_amount_list[i] / 4),
+                        2, 2])
+
+            x_carni = 25
+            for i in range(0, len(carnivores_total_amount_list)):
+                if len(carnivores_total_amount_list) > 800:
+                    if i % (int(len(carnivores_total_amount_list)/800)+1) == 0:
+                        x_carni += 1
+                        pygame.draw.rect(screen, colors_list_red[2][3],
+                            [x_carni, 780 - int(carnivores_total_amount_list[i] / 4),
+                            2, 2])
+                else:
+                    pygame.draw.rect(screen, colors_list_red[2][3],
+                        [25 + i, 780 - int(carnivores_total_amount_list[i] / 4),
+                        2, 2])
         # Animation to prevent Windows from hanging the window when paused.
         # Also useful in approximating lag.
-        par_4 = font7.render(animation[0],
+        text_to_blit = font7.render(animation[0],
                              True, (50, 50, 50))
-        screen.blit(par_4, (837, 545))
+        screen.blit(text_to_blit, (837, 545))
         animation = animation + animation[0]
         animation = animation[1:]
 
@@ -1235,10 +1306,11 @@ while not done:
                 2, 2])
 
     # Spawn herbs every /speed_dict[herbs_spawn_rate]/ frames.
-    spawn_herbs(herbs_spawn_rate)
+    grow_herbs(herbs_energy, herbs_spawn_rate)
 
     # Draw herbs.
-    if counter_for_fps % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
+    if counter_for_fps \
+       % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
         for i in herbs:
             i.draw()
 
@@ -1251,10 +1323,10 @@ while not done:
         for i in herbivores:
             i.action()
     for i in herbivores:
-        if counter_for_fps % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
+        if counter_for_fps \
+           % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
             i.draw()
-        if not pause:
-            i.move()
+        i.move()
 
     # Check if any carnivore died out of starvation,
     # try to either breed or eat, then move.
@@ -1265,10 +1337,10 @@ while not done:
         for i in carnivores:
             i.action()
     for i in carnivores:
-        if counter_for_fps % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
+        if counter_for_fps \
+           % cycles_per_sec_dividers_list[chosen_cycles_per_second] == 0:
             i.draw()
-        if not pause:
-            i.move()
+        i.move()
 
     # Reseting the simulation.
     if reset == 1:
@@ -1280,26 +1352,35 @@ while not done:
             for i in carnivores:
                 i.set_energy(0)
         reset_counter -= 1
-        print(reset_counter)
+        #print(reset_counter)
         if reset_counter == 0:
-            for i in range(0, herbs_starting_amount):
-                create_herb(herbs_energy)
-            for i in range(0, herbivores_starting_amount):
-                spawn_herbivore()
-            for i in range(0, carnivores_starting_amount):
-                spawn_carnivore()
+            spawn_herbs(herbs_energy, herbs_starting_amount)
+            spawn_herbivore(herbivores_starting_amount)
+            spawn_carnivore(carnivores_starting_amount)
+            herbivores_amount_list = []
+            carnivores_amount_list = []
+            herbivores_total_amount_list = []
+            carnivores_total_amount_list = []
+
+            herbs_amount_list = []
+            herbivores_mean_speed_list = []
+            herbivores_mean_bowel_length_list = []
+            herbivores_mean_fat_limit_list = []
+            herbivores_mean_legs_length_list = []
+
+            carnivores_mean_speed_list = []
+            carnivores_mean_bowel_length_list = []
+            carnivores_mean_fat_limit_list = []
+            carnivores_mean_legs_length_list = []
             reset = 0
             reset_counter = 12
-
-    # Increase total cycles number by 1.
-    if not pause:
-        total_cycles_counter += 1
+            total_cycles_counter = 0
 
     # Displaying info.
     if int(counter_prev) == int(counter):
         pass
     else:
-        if int(counter) % 60 == 0:
+        if int(counter) % 30 == 0:
             print("")
             print("---")
             print("--- Amount of HERBS:", len(herbs))
@@ -1313,11 +1394,12 @@ while not done:
                 herbivores_amount_list = \
                     herbivores_amount_list[1:]
             herbivores_amount_list.append(len(herbivores))
+            herbivores_total_amount_list.append(len(herbivores))
             if len(carnivores_amount_list) > 100:
                 carnivores_amount_list = \
                     carnivores_amount_list[1:]
             carnivores_amount_list.append(len(carnivores))
-
+            carnivores_total_amount_list.append(len(carnivores))
             if len(herbivores_mean_speed_list) > 100:
                 herbivores_mean_speed_list =  \
                     herbivores_mean_speed_list[1:]
@@ -1377,7 +1459,6 @@ while not done:
             for i in carnivores:
                 local_sum += int(i.dna[0])
             if not len(carnivores) == 0:
-                print("mean, not i",local_sum/len(carnivores))
                 carnivores_mean_speed_list.append(local_sum
                                                   / len(carnivores))
             else:
@@ -1423,6 +1504,9 @@ while not done:
                 carnivores_mean_legs_length_list = \
                     carnivores_mean_legs_length_list[1:]
 
+    # Increase total cycles number by 1.
+    if not pause:
+        total_cycles_counter += 1
     #####################################
     # ------- Update The Screen ------- #
     #####################################
