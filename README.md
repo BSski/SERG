@@ -1,5 +1,13 @@
 **Changelog**
 
+25.05
+- added history of mean amounts of herbivores and carnivores chart
+
+
+24.05
+- standardized starting amount of objects
+
+
 21.05
 - separated simulation speed from FPS, from now on SERG's interface runs on steady 30 FPS
 - added an anti-hanging and lag indicating mechanism
