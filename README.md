@@ -1,5 +1,8 @@
 **Changelog**
 
+30.05
+- added exporting data to a txt file
+
 25.05
 - added history of mean amounts of herbivores and carnivores chart
 
