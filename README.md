@@ -1,7 +1,14 @@
 **Changelog**
 
+
+10.06, 11.06
+- added plus and minus buttons for every value in the interface
+- resized all charts and made them fit the window better
+
+
 30.05
 - added exporting data to a txt file
+
 
 25.05
 - added history of mean amounts of herbivores and carnivores chart
