@@ -9,8 +9,12 @@
 #     1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 
 
-# Algorytm zarządzający.
-# Podziel na osobne pliki.
+
+# if reset clicked, make a new file
+# zwęż okna cech tak, żeby mieściły się oznaczenia osi, zmniejsz 2*i do i
+# zwiększ ilość zbieranych próbek cech ze 100 do 162
+# dodaj guziki po prawej wszędzie i pokombinuj z tym
+# dodaj pauze/start na spacje
 
 ############################################################################################################
 
@@ -82,7 +86,7 @@ PAUSE_DOWN = pygame.image.load("sprites/PAUSE_DOWN.png")
 ############################################################################################################
 
 # Set size of the screen and create it.
-size = (855, 569)
+size = (855, 583)
 pygame.display.set_caption("SERG")
 screen = pygame.display.set_mode(size)
 serg_icon = pygame.image.load('sprites/serg.png')
@@ -100,7 +104,7 @@ big_counter_prev = big_counter
 reset = 0
 pause = 1
 reset_counter = 12
-chosen_cycles_per_second = 4
+chosen_cycles_per_second = 2
 counter_for_fps = 0
 total_cycles_counter = 0
 
@@ -127,16 +131,56 @@ carnivores_mean_bowel_length_list = []
 carnivores_mean_fat_limit_list = []
 carnivores_mean_legs_length_list = []
 
-button_start_clicked = 0
-button_pause_clicked = 0
-button_reset_clicked = 0
-button_tempo_plus_clicked = 0
-button_tempo_minus_clicked = 0
-bigger_screen = 0
+btn_start_clicked = 0
+btn_pause_clicked = 0
+btn_reset_clicked = 0
 
-# Cps - Cycles Per Second.
-button_cps_plus_clicked = 0
-button_cps_minus_clicked = 0
+btn_tempo_plus_clicked = 0
+btn_tempo_minus_clicked = 0
+
+btn_cps_plus_clicked = 0
+btn_cps_minus_clicked = 0
+
+btn_mutation_plus_clicked = 0
+btn_mutation_minus_clicked = 0
+
+btn_herbs_starting_amount_plus_clicked = 0
+btn_herbs_starting_amount_minus_clicked = 0
+
+btn_herbs_energy_plus_clicked = 0
+btn_herbs_energy_minus_clicked = 0
+
+btn_herbs_amount_per_spawn_plus_clicked = 0
+btn_herbs_amount_per_spawn_minus_clicked = 0
+
+btn_herbs_spawn_rate_plus_clicked = 0
+btn_herbs_spawn_rate_minus_clicked = 0
+
+btn_herbivores_starting_amount_plus_clicked = 0
+btn_herbivores_starting_amount_minus_clicked = 0
+
+btn_herbivores_spawn_energy_plus_clicked = 0
+btn_herbivores_spawn_energy_minus_clicked = 0
+
+btn_herbivores_breed_level_plus_clicked = 0
+btn_herbivores_breed_level_minus_clicked = 0
+
+btn_herbivores_movement_cost_plus_clicked = 0
+btn_herbivores_movement_cost_minus_clicked = 0
+
+btn_carnivores_starting_amount_plus_clicked = 0
+btn_carnivores_starting_amount_minus_clicked = 0
+
+btn_carnivores_spawn_energy_plus_clicked = 0
+btn_carnivores_spawn_energy_minus_clicked = 0
+
+btn_carnivores_breed_level_plus_clicked = 0
+btn_carnivores_breed_level_minus_clicked = 0
+
+btn_carnivores_movement_cost_plus_clicked = 0
+btn_carnivores_movement_cost_minus_clicked = 0
+
+bigger_screen = 0
 
 ############################################################################################################
 
@@ -146,9 +190,11 @@ cycles_per_sec = cycles_per_sec_list[chosen_cycles_per_second]
 
 tempo = 0.28                        # between 0.01 and 0.99
 
+mutation_chance = 1                 # between 0 and 99, percents
+
 herbs_spawn_rate = 3                # higher is faster.
 herbs_amount_per_spawn = 5          #
-herbs_energy = 4000                 # 1-5300
+herbs_energy = 4000                 #
 
 herbs_starting_amount = 400         # suggested 200-1000
 herbivores_starting_amount = 150    # suggested 50-200
@@ -161,9 +207,7 @@ herbivores_breed_level = 3000       # suggested 2500-4500
 carnivores_breed_level = 3000       # suggested 2000-4500
 
 herbivores_movement_cost = 10       # suggested 10-80 (has big impact)
-carnivores_movement_cost = 100       # suggested 10-80 (has big impact)
-
-mutation_chance = 1                 # between 0 and 99, percents
+carnivores_movement_cost = 100      # suggested 10-80 (has big impact)
 
 ############################################################################################################
 
@@ -260,9 +304,10 @@ def draw_window(colors_list_green, colors_list_red, herbs, herbivores, carnivore
                 herbivores_starting_amount, carnivores_starting_amount, herbivores_spawn_energy,
                 carnivores_spawn_energy, herbivores_breed_level, carnivores_breed_level,
                 herbivores_movement_cost, carnivores_movement_cost, mutation_chance,
-                button_start_clicked, button_pause_clicked, button_reset_clicked,
-                button_tempo_plus_clicked, button_tempo_minus_clicked, button_cps_plus_clicked,
-                button_cps_minus_clicked):
+                btn_start_clicked, btn_pause_clicked, btn_reset_clicked,
+                btn_tempo_plus_clicked, btn_tempo_minus_clicked, btn_cps_plus_clicked,
+                btn_cps_minus_clicked):
+
     # Logo.
     logo = font4.render("SERG", True, (80, 80, 80))
     screen.blit(logo, (39, 18))
@@ -282,121 +327,246 @@ def draw_window(colors_list_green, colors_list_red, herbs, herbivores, carnivore
             pygame.draw.rect(screen, GRAY, [x, y, square_width-1, square_height-1])
 
     # Charts backgrounds.
-    pygame.draw.rect(screen, WHITE, [25, 360, 101, 191])
-    pygame.draw.rect(screen, WHITE, [275, 480, 101, 71])
-    pygame.draw.rect(screen, WHITE, [400, 480, 101, 71])
-    pygame.draw.rect(screen, WHITE, [525, 480, 101, 71])
-    pygame.draw.rect(screen, WHITE, [650, 480, 101, 71])
-    pygame.draw.rect(screen, WHITE, [25, 590, 801, 191])
+    pygame.draw.rect(screen, WHITE, [29, 124, 162, 300])
+    pygame.draw.rect(screen, WHITE, [25, 452, 162, 105])
+    pygame.draw.rect(screen, WHITE, [242, 452, 162, 105])
+    pygame.draw.rect(screen, WHITE, [459, 452, 162, 105])
+    pygame.draw.rect(screen, WHITE, [676, 452, 162, 105])
+    if bigger_screen == 1:
+        pygame.draw.rect(screen, WHITE, [37, 595, 801, 191])
     # Main interface lines.
     pygame.draw.line(screen, GRAY, (12, 12), (12, 436), 1)
     pygame.draw.line(screen, GRAY, (198, 12), (198, 436), 1)
     pygame.draw.line(screen, GRAY, (656, 12), (656, 436), 1)
     pygame.draw.line(screen, GRAY, (842, 12), (842, 436), 1)
     # Amounts chart.
-    pygame.draw.line(screen, GRAY, (24, 540), (125, 540), 1)
-    pygame.draw.line(screen, GRAY, (24, 530), (125, 530), 1)
-    pygame.draw.line(screen, GRAY, (24, 520), (125, 520), 1)
-    pygame.draw.line(screen, GRAY, (24, 510), (125, 510), 1)
-    pygame.draw.line(screen, GRAY, (24, 500), (125, 500), 1)
-    pygame.draw.line(screen, GRAY, (24, 490), (125, 490), 1)
-    pygame.draw.line(screen, GRAY, (24, 480), (125, 480), 1)
-    pygame.draw.line(screen, GRAY, (24, 470), (125, 470), 1)
-    pygame.draw.line(screen, GRAY, (24, 460), (125, 460), 1)
-    pygame.draw.line(screen, GRAY, (24, 450), (125, 450), 1)
-    pygame.draw.line(screen, GRAY, (24, 440), (125, 440), 1)
-    pygame.draw.line(screen, GRAY, (24, 430), (125, 430), 1)
-    pygame.draw.line(screen, GRAY, (24, 420), (125, 420), 1)
-    pygame.draw.line(screen, GRAY, (24, 410), (125, 410), 1)
-    pygame.draw.line(screen, GRAY, (24, 400), (125, 400), 1)
-    pygame.draw.line(screen, GRAY, (24, 390), (125, 390), 1)
-    pygame.draw.line(screen, GRAY, (24, 380), (125, 380), 1)
-    pygame.draw.line(screen, GRAY, (24, 370), (125, 370), 1)
-    pygame.draw.line(screen, GRAY, (24, 360), (125, 360), 1)
-    pygame.draw.line(screen, DARKGRAY, (24, 551), (24, 360), 1)
-    pygame.draw.line(screen, DARKGRAY, (24, 551), (125, 551), 1)
+    pygame.draw.line(screen, GRAY, (28, 423), (189, 423), 1)
+    pygame.draw.line(screen, GRAY, (28, 413), (189, 413), 1)
+    pygame.draw.line(screen, GRAY, (28, 403), (189, 403), 1)
+    pygame.draw.line(screen, GRAY, (28, 393), (189, 393), 1)
+    pygame.draw.line(screen, GRAY, (28, 383), (189, 383), 1)
+    pygame.draw.line(screen, GRAY, (28, 373), (189, 373), 1)
+    pygame.draw.line(screen, GRAY, (28, 363), (189, 363), 1)
+    pygame.draw.line(screen, GRAY, (28, 353), (189, 353), 1)
+    pygame.draw.line(screen, GRAY, (28, 343), (189, 343), 1)
+    pygame.draw.line(screen, GRAY, (28, 333), (189, 333), 1)
+    pygame.draw.line(screen, GRAY, (28, 323), (189, 323), 1)
+    pygame.draw.line(screen, GRAY, (28, 313), (189, 313), 1)
+    pygame.draw.line(screen, GRAY, (28, 303), (189, 303), 1)
+    pygame.draw.line(screen, GRAY, (28, 293), (189, 293), 1)
+    pygame.draw.line(screen, GRAY, (28, 283), (189, 283), 1)
+    pygame.draw.line(screen, GRAY, (28, 273), (189, 273), 1)
+    pygame.draw.line(screen, GRAY, (28, 263), (189, 263), 1)
+    pygame.draw.line(screen, GRAY, (28, 253), (189, 253), 1)
+    pygame.draw.line(screen, GRAY, (28, 243), (189, 243), 1)
+    pygame.draw.line(screen, GRAY, (28, 233), (189, 233), 1)
+    pygame.draw.line(screen, DARKRED, (28, 223), (189, 223), 1)
+    pygame.draw.line(screen, GRAY, (28, 213), (189, 213), 1)
+    pygame.draw.line(screen, GRAY, (28, 203), (189, 203), 1)
+    pygame.draw.line(screen, GRAY, (28, 193), (189, 193), 1)
+    pygame.draw.line(screen, GRAY, (28, 183), (189, 183), 1)
+    pygame.draw.line(screen, GRAY, (28, 173), (189, 173), 1)
+    pygame.draw.line(screen, GRAY, (28, 163), (189, 163), 1)
+    pygame.draw.line(screen, GRAY, (28, 153), (189, 153), 1)
+    pygame.draw.line(screen, GRAY, (28, 143), (189, 143), 1)
+    pygame.draw.line(screen, GRAY, (28, 133), (189, 133), 1)
+    pygame.draw.line(screen, GRAY, (28, 123), (189, 123), 1)
+    pygame.draw.line(screen, DARKGRAY, (28, 424), (28, 122), 1)
+    pygame.draw.line(screen, DARKGRAY, (28, 424), (189, 424), 1)
+    pygame.draw.line(screen, DARKGRAY, (28, 122), (189, 122), 1)
+    pygame.draw.line(screen, DARKGRAY, (190, 424), (190, 122), 1)
+    text_to_blit = font5.render("0", True, (50, 50, 50))
+    screen.blit(text_to_blit, (18, 417))
+    text_to_blit = font5.render(".1", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 397))
+    text_to_blit = font5.render(".2", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 377))
+    text_to_blit = font5.render(".3", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 357))
+    text_to_blit = font5.render(".4", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 337))
+    text_to_blit = font5.render(".5", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 317))
+    text_to_blit = font5.render(".6", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 297))
+    text_to_blit = font5.render(".7", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 277))
+    text_to_blit = font5.render(".8", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 257))
+    text_to_blit = font5.render(".9", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 237))
+    text_to_blit = font5.render("1", True, (50, 50, 50))
+    screen.blit(text_to_blit, (17, 217))
+    text_to_blit = font5.render(".1", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 197))
+    text_to_blit = font5.render(".2", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 177))
+    text_to_blit = font5.render(".3", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 157))
+    text_to_blit = font5.render(".4", True, (50, 50, 50))
+    screen.blit(text_to_blit, (12, 137))
+    text_to_blit = font5.render("k", True, (50, 50, 50))
+    screen.blit(text_to_blit, (18, 117))
+
     # All amount history chart.
-
     if bigger_screen == 1:
-        pygame.draw.line(screen, GRAY, (24, 770), (825, 770), 1)
-        pygame.draw.line(screen, GRAY, (24, 760), (825, 760), 1)
-        pygame.draw.line(screen, GRAY, (24, 750), (825, 750), 1)
-        pygame.draw.line(screen, GRAY, (24, 740), (825, 740), 1)
-        pygame.draw.line(screen, GRAY, (24, 730), (825, 730), 1)
-        pygame.draw.line(screen, GRAY, (24, 720), (825, 720), 1)
-        pygame.draw.line(screen, GRAY, (24, 710), (825, 710), 1)
-        pygame.draw.line(screen, GRAY, (24, 700), (825, 700), 1)
-        pygame.draw.line(screen, GRAY, (24, 690), (825, 690), 1)
-        pygame.draw.line(screen, GRAY, (24, 680), (825, 680), 1)
-        pygame.draw.line(screen, GRAY, (24, 670), (825, 670), 1)
-        pygame.draw.line(screen, GRAY, (24, 660), (825, 660), 1)
-        pygame.draw.line(screen, GRAY, (24, 650), (825, 650), 1)
-        pygame.draw.line(screen, GRAY, (24, 640), (825, 640), 1)
-        pygame.draw.line(screen, GRAY, (24, 630), (825, 630), 1)
-        pygame.draw.line(screen, GRAY, (24, 620), (825, 620), 1)
-        pygame.draw.line(screen, GRAY, (24, 610), (825, 610), 1)
-        pygame.draw.line(screen, GRAY, (24, 600), (825, 600), 1)
-        pygame.draw.line(screen, GRAY, (24, 590), (825, 590), 1)
-        pygame.draw.line(screen, DARKGRAY, (24, 781), (24, 590), 1)
-        pygame.draw.line(screen, DARKGRAY, (24, 781), (825, 781), 1)
-
+        pygame.draw.line(screen, GRAY, (37, 785), (837, 785), 1)
+        pygame.draw.line(screen, GRAY, (37, 775), (837, 775), 1)
+        pygame.draw.line(screen, GRAY, (37, 765), (837, 765), 1)
+        pygame.draw.line(screen, GRAY, (37, 755), (837, 755), 1)
+        pygame.draw.line(screen, GRAY, (37, 745), (837, 745), 1)
+        pygame.draw.line(screen, GRAY, (37, 735), (837, 735), 1)
+        pygame.draw.line(screen, GRAY, (37, 725), (837, 725), 1)
+        pygame.draw.line(screen, GRAY, (37, 715), (837, 715), 1)
+        pygame.draw.line(screen, GRAY, (37, 705), (837, 705), 1)
+        pygame.draw.line(screen, GRAY, (37, 695), (837, 695), 1)
+        pygame.draw.line(screen, GRAY, (37, 685), (837, 685), 1)
+        pygame.draw.line(screen, GRAY, (37, 675), (837, 675), 1)
+        pygame.draw.line(screen, GRAY, (37, 665), (837, 665), 1)
+        pygame.draw.line(screen, GRAY, (37, 655), (837, 655), 1)
+        pygame.draw.line(screen, GRAY, (37, 645), (837, 645), 1)
+        pygame.draw.line(screen, GRAY, (37, 635), (837, 635), 1)
+        pygame.draw.line(screen, GRAY, (37, 625), (837, 625), 1)
+        pygame.draw.line(screen, GRAY, (37, 615), (837, 615), 1)
+        pygame.draw.line(screen, GRAY, (37, 605), (837, 605), 1)
+        pygame.draw.line(screen, GRAY, (37, 595), (837, 595), 1)
+        pygame.draw.line(screen, DARKGRAY, (36, 786), (36, 594), 1)
+        pygame.draw.line(screen, DARKGRAY, (36, 786), (837, 786), 1)
+        pygame.draw.line(screen, DARKGRAY, (36, 594), (837, 594), 1)
+        pygame.draw.line(screen, DARKGRAY, (838, 786), (838, 594), 1)
     # Speed chart.
-    pygame.draw.line(screen, GRAY, (274, 540), (375, 540), 1)
-    pygame.draw.line(screen, GRAY, (274, 530), (375, 530), 1)
-    pygame.draw.line(screen, GRAY, (274, 520), (375, 520), 1)
-    pygame.draw.line(screen, GRAY, (274, 510), (375, 510), 1)
-    pygame.draw.line(screen, GRAY, (274, 500), (375, 500), 1)
-    pygame.draw.line(screen, GRAY, (274, 490), (375, 490), 1)
-    pygame.draw.line(screen, GRAY, (274, 480), (375, 480), 1)
-    pygame.draw.line(screen, DARKGRAY, (274, 551), (274, 480), 1)
-    pygame.draw.line(screen, DARKGRAY, (274, 551), (375, 551), 1)
+    pygame.draw.line(screen, GRAY, (25, 557), (186, 557), 1)
+    pygame.draw.line(screen, GRAY, (25, 542), (186, 542), 1)
+    pygame.draw.line(screen, GRAY, (25, 527), (186, 527), 1)
+    pygame.draw.line(screen, GRAY, (25, 512), (186, 512), 1)
+    pygame.draw.line(screen, GRAY, (25, 497), (186, 497), 1)
+    pygame.draw.line(screen, GRAY, (25, 482), (186, 482), 1)
+    pygame.draw.line(screen, GRAY, (25, 467), (186, 467), 1)
+    pygame.draw.line(screen, GRAY, (25, 452), (186, 452), 1)
+    pygame.draw.line(screen, DARKGRAY, (24, 558), (24, 452), 1)
+    pygame.draw.line(screen, DARKGRAY, (24, 558), (186, 558), 1)
+    pygame.draw.line(screen, DARKGRAY, (24, 451), (186, 451), 1)
+    pygame.draw.line(screen, DARKGRAY, (187, 451), (187, 558), 1)
+    text_to_blit = font5.render("0", True, (50, 50, 50))
+    screen.blit(text_to_blit, (16, 552))
+    text_to_blit = font5.render("1", True, (50, 50, 50))
+    screen.blit(text_to_blit, (16, 537))
+    text_to_blit = font5.render("2", True, (50, 50, 50))
+    screen.blit(text_to_blit, (16, 522))
+    text_to_blit = font5.render("3", True, (50, 50, 50))
+    screen.blit(text_to_blit, (16, 507))
+    text_to_blit = font5.render("4", True, (50, 50, 50))
+    screen.blit(text_to_blit, (16, 492))
+    text_to_blit = font5.render("5", True, (50, 50, 50))
+    screen.blit(text_to_blit, (16, 477))
+    text_to_blit = font5.render("6", True, (50, 50, 50))
+    screen.blit(text_to_blit, (16, 462))
+    text_to_blit = font5.render("7", True, (50, 50, 50))
+    screen.blit(text_to_blit, (16, 447))
     # Bowel length chart.
-    pygame.draw.line(screen, GRAY, (399, 540), (500, 540), 1)
-    pygame.draw.line(screen, GRAY, (399, 530), (500, 530), 1)
-    pygame.draw.line(screen, GRAY, (399, 520), (500, 520), 1)
-    pygame.draw.line(screen, GRAY, (399, 510), (500, 510), 1)
-    pygame.draw.line(screen, GRAY, (399, 500), (500, 500), 1)
-    pygame.draw.line(screen, GRAY, (399, 490), (500, 490), 1)
-    pygame.draw.line(screen, GRAY, (399, 480), (500, 480), 1)
-    pygame.draw.line(screen, DARKGRAY, (399, 551), (399, 480), 1)
-    pygame.draw.line(screen, DARKGRAY, (399, 551), (500, 551), 1)
+    pygame.draw.line(screen, GRAY, (242, 557), (403, 557), 1)
+    pygame.draw.line(screen, GRAY, (242, 542), (403, 542), 1)
+    pygame.draw.line(screen, GRAY, (242, 527), (403, 527), 1)
+    pygame.draw.line(screen, GRAY, (242, 512), (403, 512), 1)
+    pygame.draw.line(screen, GRAY, (242, 497), (403, 497), 1)
+    pygame.draw.line(screen, GRAY, (242, 482), (403, 482), 1)
+    pygame.draw.line(screen, GRAY, (242, 467), (403, 467), 1)
+    pygame.draw.line(screen, GRAY, (242, 452), (403, 452), 1)
+    pygame.draw.line(screen, DARKGRAY, (241, 558), (241, 452), 1)
+    pygame.draw.line(screen, DARKGRAY, (241, 558), (403, 558), 1)
+    pygame.draw.line(screen, DARKGRAY, (241, 451), (403, 451), 1)
+    pygame.draw.line(screen, DARKGRAY, (404, 451), (404, 558), 1)
+    text_to_blit = font5.render("0", True, (50, 50, 50))
+    screen.blit(text_to_blit, (233, 552))
+    text_to_blit = font5.render("1", True, (50, 50, 50))
+    screen.blit(text_to_blit, (233, 537))
+    text_to_blit = font5.render("2", True, (50, 50, 50))
+    screen.blit(text_to_blit, (233, 522))
+    text_to_blit = font5.render("3", True, (50, 50, 50))
+    screen.blit(text_to_blit, (233, 507))
+    text_to_blit = font5.render("4", True, (50, 50, 50))
+    screen.blit(text_to_blit, (233, 492))
+    text_to_blit = font5.render("5", True, (50, 50, 50))
+    screen.blit(text_to_blit, (233, 477))
+    text_to_blit = font5.render("6", True, (50, 50, 50))
+    screen.blit(text_to_blit, (233, 462))
+    text_to_blit = font5.render("7", True, (50, 50, 50))
+    screen.blit(text_to_blit, (233, 447))
     # Fat limit chart.
-    pygame.draw.line(screen, GRAY, (524, 540), (625, 540), 1)
-    pygame.draw.line(screen, GRAY, (524, 530), (625, 530), 1)
-    pygame.draw.line(screen, GRAY, (524, 520), (625, 520), 1)
-    pygame.draw.line(screen, GRAY, (524, 510), (625, 510), 1)
-    pygame.draw.line(screen, GRAY, (524, 500), (625, 500), 1)
-    pygame.draw.line(screen, GRAY, (524, 490), (625, 490), 1)
-    pygame.draw.line(screen, GRAY, (524, 480), (625, 480), 1)
-    pygame.draw.line(screen, DARKGRAY, (524, 551), (524, 480), 1)
-    pygame.draw.line(screen, DARKGRAY, (524, 551), (625, 551), 1)
+    pygame.draw.line(screen, GRAY, (459, 557), (620, 557), 1)
+    pygame.draw.line(screen, GRAY, (459, 542), (620, 542), 1)
+    pygame.draw.line(screen, GRAY, (459, 527), (620, 527), 1)
+    pygame.draw.line(screen, GRAY, (459, 512), (620, 512), 1)
+    pygame.draw.line(screen, GRAY, (459, 497), (620, 497), 1)
+    pygame.draw.line(screen, GRAY, (459, 482), (620, 482), 1)
+    pygame.draw.line(screen, GRAY, (459, 467), (620, 467), 1)
+    pygame.draw.line(screen, GRAY, (459, 452), (620, 452), 1)
+    pygame.draw.line(screen, DARKGRAY, (458, 558), (458, 452), 1)
+    pygame.draw.line(screen, DARKGRAY, (458, 558), (620, 558), 1)
+    pygame.draw.line(screen, DARKGRAY, (458, 451), (620, 451), 1)
+    pygame.draw.line(screen, DARKGRAY, (621, 451), (621, 558), 1)
+    text_to_blit = font5.render("0", True, (50, 50, 50))
+    screen.blit(text_to_blit, (450, 552))
+    text_to_blit = font5.render("1", True, (50, 50, 50))
+    screen.blit(text_to_blit, (450, 537))
+    text_to_blit = font5.render("2", True, (50, 50, 50))
+    screen.blit(text_to_blit, (450, 522))
+    text_to_blit = font5.render("3", True, (50, 50, 50))
+    screen.blit(text_to_blit, (450, 507))
+    text_to_blit = font5.render("4", True, (50, 50, 50))
+    screen.blit(text_to_blit, (450, 492))
+    text_to_blit = font5.render("5", True, (50, 50, 50))
+    screen.blit(text_to_blit, (450, 477))
+    text_to_blit = font5.render("6", True, (50, 50, 50))
+    screen.blit(text_to_blit, (450, 462))
+    text_to_blit = font5.render("7", True, (50, 50, 50))
+    screen.blit(text_to_blit, (450, 447))
     # Legs length chart.
-    pygame.draw.line(screen, GRAY, (649, 540), (750, 540), 1)
-    pygame.draw.line(screen, GRAY, (649, 530), (750, 530), 1)
-    pygame.draw.line(screen, GRAY, (649, 520), (750, 520), 1)
-    pygame.draw.line(screen, GRAY, (649, 510), (750, 510), 1)
-    pygame.draw.line(screen, GRAY, (649, 500), (750, 500), 1)
-    pygame.draw.line(screen, GRAY, (649, 490), (750, 490), 1)
-    pygame.draw.line(screen, GRAY, (649, 480), (750, 480), 1)
-    pygame.draw.line(screen, DARKGRAY, (649, 551), (649, 480), 1)
-    pygame.draw.line(screen, DARKGRAY, (649, 551), (750, 551), 1)
+    pygame.draw.line(screen, GRAY, (676, 557), (837, 557), 1)
+    pygame.draw.line(screen, GRAY, (676, 542), (837, 542), 1)
+    pygame.draw.line(screen, GRAY, (676, 527), (837, 527), 1)
+    pygame.draw.line(screen, GRAY, (676, 512), (837, 512), 1)
+    pygame.draw.line(screen, GRAY, (676, 497), (837, 497), 1)
+    pygame.draw.line(screen, GRAY, (676, 482), (837, 482), 1)
+    pygame.draw.line(screen, GRAY, (676, 467), (837, 467), 1)
+    pygame.draw.line(screen, GRAY, (676, 452), (837, 452), 1)
+    pygame.draw.line(screen, DARKGRAY, (675, 558), (675, 452), 1)
+    pygame.draw.line(screen, DARKGRAY, (675, 558), (837, 558), 1)
+    pygame.draw.line(screen, DARKGRAY, (675, 451), (837, 451), 1)
+    pygame.draw.line(screen, DARKGRAY, (838, 451), (838, 558), 1)
+    text_to_blit = font5.render("0", True, (50, 50, 50))
+    screen.blit(text_to_blit, (667, 552))
+    text_to_blit = font5.render("1", True, (50, 50, 50))
+    screen.blit(text_to_blit, (667, 537))
+    text_to_blit = font5.render("2", True, (50, 50, 50))
+    screen.blit(text_to_blit, (667, 522))
+    text_to_blit = font5.render("3", True, (50, 50, 50))
+    screen.blit(text_to_blit, (667, 507))
+    text_to_blit = font5.render("4", True, (50, 50, 50))
+    screen.blit(text_to_blit, (667, 492))
+    text_to_blit = font5.render("5", True, (50, 50, 50))
+    screen.blit(text_to_blit, (667, 477))
+    text_to_blit = font5.render("6", True, (50, 50, 50))
+    screen.blit(text_to_blit, (667, 462))
+    text_to_blit = font5.render("7", True, (50, 50, 50))
+    screen.blit(text_to_blit, (667, 447))
 
     # Herbs icon.
-    pygame.draw.circle(screen, FORESTGREEN, [703, 22], 3, 0)
+    pygame.draw.circle(screen, FORESTGREEN, [711, 22], 3, 0)
     # Herbivores icon.
-    pygame.draw.rect(screen, colors_list_green[7][7], [676 , 33, 9, 9])
-    pygame.draw.rect(screen, DARKERGRAY, [676-1, 33-1, 11, 11], 1)
+    pygame.draw.rect(screen, colors_list_green[7][7], [684 , 33, 9, 9])
+    pygame.draw.rect(screen, DARKERGRAY, [684-1, 33-1, 11, 11], 1)
     # Carnivores icon.
-    pygame.draw.rect(screen, colors_list_red[7][7], [676, 48, 9, 9])
-    pygame.draw.rect(screen, DARKERGRAY, [676-1, 48-1, 11, 11], 1)
+    pygame.draw.rect(screen, colors_list_red[7][7], [684, 48, 9, 9])
+    pygame.draw.rect(screen, DARKERGRAY, [684-1, 48-1, 11, 11], 1)
 
     # Settings text.
     text_to_blit = font6.render(("HERBS: " + str(len(herbs))), True, (50, 50, 50))
-    screen.blit(text_to_blit, (710, 15))
+    screen.blit(text_to_blit, (717, 15))
     text_to_blit = font6.render(("HERBIVORES: " + str(len(herbivores))), True, (50, 50, 50))
-    screen.blit(text_to_blit, (689, 30))
+    screen.blit(text_to_blit, (697, 30))
     text_to_blit = font6.render(("CARNIVORES: " + str(len(carnivores))), True, (50, 50, 50))
-    screen.blit(text_to_blit, (689, 45))
+    screen.blit(text_to_blit, (697, 45))
 
     text_to_blit = font5.render("SETTINGS", True, (50, 50, 50))
     screen.blit(text_to_blit, (661, 69))
@@ -441,57 +611,266 @@ def draw_window(colors_list_green, colors_list_red, herbs, herbivores, carnivore
     screen.blit(text_to_blit, (664, 425))
 
     text_to_blit = font2.render("AMOUNT", True, (50, 50, 50))
-    screen.blit(text_to_blit, (57, 553))
+    screen.blit(text_to_blit, (85, 427))
     text_to_blit = font2.render("SPEED", True, (50, 50, 50))
-    screen.blit(text_to_blit, (310, 553))
+    screen.blit(text_to_blit, (85, 559))
     text_to_blit = font2.render("BOWEL LENGTH", True, (50, 50, 50))
-    screen.blit(text_to_blit, (409, 553))
+    screen.blit(text_to_blit, (278, 559))
     text_to_blit = font2.render("FAT LIMIT", True, (50, 50, 50))
-    screen.blit(text_to_blit, (547, 553))
+    screen.blit(text_to_blit, (505, 559))
     text_to_blit = font2.render("LEGS LENGTH", True, (50, 50, 50))
-    screen.blit(text_to_blit, (663, 553))
+    screen.blit(text_to_blit, (718, 559))
 
     # Start button.
-    if button_start_clicked == 1:
-        screen.blit(START_DOWN, [23, 80])
+    if btn_start_clicked == 1:
+        screen.blit(START_DOWN, [36, 86])
     else:
-        screen.blit(START_UP, [23, 80])
+        screen.blit(START_UP, [36, 86])
 
     # Pause button.
-    if button_pause_clicked == 1:
-        screen.blit(PAUSE_DOWN, [68, 80])
+    if btn_pause_clicked == 1:
+        screen.blit(PAUSE_DOWN, [85, 86])
     else:
-        screen.blit(PAUSE_UP, [68, 80])
+        screen.blit(PAUSE_UP, [85, 86])
 
     # Reset button.
-    if button_reset_clicked == 1:
-        screen.blit(RESET_DOWN, [113, 80])
+    if btn_reset_clicked == 1:
+        screen.blit(RESET_DOWN, [134, 86])
     else:
-        screen.blit(RESET_UP, [113, 80])
+        screen.blit(RESET_UP, [134, 86])
+
+    # Cps plus button.
+    if btn_cps_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 85])
+    else:
+        screen.blit(PLUS_UP, [826, 85])
+    # Cps minus button.
+    if btn_cps_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 85])
+    else:
+        screen.blit(MINUS_UP, [811, 85])
 
     # Tempo plus button.
-    if button_tempo_plus_clicked == 1:
+    if btn_tempo_plus_clicked == 1:
         screen.blit(PLUS_DOWN, [826, 105])
     else:
         screen.blit(PLUS_UP, [826, 105])
-
     # Tempo minus button.
-    if button_tempo_minus_clicked == 1:
+    if btn_tempo_minus_clicked == 1:
         screen.blit(MINUS_DOWN, [811, 105])
     else:
         screen.blit(MINUS_UP, [811, 105])
 
-    # Cps plus button.
-    if button_cps_plus_clicked == 1:
-        screen.blit(PLUS_DOWN, [826, 85])
+    # Mutation plus button.
+    if btn_mutation_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 125])
     else:
-        screen.blit(PLUS_UP, [826, 85])
+        screen.blit(PLUS_UP, [826, 125])
+    # Mutation minus button.
+    if btn_mutation_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 125])
+    else:
+        screen.blit(MINUS_UP, [811, 125])
 
-    # Cps minus button.
-    if button_cps_minus_clicked == 1:
-        screen.blit(MINUS_DOWN, [811, 85])
+    # Herbs starting amount plus button.
+    if btn_herbs_starting_amount_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 165])
     else:
-        screen.blit(MINUS_UP, [811, 85])
+        screen.blit(PLUS_UP, [826, 165])
+    # Herbs starting amount minus button.
+    if btn_herbs_starting_amount_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 165])
+    else:
+        screen.blit(MINUS_UP, [811, 165])
+
+    # Herbs energy plus button.
+    if btn_herbs_energy_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 185])
+    else:
+        screen.blit(PLUS_UP, [826, 185])
+    # Herbs energy minus button.
+    if btn_herbs_energy_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 185])
+    else:
+        screen.blit(MINUS_UP, [811, 185])
+
+    # Herbs amount per spawn plus button.
+    if btn_herbs_amount_per_spawn_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 205])
+    else:
+        screen.blit(PLUS_UP, [826, 205])
+    # Herbs amount per spawn minus button.
+    if btn_herbs_amount_per_spawn_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 205])
+    else:
+        screen.blit(MINUS_UP, [811, 205])
+
+    # Herbs spawn rate plus button.
+    if btn_herbs_spawn_rate_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 225])
+    else:
+        screen.blit(PLUS_UP, [826, 225])
+    # Herbs spawn rate minus button.
+    if btn_herbs_spawn_rate_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 225])
+    else:
+        screen.blit(MINUS_UP, [811, 225])
+
+    # Herbivores starting amount plus button.
+    if btn_herbivores_starting_amount_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 265])
+    else:
+        screen.blit(PLUS_UP, [826, 265])
+    # Herbivores starting amount minus button.
+    if btn_herbivores_starting_amount_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 265])
+    else:
+        screen.blit(MINUS_UP, [811, 265])
+
+    # Herbivores spawn energy plus button.
+    if btn_herbivores_spawn_energy_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 285])
+    else:
+        screen.blit(PLUS_UP, [826, 285])
+    # Herbivores spawn energy minus button.
+    if btn_herbivores_spawn_energy_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 285])
+    else:
+        screen.blit(MINUS_UP, [811, 285])
+
+    # Herbivores breeding level plus button.
+    if btn_herbivores_breed_level_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 305])
+    else:
+        screen.blit(PLUS_UP, [826, 305])
+    # Herbivores breeding level minus button.
+    if btn_herbivores_breed_level_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 305])
+    else:
+        screen.blit(MINUS_UP, [811, 305])
+
+    # Herbivores movement cost plus button.
+    if btn_herbivores_movement_cost_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 325])
+    else:
+        screen.blit(PLUS_UP, [826, 325])
+    # Herbivores movement cost minus button.
+    if btn_herbivores_movement_cost_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 325])
+    else:
+        screen.blit(MINUS_UP, [811, 325])
+
+    # Carnivores starting amount plus button.
+    if btn_carnivores_starting_amount_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 365])
+    else:
+        screen.blit(PLUS_UP, [826, 365])
+    # Carnivores starting amount minus button.
+    if btn_carnivores_starting_amount_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 365])
+    else:
+        screen.blit(MINUS_UP, [811, 365])
+
+    # Carnivores spawning energy plus button.
+    if btn_carnivores_spawn_energy_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 385])
+    else:
+        screen.blit(PLUS_UP, [826, 385])
+    # Carnivores spawning energy minus button.
+    if btn_carnivores_spawn_energy_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 385])
+    else:
+        screen.blit(MINUS_UP, [811, 385])
+
+    # Carnivores breeding level plus button.
+    if btn_carnivores_breed_level_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 405])
+    else:
+        screen.blit(PLUS_UP, [826, 405])
+    # Carnivores breeding level minus button.
+    if btn_carnivores_breed_level_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 405])
+    else:
+        screen.blit(MINUS_UP, [811, 405])
+
+    # Carnivores movement cost plus button.
+    if btn_carnivores_movement_cost_plus_clicked == 1:
+        screen.blit(PLUS_DOWN, [826, 425])
+    else:
+        screen.blit(PLUS_UP, [826, 425])
+    # Carnivores movement cost minus button.
+    if btn_carnivores_movement_cost_minus_clicked == 1:
+        screen.blit(MINUS_DOWN, [811, 425])
+    else:
+        screen.blit(MINUS_UP, [811, 425])
+
+        # If bigger_screen flag == 1 (the window becomes taller), draw
+        # a chart of total history of mean amounts of herbivores and carnivores.
+    if bigger_screen == 1:
+        x_herbi = 36
+        for i in range(0, len(herbivores_total_amount_list)):
+            if len(herbivores_total_amount_list) > 800:
+                if i % (int(len(herbivores_total_amount_list) / 800) + 1) == 0:
+                    x_herbi += 1
+                    pygame.draw.rect(screen, colors_list_green[2][3],
+                                     [x_herbi,
+                                     780 - int(herbivores_total_amount_list[i] / 4),
+                                     2, 2])
+            else:
+                pygame.draw.rect(screen, colors_list_green[2][3],
+                                 [37 + i,
+                                 780 - int(herbivores_total_amount_list[i] / 4),
+                                 2, 2])
+            x_carni = 36
+        for i in range(0, len(carnivores_total_amount_list)):
+            if len(carnivores_total_amount_list) > 800:
+                if i % (int(len(carnivores_total_amount_list) / 800) + 1) == 0:
+                    x_carni += 1
+                    pygame.draw.rect(screen, colors_list_red[2][3],
+                                     [x_carni,
+                                     780 - int(carnivores_total_amount_list[i] / 4),
+                                     2, 2])
+            else:
+                pygame.draw.rect(screen, colors_list_red[2][3],
+                                 [37 + i,
+                                 780 - int(carnivores_total_amount_list[i] / 4),
+                                 2, 2])
+        # Drawing charts.
+    # Amount of herbivores and carnivores charts.
+    for i in range(0, len(herbivores_amount_list)):
+        pygame.draw.rect(screen, colors_list_green[2][3],
+                         [29 + i, 422 - int(herbivores_amount_list[i] / 5), 2, 2])
+    for i in range(0, len(carnivores_amount_list)):
+        pygame.draw.rect(screen, colors_list_red[2][3],
+                         [29 + i, 422 - int(carnivores_amount_list[i] / 5), 2, 2])
+    # Drawing charts.
+    # Mean value of herbivores traits charts.
+    for i in range(0, len(herbivores_mean_speed_list)):
+        pygame.draw.rect(screen, colors_list_green[4][3],
+                         [25 + i, 556 - int(herbivores_mean_speed_list[i] * 12), 2, 2])
+    for i in range(0, len(herbivores_mean_bowel_length_list)):
+        pygame.draw.rect(screen, colors_list_green[4][3],
+                         [242 + i, 556 - int(herbivores_mean_bowel_length_list[i] * 12), 2, 2])
+    for i in range(0, len(herbivores_mean_fat_limit_list)):
+        pygame.draw.rect(screen, colors_list_green[4][3],
+                         [459 + i, 556 - int(herbivores_mean_fat_limit_list[i] * 12), 2, 2])
+    for i in range(0, len(herbivores_mean_legs_length_list)):
+        pygame.draw.rect(screen, colors_list_green[4][3],
+                         [676 + i, 556 - int(herbivores_mean_legs_length_list[i] * 12), 2, 2])
+    # Drawing charts.
+    # Mean value of herbivores traits charts.
+    for i in range(0, len(carnivores_mean_speed_list)):
+        pygame.draw.rect(screen, colors_list_red[4][3],
+                         [25 + i, 556 - int(carnivores_mean_speed_list[i] * 12), 2, 2])
+    for i in range(0, len(carnivores_mean_bowel_length_list)):
+        pygame.draw.rect(screen, colors_list_red[4][3],
+                         [242 + i, 556 - int(carnivores_mean_bowel_length_list[i] * 12), 2, 2])
+    for i in range(0, len(carnivores_mean_fat_limit_list)):
+        pygame.draw.rect(screen, colors_list_red[4][3],
+                         [459 + i, 556 - int(carnivores_mean_fat_limit_list[i] * 12), 2, 2])
+    for i in range(0, len(carnivores_mean_legs_length_list)):
+        pygame.draw.rect(screen, colors_list_red[4][3],
+                         [676 + i, 556 - int(carnivores_mean_legs_length_list[i] * 12), 2, 2])
 
 ############################################################################################################
 
@@ -949,147 +1328,43 @@ while not done:
                 # Add 20 carnivores.
                 spawn_carnivore(20)
             if event.key == pygame.K_UP:
-                screen = pygame.display.set_mode((855, 569))
+                screen = pygame.display.set_mode((855, 583))
                 bigger_screen = 0
             if event.key == pygame.K_DOWN:
-                screen = pygame.display.set_mode((855, 800))
+                screen = pygame.display.set_mode((855, 810))
                 bigger_screen = 1
 
         # "If mouse button clicked:".
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Start button clicked.
-            if pygame.mouse.get_pos()[0] >= 23  and \
-               pygame.mouse.get_pos()[0] <= 62  and \
-               pygame.mouse.get_pos()[1] >= 80  and \
-               pygame.mouse.get_pos()[1] <= 100:
-                   # If all conditions satisfied:
-                   button_start_clicked = 1
-            # Pause button clicked.
-            if pygame.mouse.get_pos()[0] >= 68  and \
-               pygame.mouse.get_pos()[0] <= 107 and \
-               pygame.mouse.get_pos()[1] >= 80  and \
-               pygame.mouse.get_pos()[1] <= 100:
-                   # If all conditions satisfied:
-                   button_pause_clicked = 1
-            # Reset button clicked.
-            if pygame.mouse.get_pos()[0] >= 113 and \
-               pygame.mouse.get_pos()[0] <= 152 and \
-               pygame.mouse.get_pos()[1] >= 80  and \
-               pygame.mouse.get_pos()[1] <= 100:
-                   # If all conditions satisfied:
-                   button_reset_clicked = 1
-            # Tempo plus button clicked.
-            if pygame.mouse.get_pos()[0] >= 826 and \
-               pygame.mouse.get_pos()[0] <= 839 and \
-               pygame.mouse.get_pos()[1] >= 105 and \
-               pygame.mouse.get_pos()[1] <= 118:
-                   # If all conditions satisfied:
-                   button_tempo_plus_clicked = 1
-            # Tempo minus button clicked.
-            if pygame.mouse.get_pos()[0] >= 811 and \
-               pygame.mouse.get_pos()[0] <= 824 and \
-               pygame.mouse.get_pos()[1] >= 105 and \
-               pygame.mouse.get_pos()[1] <= 118:
-                   # If all conditions satisfied:
-                   button_tempo_minus_clicked = 1
-
-            # Cycles Per Second plus button clicked.
-            if pygame.mouse.get_pos()[0] >= 826 and \
-               pygame.mouse.get_pos()[0] <= 839 and \
-               pygame.mouse.get_pos()[1] >= 85  and \
-               pygame.mouse.get_pos()[1] <= 98:
-                   # If all conditions satisfied:
-                   button_cps_plus_clicked = 1
-            # Cycles Per Second minus button clicked.
-            if pygame.mouse.get_pos()[0] >= 811 and \
-               pygame.mouse.get_pos()[0] <= 824 and \
-               pygame.mouse.get_pos()[1] >= 85  and \
-               pygame.mouse.get_pos()[1] <= 98:
-                   # If all conditions satisfied:
-                   button_cps_minus_clicked = 1
-        # "If mouse button unclicked:".
-        if event.type == pygame.MOUSEBUTTONUP:
-            # Reset button off on button.
-            if pygame.mouse.get_pos()[0] >= 113 and \
-               pygame.mouse.get_pos()[0] <= 152 and \
-               pygame.mouse.get_pos()[1] >= 80  and \
-               pygame.mouse.get_pos()[1] <= 100:
-                   # If all conditions satisfied:
-                   reset = 1
-                   button_reset_clicked = 0
-            # Reset button unclicked not on button.
-            if not (pygame.mouse.get_pos()[0] >= 113 and \
-                    pygame.mouse.get_pos()[0] <= 152 and \
-                    pygame.mouse.get_pos()[1] >= 80  and \
-                    pygame.mouse.get_pos()[1] <= 100):
-                    # If all conditions satisfied:
-                    button_reset_clicked = 0
-            # Pause button off on button.
-            if pygame.mouse.get_pos()[0] >= 68  and \
-               pygame.mouse.get_pos()[0] <= 107 and \
-               pygame.mouse.get_pos()[1] >= 80  and \
-               pygame.mouse.get_pos()[1] <= 100:
-                   # If all conditions satisfied:
-                   start = tempo
-                   pause = 1
-                   button_pause_clicked = 0
-            # Pause button unclicked not on button.
-            if not (pygame.mouse.get_pos()[0] >= 68  and \
-                    pygame.mouse.get_pos()[0] <= 107 and \
-                    pygame.mouse.get_pos()[1] >= 80  and \
-                    pygame.mouse.get_pos()[1] <= 100):
-                    # If all conditions satisfied:
-                    button_pause_clicked = 0
-            # Start button off on button.
-            if pygame.mouse.get_pos()[0] >= 23 and \
-               pygame.mouse.get_pos()[0] <= 62 and \
-               pygame.mouse.get_pos()[1] >= 80 and \
-               pygame.mouse.get_pos()[1] <= 100:
+            if pygame.mouse.get_pos()[0] >= 36  and \
+               pygame.mouse.get_pos()[0] <= 75  and \
+               pygame.mouse.get_pos()[1] >= 86  and \
+               pygame.mouse.get_pos()[1] <= 106:
                    # If all conditions satisfied:
                    pause = 0
-                   button_start_clicked = 0
-            # Start button unclicked not on button.
-            if not (pygame.mouse.get_pos()[0] >= 23 and \
-                    pygame.mouse.get_pos()[0] <= 62 and \
-                    pygame.mouse.get_pos()[1] >= 80 and \
-                    pygame.mouse.get_pos()[1] <= 100):
-                    # If all conditions satisfied:
-                    button_start_clicked = 0
-            # Tempo plus button off on button.
-            if pygame.mouse.get_pos()[0] >= 826 and \
-               pygame.mouse.get_pos()[0] <= 839 and \
-               pygame.mouse.get_pos()[1] >= 105 and \
-               pygame.mouse.get_pos()[1] <= 118:
+                   btn_start_clicked = 1
+
+            # Pause button clicked.
+            if pygame.mouse.get_pos()[0] >= 85  and \
+               pygame.mouse.get_pos()[0] <= 124 and \
+               pygame.mouse.get_pos()[1] >= 86  and \
+               pygame.mouse.get_pos()[1] <= 106:
                    # If all conditions satisfied:
-                   tempo += 0.09
-                   # If /tempo/ > 1, set it to 1. Makes '1' a min value.
-                   if tempo > 1.00: tempo = 1.00
-                   button_tempo_plus_clicked = 0
-            # Tempo plus unclicked not on button.
-            if not (pygame.mouse.get_pos()[0] >= 826 and \
-                    pygame.mouse.get_pos()[0] <= 839 and \
-                    pygame.mouse.get_pos()[1] >= 105 and \
-                    pygame.mouse.get_pos()[1] <= 118):
-                    # If all conditions satisfied:
-                    button_tempo_plus_clicked = 0
-            # Tempo minus button off on button.
-            if pygame.mouse.get_pos()[0] >= 811 and \
-               pygame.mouse.get_pos()[0] <= 824 and \
-               pygame.mouse.get_pos()[1] >= 105 and \
-               pygame.mouse.get_pos()[1] <= 118:
+                   # start = tempo
+                   pause = 1
+                   btn_pause_clicked = 1
+
+            # Reset button clicked.
+            if pygame.mouse.get_pos()[0] >= 136 and \
+               pygame.mouse.get_pos()[0] <= 175 and \
+               pygame.mouse.get_pos()[1] >= 86  and \
+               pygame.mouse.get_pos()[1] <= 106:
                    # If all conditions satisfied:
-                   tempo -= 0.09
-                   # If /tempo/ < 0.01, set it to 0.01. Makes '0.01' a min value.
-                   if tempo < 0.01: tempo = 0.01
-                   button_tempo_minus_clicked = 0
-            # Tempo minus unclicked not on button.
-            if not (pygame.mouse.get_pos()[0] >= 811 and \
-                    pygame.mouse.get_pos()[0] <= 824 and \
-                    pygame.mouse.get_pos()[1] >= 105 and \
-                    pygame.mouse.get_pos()[1] <= 118):
-                    # If all conditions satisfied:
-                    button_tempo_minus_clicked = 0
-            # Cycles Per Second plus button off on button.
+                   reset = 1
+                   btn_reset_clicked = 1
+
+            # Cycles Per Second plus button clicked.
             if pygame.mouse.get_pos()[0] >= 826 and \
                pygame.mouse.get_pos()[0] <= 839 and \
                pygame.mouse.get_pos()[1] >= 85  and \
@@ -1098,15 +1373,8 @@ while not done:
                    chosen_cycles_per_second += 1
                    if chosen_cycles_per_second > 13:
                        chosen_cycles_per_second = 13
-                   button_cps_plus_clicked = 0
-            # Cycles Per Second plus unclicked not on button.
-            if not (pygame.mouse.get_pos()[0] >= 826 and \
-                    pygame.mouse.get_pos()[0] <= 839 and \
-                    pygame.mouse.get_pos()[1] >= 85  and \
-                    pygame.mouse.get_pos()[1] <= 98):
-                    # If all conditions satisfied:
-                    button_cps_plus_clicked = 0
-            # Cycles Per Second minus button off on button.
+                   btn_cps_plus_clicked = 1
+            # Cycles Per Second minus button clicked.
             if pygame.mouse.get_pos()[0] >= 811 and \
                pygame.mouse.get_pos()[0] <= 824 and \
                pygame.mouse.get_pos()[1] >= 85  and \
@@ -1115,14 +1383,337 @@ while not done:
                    chosen_cycles_per_second -= 1
                    if chosen_cycles_per_second < 0:
                        chosen_cycles_per_second = 0
-                   button_cps_minus_clicked = 0
-            # Cycles Per Second minus unclicked not on button.
-            if not (pygame.mouse.get_pos()[0] >= 811 and \
-                    pygame.mouse.get_pos()[0] <= 824 and \
-                    pygame.mouse.get_pos()[1] >= 85  and \
-                    pygame.mouse.get_pos()[1] <= 98):
-                    # If all conditions satisfied:
-                    button_cps_minus_clicked = 0
+                   btn_cps_minus_clicked = 1
+
+            # Tempo plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 105 and \
+               pygame.mouse.get_pos()[1] <= 118:
+                   # If all conditions satisfied:
+                   tempo += 0.09
+                   # If /tempo/ > 1, set it to 1. Makes '1' a min value.
+                   if tempo > 1.00: tempo = 1.00
+                   btn_tempo_plus_clicked = 1
+            # Tempo minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 105 and \
+               pygame.mouse.get_pos()[1] <= 118:
+                   # If all conditions satisfied:
+                   tempo -= 0.09
+                   # If /tempo/ < 0.01, set it to 0.01. Makes '0.01' a min value.
+                   if tempo < 0.01: tempo = 0.01
+                   btn_tempo_minus_clicked = 1
+
+            # Mutation plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 125 and \
+               pygame.mouse.get_pos()[1] <= 138:
+                   # If all conditions satisfied:
+                   mutation_chance += 1
+                   if mutation_chance > 100:
+                       mutation_chance = 100
+                   btn_mutation_plus_clicked = 1
+            # Mutation minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 125 and \
+               pygame.mouse.get_pos()[1] <= 138:
+                   # If all conditions satisfied:
+                   mutation_chance -= 1
+                   if mutation_chance < 0:
+                       mutation_chance = 0
+                   btn_mutation_minus_clicked = 1
+
+            # Herbs starting amount plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 165 and \
+               pygame.mouse.get_pos()[1] <= 178:
+                   # If all conditions satisfied:
+                   herbs_starting_amount += 50
+                   if herbs_starting_amount > 1000:
+                       herbs_starting_amount = 1000
+                   btn_herbs_starting_amount_plus_clicked = 1
+            # Herbs starting amount minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 165 and \
+               pygame.mouse.get_pos()[1] <= 178:
+                   # If all conditions satisfied:
+                   herbs_starting_amount -= 50
+                   if herbs_starting_amount < 0:
+                       herbs_starting_amount = 0
+                   btn_herbs_starting_amount_minus_clicked = 1
+
+            # Herbs energy plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 185 and \
+               pygame.mouse.get_pos()[1] <= 198:
+                   # If all conditions satisfied:
+                   herbs_energy += 50
+                   if herbs_energy > 5500:
+                       herbs_energy = 5500
+                   btn_herbs_energy_plus_clicked = 1
+            # Herbs energy minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 185 and \
+               pygame.mouse.get_pos()[1] <= 198:
+                   # If all conditions satisfied:
+                   herbs_energy -= 50
+                   if herbs_energy < 0:
+                       herbs_energy = 0
+                   btn_herbs_energy_minus_clicked = 1
+
+            # Herbs amount per spawn plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 205 and \
+               pygame.mouse.get_pos()[1] <= 218:
+                   # If all conditions satisfied:
+                   herbs_amount_per_spawn += 1
+                   if herbs_amount_per_spawn > 100:
+                       herbs_amount_per_spawn = 100
+                   btn_herbs_amount_per_spawn_plus_clicked = 1
+            # Herbs amount per spawn minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 205 and \
+               pygame.mouse.get_pos()[1] <= 218:
+                   # If all conditions satisfied:
+                   herbs_amount_per_spawn -= 1
+                   if herbs_amount_per_spawn < 0:
+                       herbs_amount_per_spawn = 0
+                   btn_herbs_amount_per_spawn_minus_clicked = 1
+
+            # Herbs spawn rate plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 225 and \
+               pygame.mouse.get_pos()[1] <= 238:
+                   # If all conditions satisfied:
+                   herbs_spawn_rate += 1
+                   if herbs_spawn_rate > 7:
+                       herbs_spawn_rate = 7
+                   btn_herbs_spawn_rate_plus_clicked = 1
+            # Herbs spawn rate minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 225 and \
+               pygame.mouse.get_pos()[1] <= 238:
+                   # If all conditions satisfied:
+                   herbs_spawn_rate -= 1
+                   if herbs_spawn_rate < 0:
+                       herbs_spawn_rate = 0
+                   btn_herbs_spawn_rate_minus_clicked = 1
+
+            # Herbivores starting amount plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 265 and \
+               pygame.mouse.get_pos()[1] <= 278:
+                   # If all conditions satisfied:
+                   herbivores_starting_amount += 20
+                   if herbivores_starting_amount > 800:
+                       herbivores_starting_amount = 800
+                   btn_herbivores_starting_amount_plus_clicked = 1
+            # Herbivores starting amount minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 265 and \
+               pygame.mouse.get_pos()[1] <= 278:
+                   # If all conditions satisfied:
+                   herbivores_starting_amount -= 20
+                   if herbivores_starting_amount < 0:
+                       herbivores_starting_amount = 0
+                   btn_herbivores_starting_amount_minus_clicked = 1
+
+            # Herbivores spawn energy plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 285 and \
+               pygame.mouse.get_pos()[1] <= 298:
+                   # If all conditions satisfied:
+                   herbivores_spawn_energy += 50
+                   if herbivores_spawn_energy > 5500:
+                       herbivores_spawn_energy = 5500
+                   btn_herbivores_spawn_energy_plus_clicked = 1
+            # Herbivores spawn energy minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 285 and \
+               pygame.mouse.get_pos()[1] <= 298:
+                   # If all conditions satisfied:
+                   herbivores_spawn_energy -= 50
+                   if herbivores_spawn_energy < 0:
+                       herbivores_spawn_energy = 0
+                   btn_herbivores_spawn_energy_minus_clicked = 1
+
+            # Herbivores breeding level plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 305 and \
+               pygame.mouse.get_pos()[1] <= 318:
+                   # If all conditions satisfied:
+                   herbivores_breed_level += 50
+                   if herbivores_breed_level > 5500:
+                       herbivores_breed_level = 5500
+                   btn_herbivores_breed_level_plus_clicked = 1
+            # Herbivores breeding level minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 305 and \
+               pygame.mouse.get_pos()[1] <= 318:
+                   # If all conditions satisfied:
+                   herbivores_breed_level -= 50
+                   if herbivores_breed_level < 0:
+                       herbivores_breed_level = 0
+                   btn_herbivores_breed_level_minus_clicked = 1
+
+            # Herbivores movement cost plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 325 and \
+               pygame.mouse.get_pos()[1] <= 338:
+                   # If all conditions satisfied:
+                   herbivores_movement_cost += 5
+                   if herbivores_movement_cost > 200:
+                       herbivores_movement_cost = 200
+                   btn_herbivores_movement_cost_plus_clicked = 1
+            # Herbivores movement cost minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 325 and \
+               pygame.mouse.get_pos()[1] <= 338:
+                   # If all conditions satisfied:
+                   herbivores_movement_cost -= 5
+                   if herbivores_movement_cost < 0:
+                       herbivores_movement_cost = 0
+                   btn_herbivores_movement_cost_minus_clicked = 1
+
+            # Carnivores starting amount plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 365 and \
+               pygame.mouse.get_pos()[1] <= 378:
+                   # If all conditions satisfied:
+                   carnivores_starting_amount += 5
+                   if carnivores_starting_amount > 300:
+                       carnivores_starting_amount = 300
+                   btn_carnivores_starting_amount_plus_clicked = 1
+            # Carnivores starting amount minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 365 and \
+               pygame.mouse.get_pos()[1] <= 378:
+                   # If all conditions satisfied:
+                   carnivores_starting_amount -= 5
+                   if carnivores_starting_amount < 0:
+                       carnivores_starting_amount = 0
+                   btn_carnivores_starting_amount_minus_clicked = 1
+
+            # Carnivores spawning energy plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 385 and \
+               pygame.mouse.get_pos()[1] <= 398:
+                   # If all conditions satisfied:
+                   carnivores_spawn_energy += 50
+                   if carnivores_spawn_energy > 5500:
+                       carnivores_spawn_energy = 5500
+                   btn_carnivores_spawn_energy_plus_clicked = 1
+            # Carnivores spawning energy minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 385 and \
+               pygame.mouse.get_pos()[1] <= 398:
+                   # If all conditions satisfied:
+                   carnivores_spawn_energy -= 50
+                   if carnivores_spawn_energy < 0:
+                       carnivores_spawn_energy = 0
+                   btn_carnivores_spawn_energy_minus_clicked = 1
+
+            # Carnivores breeding level plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 405 and \
+               pygame.mouse.get_pos()[1] <= 418:
+                   # If all conditions satisfied:
+                   carnivores_breed_level += 50
+                   if carnivores_breed_level > 5500:
+                       carnivores_breed_level = 5500
+                   btn_carnivores_breed_level_plus_clicked = 1
+            # Carnivores breeding level minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 405 and \
+               pygame.mouse.get_pos()[1] <= 418:
+                   # If all conditions satisfied:
+                   carnivores_breed_level -= 50
+                   if carnivores_breed_level < 0:
+                       carnivores_breed_level = 0
+                   btn_carnivores_breed_level_minus_clicked = 1
+
+            # Carnivores movement cost plus button clicked.
+            if pygame.mouse.get_pos()[0] >= 826 and \
+               pygame.mouse.get_pos()[0] <= 839 and \
+               pygame.mouse.get_pos()[1] >= 425 and \
+               pygame.mouse.get_pos()[1] <= 438:
+                   # If all conditions satisfied:
+                   carnivores_movement_cost += 10
+                   if carnivores_movement_cost > 500:
+                       carnivores_movement_cost = 500
+                   btn_carnivores_movement_cost_plus_clicked = 1
+            # Carnivores movement cost minus button clicked.
+            if pygame.mouse.get_pos()[0] >= 811 and \
+               pygame.mouse.get_pos()[0] <= 824 and \
+               pygame.mouse.get_pos()[1] >= 425 and \
+               pygame.mouse.get_pos()[1] <= 438:
+                   # If all conditions satisfied:
+                   carnivores_movement_cost -= 10
+                   if carnivores_movement_cost < 0:
+                       carnivores_movement_cost = 0
+                   btn_carnivores_movement_cost_minus_clicked = 1
+
+        # "If mouse button unclicked:".
+        if event.type == pygame.MOUSEBUTTONUP:
+                   btn_start_clicked = 0
+                   btn_pause_clicked = 0
+                   btn_reset_clicked = 0
+                   btn_tempo_plus_clicked = 0
+                   btn_tempo_minus_clicked = 0
+                   btn_cps_plus_clicked = 0
+                   btn_cps_minus_clicked = 0
+                   btn_mutation_plus_clicked = 0
+                   btn_mutation_minus_clicked = 0
+                   btn_herbs_starting_amount_plus_clicked = 0
+                   btn_herbs_starting_amount_minus_clicked = 0
+                   btn_herbs_energy_plus_clicked = 0
+                   btn_herbs_energy_minus_clicked = 0
+                   btn_herbs_amount_per_spawn_plus_clicked = 0
+                   btn_herbs_amount_per_spawn_minus_clicked = 0
+                   btn_herbs_spawn_rate_plus_clicked = 0
+                   btn_herbs_spawn_rate_minus_clicked = 0
+                   btn_herbivores_starting_amount_plus_clicked = 0
+                   btn_herbivores_starting_amount_minus_clicked = 0
+                   btn_herbivores_spawn_energy_plus_clicked = 0
+                   btn_herbivores_spawn_energy_minus_clicked = 0
+                   btn_herbivores_breed_level_plus_clicked = 0
+                   btn_herbivores_breed_level_minus_clicked = 0
+                   btn_herbivores_movement_cost_plus_clicked = 0
+                   btn_herbivores_movement_cost_minus_clicked = 0
+                   btn_carnivores_starting_amount_plus_clicked = 0
+                   btn_carnivores_starting_amount_minus_clicked = 0
+                   btn_carnivores_spawn_energy_plus_clicked = 0
+                   btn_carnivores_spawn_energy_minus_clicked = 0
+                   btn_carnivores_breed_level_plus_clicked = 0
+                   btn_carnivores_breed_level_minus_clicked = 0
+                   btn_carnivores_movement_cost_plus_clicked = 0
+                   btn_carnivores_movement_cost_minus_clicked = 0
 
     # Set CPS.
     cycles_per_sec = cycles_per_sec_list[chosen_cycles_per_second]
@@ -1162,88 +1753,15 @@ while not done:
                     herbs_starting_amount, herbivores_starting_amount, carnivores_starting_amount,
                     herbivores_spawn_energy, carnivores_spawn_energy, herbivores_breed_level,
                     carnivores_breed_level, herbivores_movement_cost, carnivores_movement_cost,
-                    mutation_chance, button_start_clicked, button_pause_clicked, button_reset_clicked,
-                    button_tempo_plus_clicked, button_tempo_minus_clicked, button_cps_plus_clicked,
-                    button_cps_minus_clicked)
-
-
-        # If bigger_screen flag == 1 (the window becomes taller), draw
-        # chart of total history of mean amounts of herbivores and carnivores.
-        if bigger_screen == 1:
-            x_herbi = 25
-            for i in range(0, len(herbivores_total_amount_list)):
-                if len(herbivores_total_amount_list) > 800:
-                    if i % (int(len(herbivores_total_amount_list) / 800) + 1) == 0:
-                        x_herbi += 1
-                        pygame.draw.rect(screen, colors_list_green[2][3],
-                                         [x_herbi,
-                                         780 - int(herbivores_total_amount_list[i] / 4),
-                                         2, 2])
-                else:
-                    pygame.draw.rect(screen, colors_list_green[2][3],
-                                     [25 + i,
-                                     780 - int(herbivores_total_amount_list[i] / 4),
-                                     2, 2])
-
-            x_carni = 25
-            for i in range(0, len(carnivores_total_amount_list)):
-                if len(carnivores_total_amount_list) > 800:
-                    if i % (int(len(carnivores_total_amount_list) / 800) + 1) == 0:
-                        x_carni += 1
-                        pygame.draw.rect(screen, colors_list_red[2][3],
-                                         [x_carni,
-                                         780 - int(carnivores_total_amount_list[i] / 4),
-                                         2, 2])
-                else:
-                    pygame.draw.rect(screen, colors_list_red[2][3],
-                                     [25 + i,
-                                     780 - int(carnivores_total_amount_list[i] / 4),
-                                     2, 2])
-
-
+                    mutation_chance, btn_start_clicked, btn_pause_clicked, btn_reset_clicked,
+                    btn_tempo_plus_clicked, btn_tempo_minus_clicked, btn_cps_plus_clicked,
+                    btn_cps_minus_clicked)
         # Animation to prevent Windows from hanging the window when paused.
         # Also useful in approximating lag.
         text_to_blit = font7.render(animation[0], True, (50, 50, 50))
-        screen.blit(text_to_blit, (837, 545))
+        screen.blit(text_to_blit, (837, 561))
         animation = animation + animation[0]
         animation = animation[1:]
-
-        # Drawing charts.
-        # Amount of herbivores and carnivores charts.
-        for i in range(0, len(herbivores_amount_list)):
-            pygame.draw.rect(screen, colors_list_green[2][3],
-                             [25 + i, 550 - int(herbivores_amount_list[i] / 4), 2, 2])
-        for i in range(0, len(carnivores_amount_list)):
-            pygame.draw.rect(screen, colors_list_red[2][3],
-                             [25 + i, 550 - int(carnivores_amount_list[i] / 4), 2, 2])
-        # Drawing charts.
-        # Mean value of herbivores traits charts.
-        for i in range(0, len(herbivores_mean_speed_list)):
-            pygame.draw.rect(screen, colors_list_green[4][3],
-                             [275 + i, 550 - int(herbivores_mean_speed_list[i] * 10), 2, 2])
-        for i in range(0, len(herbivores_mean_bowel_length_list)):
-            pygame.draw.rect(screen, colors_list_green[4][3],
-                             [400 + i, 550 - int(herbivores_mean_bowel_length_list[i] * 10), 2, 2])
-        for i in range(0, len(herbivores_mean_fat_limit_list)):
-            pygame.draw.rect(screen, colors_list_green[4][3],
-                             [525 + i, 550 - int(herbivores_mean_fat_limit_list[i] * 10), 2, 2])
-        for i in range(0, len(herbivores_mean_legs_length_list)):
-            pygame.draw.rect(screen, colors_list_green[4][3],
-                             [650 + i, 550 - int(herbivores_mean_legs_length_list[i] * 10), 2, 2])
-        # Drawing charts.
-        # Mean value of herbivores traits charts.
-        for i in range(0, len(carnivores_mean_speed_list)):
-            pygame.draw.rect(screen, colors_list_red[4][3],
-                             [275 + i, 550 - int(carnivores_mean_speed_list[i] * 10), 2, 2])
-        for i in range(0, len(carnivores_mean_bowel_length_list)):
-            pygame.draw.rect(screen, colors_list_red[4][3],
-                             [400 + i, 550 - int(carnivores_mean_bowel_length_list[i] * 10), 2, 2])
-        for i in range(0, len(carnivores_mean_fat_limit_list)):
-            pygame.draw.rect(screen, colors_list_red[4][3],
-                             [525 + i, 550 - int(carnivores_mean_fat_limit_list[i] * 10), 2, 2])
-        for i in range(0, len(carnivores_mean_legs_length_list)):
-            pygame.draw.rect(screen, colors_list_red[4][3],
-                             [650 + i, 550 - int(carnivores_mean_legs_length_list[i] * 10), 2, 2])
 
     # Spawn herbs every /speed_dict[herbs_spawn_rate]/ frames.
     grow_herbs(herbs_energy, herbs_spawn_rate)
@@ -1290,6 +1808,9 @@ while not done:
                 i.set_energy(0)
         reset_counter -= 1
         if reset_counter == 0:
+            big_counter = 0
+            report = open(str(datetime.now())[:13] + "." + str(datetime.now())[14:16] + "." + str(datetime.now())[17:19]
+                          + ".txt", "w")
             spawn_herbs(herbs_energy, herbs_starting_amount)
             spawn_herbivore(herbivores_starting_amount)
             spawn_carnivore(carnivores_starting_amount)
@@ -1312,19 +1833,19 @@ while not done:
 
     # Displaying info and updating mean values lists.
     if not int(counter_prev) == int(counter):
-        if int(counter) % 10 == 0:
+        if int(counter) % 20 == 0:
             # Updating lists with actual mean values of amounts and traits.
-            if len(herbivores_amount_list) > 100:
+            if len(herbivores_amount_list) > 160:
                 herbivores_amount_list = herbivores_amount_list[1:]
             herbivores_amount_list.append(len(herbivores))
             herbivores_total_amount_list.append(len(herbivores))
 
-            if len(carnivores_amount_list) > 100:
+            if len(carnivores_amount_list) > 160:
                 carnivores_amount_list = carnivores_amount_list[1:]
             carnivores_amount_list.append(len(carnivores))
             carnivores_total_amount_list.append(len(carnivores))
 
-            if len(herbivores_mean_speed_list) > 100:
+            if len(herbivores_mean_speed_list) > 160:
                 herbivores_mean_speed_list = herbivores_mean_speed_list[1:]
             local_sum = 0
             for i in herbivores:
@@ -1335,7 +1856,7 @@ while not done:
             else:
                 herbivores_mean_speed_list = herbivores_mean_speed_list[1:]
 
-            if len(herbivores_mean_bowel_length_list) > 100:
+            if len(herbivores_mean_bowel_length_list) > 160:
                 herbivores_mean_bowel_length_list = herbivores_mean_bowel_length_list[1:]
             local_sum = 0
             for i in herbivores:
@@ -1346,7 +1867,7 @@ while not done:
             else:
                 herbivores_mean_bowel_length_list = herbivores_mean_bowel_length_list[1:]
 
-            if len(herbivores_mean_fat_limit_list) > 100:
+            if len(herbivores_mean_fat_limit_list) > 160:
                 herbivores_mean_fat_limit_list = herbivores_mean_fat_limit_list[1:]
             local_sum = 0
             for i in herbivores:
@@ -1357,7 +1878,7 @@ while not done:
             else:
                 herbivores_mean_fat_limit_list = herbivores_mean_fat_limit_list[1:]
 
-            if len(herbivores_mean_legs_length_list) > 100:
+            if len(herbivores_mean_legs_length_list) > 160:
                 herbivores_mean_legs_length_list = herbivores_mean_legs_length_list[1:]
             local_sum = 0
             for i in herbivores:
@@ -1368,7 +1889,7 @@ while not done:
             else:
                 herbivores_mean_legs_length_list = herbivores_mean_legs_length_list[1:]
 
-            if len(carnivores_mean_speed_list) > 100:
+            if len(carnivores_mean_speed_list) > 160:
                 carnivores_mean_speed_list = carnivores_mean_speed_list[1:]
             local_sum = 0
             for i in carnivores:
@@ -1379,7 +1900,7 @@ while not done:
             else:
                 carnivores_mean_speed_list = carnivores_mean_speed_list[1:]
 
-            if len(carnivores_mean_bowel_length_list) > 100:
+            if len(carnivores_mean_bowel_length_list) > 160:
                 carnivores_mean_bowel_length_list = carnivores_mean_bowel_length_list[1:]
             local_sum = 0
             for i in carnivores:
@@ -1390,7 +1911,7 @@ while not done:
             else:
                 carnivores_mean_bowel_length_list = carnivores_mean_bowel_length_list[1:]
 
-            if len(carnivores_mean_fat_limit_list) > 100:
+            if len(carnivores_mean_fat_limit_list) > 160:
                 carnivores_mean_fat_limit_list = carnivores_mean_fat_limit_list[1:]
             local_sum = 0
             for i in carnivores:
@@ -1401,7 +1922,7 @@ while not done:
             else:
                 carnivores_mean_fat_limit_list = carnivores_mean_fat_limit_list[1:]
 
-            if len(carnivores_mean_legs_length_list) > 100:
+            if len(carnivores_mean_legs_length_list) > 160:
                 carnivores_mean_legs_length_list = carnivores_mean_legs_length_list[1:]
             local_sum = 0
             for i in carnivores:
@@ -1438,9 +1959,11 @@ while not done:
                                      + str(round(carnivores_mean_legs_length, 4))  + ";"
                                      + "\r\n")
                         report.flush()
+
     # Increase total cycles number by 1.
     if not pause:
         total_cycles_counter += 1
+
     # ################################# #
     # ##----- Update The Screen -----## #
     # ################################# #
