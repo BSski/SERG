@@ -19,3 +19,41 @@ for i in range(0, 43):
 
 print(new_grid_coords)
 '''
+'''
+# HOW TO DO TIMERS TO COMPARE ALGORHITMS
+import time as t
+from collections import Counter
+
+eles = list(range(5000000)) + list(range(5000000))
+eles.append(104933)
+eles.append(104933)
+eles.append(104933)
+print('len list: ', len(eles))
+print()
+
+st = t.time()
+print('Using Counter().most_common(): ')
+print(Counter(eles).most_common(1)[0])
+print('Time: ', t.time()-st)
+print()
+
+st = t.time()
+
+def mosty(lst):
+	sort = sorted(lst)
+	count, maxi, last_ele = 0, 0, None
+	for ele in sort:
+		if(maxi < count):
+			results = (last_ele, count)
+			maxi = count
+		if last_ele == ele:
+			count += 1
+		else:
+			count = 1
+		last_ele = ele
+	return results
+
+print('No counter')
+print(mosty(eles))
+print('Time: ', t.time()-st)
+'''

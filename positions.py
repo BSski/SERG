@@ -1,10 +1,18 @@
 # Generate three 43x43 empty grid lists.
-new_list = []
-for i in range(0,43):
-    new_list.append([])
-    for j in range(0,43):
-        new_list[i].append([])
+herbs_pos = []
+herbivores_pos = []
+carnivores_pos = []
+for i in range(0, 43):
+    herbs_pos.append([])
+    for j in range(0, 43):
+        herbs_pos[i].append([])
 
-herbs_pos = new_list
-herbivores_pos = new_list
-carnivores_pos = new_list
+for i in range(0, 43):
+    herbivores_pos.append([])
+    for j in range(0, 43):
+        herbivores_pos[i].append([])
+
+for i in range(0, 43):
+    carnivores_pos.append([])
+    for j in range(0, 43):
+        carnivores_pos[i].append([])
