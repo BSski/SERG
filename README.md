@@ -1,5 +1,9 @@
 **Changelog**
 
+11.07 - 14.07
+- added following/escaping mechanism: carnivores now follow herbivores/carnivores depending on intention, herbivores now escape from carnivores or follow herbs/herbivores, depending on intention
+- fixed major bug causing herbs, herbivores and carnivores positions to save in one list
+- minor logo tweak
 
 10.06, 11.06
 - added plus and minus buttons for every value in the interface
