@@ -1,5 +1,9 @@
 **Changelog**
 
+22.08
+- added information about settings and settings changes to report file
+
+
 01.08 - 05.08
 _"Bar plots"_
 - added bar plots of herbivores' and carnivores' traits distribution
