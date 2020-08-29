@@ -1,6 +1,7 @@
 **Changelog**
 
 01.08 - 05.08
+_"Bar plots"_
 - added bar plots of herbivores' and carnivores' traits distribution
 - interface changes
 - changed effective range of herbivores' and carnivores' smell, so that it is now possible for carnivores to sneak up on herbivores
