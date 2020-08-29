@@ -7,16 +7,21 @@
 ##########################################################
 
 # 16 possibile speeds with counter max 120:
-#     1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
+#  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120.
 
-# Clean color lists.
-# Add a button to set all the settings to their original values.
-# Dodaj zapisywanie stanu symulatora i wznawianie go z wczytanego pliku zapisu.
-# Bonusy z posiadania cech daj na % value, koszty daj na flat value.
-# Dodaj wpis na poczatku pliku z aktualnymi wartosciami ustawien.
-# Dodaj dopisywanie do pliku informacji o zmianie ustawien.
-# przy resetowaniu bar plots wystrzeliwują pod sufit
-# dodaj, ze jak przyciskasz klawisz CTRL to calosc symulacji spowalnia do predkosci 30 cps tempo 0.05 dopoki nie puscisz, wtedy wraca do normalnej
+
+# # To do:
+# - clean color lists
+# - set traits' bonuses to % value, traits' costs to flat value.
+
+# # To add:
+# - CTRL key 30 cps, 0.05 slow motion mode (as long as clicked).
+# - (maybe) a button to set all the settings back to their original values.
+# - (maybe) saving current session and loading sessions from a save.
+
+# # To fix:
+# - bar plots' bars being innacurate bug.
+# - bar plots' bars going to infinite(?) value during resetting.
 
 ############################################################################################################
 
