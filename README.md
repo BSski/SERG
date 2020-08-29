@@ -1,9 +1,17 @@
 **Changelog**
 
+01.08 - 05.08
+- added bar plots of herbivores' and carnivores' traits distribution
+- interface changes
+- changed effective range of herbivores' and carnivores' smell, so that it is now possible for carnivores to sneak up on herbivores
+- fixed a few minor bugs
+
+
 11.07 - 14.07
 - added following/escaping mechanism: carnivores now follow herbivores/carnivores depending on intention, herbivores now escape from carnivores or follow herbs/herbivores, depending on intention
 - fixed major bug causing herbs, herbivores and carnivores positions to save in one list
 - minor logo tweak
+
 
 10.06, 11.06
 - added plus and minus buttons for every value in the interface
