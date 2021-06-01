@@ -5,7 +5,7 @@
 
 
 01.08.2020 - 05.08.2020
-_"Bar plots"_
+_Bar plots_
 - added bar plots of herbivores' and carnivores' traits distribution
 - interface changes
 - changed effective range of herbivores' and carnivores' smell, so that it is now possible for carnivores to sneak up on herbivores
@@ -77,7 +77,7 @@ _"Bar plots"_
 
 
 06.05.2020
-_"New traits"_
+_New traits_
 - fixed critical birth bug 
 - added bowel length trait
 - added fat limit trait
@@ -88,7 +88,7 @@ _"New traits"_
 
 
 04.05.2020
-_"Inheritance"_
+_Inheritance_
 - fixed pause+clean bug
 - added inheritance of genes
 - added possibility of mutation
@@ -98,7 +98,7 @@ _"Inheritance"_
 
 
 28.04.2020
-_"Tempo"_
+_Tempo_
 - modified delta_t time regulation to fit the task better
 - added tempo regulation through buttons
 - minor interface changes
@@ -106,7 +106,7 @@ _"Tempo"_
 
 
 27.04.2020
-_"Buttons I"_
+_Buttons I_
 - created a few button sprites and added them
 - added plus, minus, start, pause and clean buttons
 - start, pause and clean buttons work
@@ -117,14 +117,14 @@ _"Buttons I"_
 
 
 25.04.2020
-_"Optimization II"_
+_Optimization II_
 - optimized eating and breeding for both carnivores and herbivores
 - color of animals depends on their energy level
 - new layout design changes
 
 
 24.04.2020
-_"Optimization I"_
+_Optimization I_
 - limited amount of herbs to 1 per field
 - extraction of main settings to the begginning of the program
 - started working on optimization of breeding process
@@ -132,7 +132,7 @@ _"Optimization I"_
 
 
 23.04.2020
-_"Carni&herbi"_
+_Carni&herbi_
 - divided animals into carnivores and herbivores
 - carnivores eat herbivores
 - preliminary balancing
@@ -140,7 +140,7 @@ _"Carni&herbi"_
 
 
 22.04.2020
-_"Herbs, breeding, energy"_
+_Herbs, breeding, energy_
 - added herbs class
 - herbs spawn every X frames now
 - animals can eat herbs now
