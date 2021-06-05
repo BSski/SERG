@@ -18,6 +18,7 @@
 # - CTRL key 30 cps, 0.05 slow motion mode (as long as clicked).
 # - (maybe) a button to set all the settings back to their original values.
 # - (maybe) saving current session and loading sessions from a save.
+# - (maybe) clicking an animal shows its stats and draws a big black circle around it
 
 # # To fix:
 # - bar plots' bars being innacurate bug.
@@ -115,10 +116,10 @@ big_counter_prev = big_counter
 reset = 0
 pause = 1
 reset_counter = 15
-chosen_cycles_per_second = 4
+chosen_cycles_per_second = 0
 counter_for_fps = 0
 total_cycles_counter = 0
-charts_drawing_speed = 30
+charts_drawing_speed = 6
 
 herbs = []
 herbivores = []
@@ -220,7 +221,7 @@ right_panel_button_clicked = 1
 # Main loop's cycles per second, between 0-14.
 cycles_per_sec = cycles_per_sec_list[chosen_cycles_per_second]
 
-tempo = 1.00                        # between 0.01 and 1    # default = 0.28
+tempo = 0.01                        # between 0.01 and 1    # default = 0.28
 
 mutation_chance = 4                 # between 0 and 99, percents
 
@@ -2347,7 +2348,7 @@ while not done:
         for i in herbs:
             i.draw()
 
-    # Check if any carnivore died out of starvation,
+    # Check if any herbivore died out of starvation,
     # then either breed or eat, then move.
     for i in herbivores:
         if i.get_state() == 0:
