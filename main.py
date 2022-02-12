@@ -570,7 +570,7 @@ def draw_window(colors_list_green, colors_list_red, herbs, herbivores, carnivore
     pygame.draw.line(screen, DARKGRAY, (36, 649+1), (837, 649+1), 1)
     pygame.draw.line(screen, DARKGRAY, (36, 459-1), (837, 459-1), 1)
     pygame.draw.line(screen, DARKGRAY, (838, 649+1), (838, 459-1), 1)
-    text_to_blit = font2.render("TOTAL AMOUNT LOG", True, (50, 50, 50))
+    text_to_blit = font2.render("TOTAL NUMBER LOG", True, (50, 50, 50))
     screen.blit(text_to_blit, (370, 653))
     #595
 
@@ -698,7 +698,7 @@ def draw_window(colors_list_green, colors_list_red, herbs, herbivores, carnivore
 
     text_to_blit = font5.render("HERBS", True, (50, 50, 50))
     screen.blit(text_to_blit, (662, 149))
-    text_to_blit = font2.render(("Start. amount: " + str(herbs_starting_amount)), True, (50, 50, 50))
+    text_to_blit = font2.render(("Start. number: " + str(herbs_starting_amount)), True, (50, 50, 50))
     screen.blit(text_to_blit, (664, 165))
     text_to_blit = font2.render(("Energy: " + str(herbs_energy)), True, (50, 50, 50))
     screen.blit(text_to_blit, (664, 185))
@@ -709,7 +709,7 @@ def draw_window(colors_list_green, colors_list_red, herbs, herbivores, carnivore
 
     text_to_blit = font5.render("HERBIVORES", True, (50, 50, 50))
     screen.blit(text_to_blit, (662, 249))
-    text_to_blit = font2.render(("Start. amount: " + str(herbivores_starting_amount)), True, (50, 50, 50))
+    text_to_blit = font2.render(("Start. number: " + str(herbivores_starting_amount)), True, (50, 50, 50))
     screen.blit(text_to_blit, (664, 265))
     text_to_blit = font2.render(("Spawn energy: " + str(herbivores_spawn_energy)), True, (50, 50, 50))
     screen.blit(text_to_blit, (664, 285))
@@ -720,7 +720,7 @@ def draw_window(colors_list_green, colors_list_red, herbs, herbivores, carnivore
 
     text_to_blit = font5.render("CARNIVORES", True, (50, 50, 50))
     screen.blit(text_to_blit, (662, 349))
-    text_to_blit = font2.render(("Start. amount: " + str(carnivores_starting_amount)), True, (50, 50, 50))
+    text_to_blit = font2.render(("Start. number: " + str(carnivores_starting_amount)), True, (50, 50, 50))
     screen.blit(text_to_blit, (664, 365))
     text_to_blit = font2.render(("Spawn energy: " + str(carnivores_spawn_energy)), True, (50, 50, 50))
     screen.blit(text_to_blit, (664, 385))
@@ -729,7 +729,7 @@ def draw_window(colors_list_green, colors_list_red, herbs, herbivores, carnivore
     text_to_blit = font2.render(("Movement cost: " + str(carnivores_movement_cost)), True, (50, 50, 50))
     screen.blit(text_to_blit, (664, 425))
 
-    text_to_blit = font2.render("AMOUNT", True, (50, 50, 50))
+    text_to_blit = font2.render("NUMBER", True, (50, 50, 50))
     screen.blit(text_to_blit, (85, 427))
 
     # Start button.
@@ -1226,18 +1226,16 @@ class Carnivore(animal):
                                 #best_path.append(["s", "e"])
                             if len(herbivores_pos[self.coord_y + 2][self.coord_x + 2]) > 0:
                                 best_path.append(["s", "e"])
-                            print(best_path)
+                            #print(best_path)
 
                             if len(best_path) > 0:
                                 target = random.choice(best_path)
                                 if len(target) > 1:
-                                    move = random.choice(target)
-                                    print(self.coord_x, self.coord_y, "▓█▓ 1 im chasing herbivore:", move)
+                                    move = random.choice(target) # im chasing a herbivore
                                 else:
-                                    move = target
-                                    print(self.coord_x, self.coord_y, "▓█▓ 2 im chasing herbivore:", move)
+                                    move = target # im chasing a herbivore
                             else:
-                                print(self.coord_x, self.coord_y, "▓█▓ 3 i want to eat but there's no herbivore nearby")
+                                # i want to eat but there's no herbivore nearby
                                 self.possible_moves.remove(self.forbidden_move)
                                 move = random.choice(self.possible_moves)
 
@@ -1294,17 +1292,15 @@ class Carnivore(animal):
                             if len(best_path) > 0:
                                 target = random.choice(best_path)
                                 if len(target) > 1:
-                                    move = random.choice(target)
-                                    print(self.coord_x, self.coord_y, "▓█▓ 4 im chasing carnivore:", move)
+                                    move = random.choice(target) # im chasing a carnivore
                                 else:
-                                    move = target
-                                    print(self.coord_x, self.coord_y, "▓█▓ 5 im chasing carnivore:", move)
+                                    move = target # im chasing a carnivore
                             else:
-                                print(self.coord_x, self.coord_y, "▓█▓ 6 i want to breed but there's no carnivore nearby")
+                                # i want to breed but there's no carnivore nearby
                                 self.possible_moves.remove(self.forbidden_move)
                                 move = random.choice(self.possible_moves)
                     else:
-                        print(self.coord_x, self.coord_y, "▓█▓ 7 there's literally nothing for me nearby")
+                        # there's literally nothing for me nearby
                         self.possible_moves.remove(self.forbidden_move)
                         move = random.choice(self.possible_moves)
 
@@ -1486,16 +1482,14 @@ class Herbivore(animal):
                             best_path.append(["n", "w"])
                         #if len(carnivores_pos[self.coord_y + 2][self.coord_x + 2]) > 0:
                             #best_path.append(["n", "w"])
-                        print(best_path)
+                        #print(best_path)
 
                         if len(best_path) > 0:
                             target = random.choice(best_path)
                             if len(target) > 1:
-                                move = random.choice(target)
-                                #print(self.coord_x, self.coord_y, "▓█▓ 1 im running from an target to:", move)
+                                move = random.choice(target) # im running from a target
                             else:
-                                move = target
-                                #print(self.coord_x, self.coord_y, "▓█▓ 2 im running from an target to:", move)
+                                move = target # im running from a target
                         else:
                             if self.get_intention() == "eating":
                                 if len(herbs_pos[self.coord_y - 2][self.coord_x - 2]) > 0:
@@ -1546,18 +1540,16 @@ class Herbivore(animal):
                                     best_path.append(["s", "e"])
                                 if len(herbs_pos[self.coord_y + 2][self.coord_x + 2]) > 0:
                                     best_path.append(["s", "e"])
-                                print(best_path)
+                                #print(best_path)
 
                                 if len(best_path) > 0:
                                     target = random.choice(best_path)
                                     if len(target) > 1:
-                                        move = random.choice(target)
-                                        #print(self.coord_x, self.coord_y, "▓█▓ 3 im chasing herb:", move)
+                                        move = random.choice(target) # im chasing a herb
                                     else:
-                                        move = target
-                                        #print(self.coord_x, self.coord_y, "▓█▓ 4 im chasing herb:", move)
+                                        move = target # im chasing a herb
                                 else:
-                                    #print(self.coord_x, self.coord_y, "▓█▓ 5 there's no herb for me nearby")
+                                    # there's no herb for me nearby
                                     self.possible_moves.remove(self.forbidden_move)
                                     move = random.choice(self.possible_moves)
                             else:
@@ -1609,22 +1601,20 @@ class Herbivore(animal):
                                     best_path.append(["s", "e"])
                                 if len(herbivores_pos[self.coord_y + 2][self.coord_x + 2]) > 0:
                                     best_path.append(["s", "e"])
-                                print(best_path)
+                                #print(best_path)
 
                                 if len(best_path) > 0:
                                     target = random.choice(best_path)
                                     if len(target) > 1:
-                                        move = random.choice(target)
-                                        #print(self.coord_x, self.coord_y, "▓█▓ 6 im trying to breed:", move)
+                                        move = random.choice(target)  # im trying to breed
                                     else:
-                                        move = target
-                                        #print(self.coord_x, self.coord_y, "▓█▓ 7 im trying to breed:", move)
+                                        move = target  # im trying to breed
                                 else:
-                                    #print(self.coord_x, self.coord_y, "▓█▓ 8 there's no partner for me nearby")
+                                    # there's no partner for me nearby
                                     self.possible_moves.remove(self.forbidden_move)
                                     move = random.choice(self.possible_moves)
                     else:
-                        #print(self.coord_x, self.coord_y, "▓█▓ 9 there's literally nothing around me")
+                        # there's literally nothing around me
                         self.possible_moves.remove(self.forbidden_move)
                         move = random.choice(self.possible_moves)
 
@@ -1833,7 +1823,7 @@ while not done:
                 suma = 0
                 for i in range(len(cycle_time_list)):
                     suma += cycle_time_list[i]
-                print(suma/len(cycle_time_list))
+                #print(suma/len(cycle_time_list))
             if event.key == pygame.K_r:
                 reset = 1
         # "If mouse button clicked:".
