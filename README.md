@@ -2,7 +2,7 @@
 
 <hr>
 <b><p align="center">WARNING: VERY OLD CODE</p></b>
-<i><p align="center">This code was written in 2020. I have learned a lot since then and I am aware of the poor quality of the code.</p></i>
+<i><p align="center">This code was written in 2020. I have learned a lot since then and I am aware of the (very) poor quality of the code.</p></i>
 <hr>
 
 SERG (Symulator Ewolucyjnej Rywalizacji Genów) is a .
