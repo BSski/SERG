@@ -7,7 +7,7 @@
 
 SERG (Symulator Ewolucyjnej Rywalizacji Genów) is an artificial life simulator inspired by The Game of Life cellular automata. It simulates interaction between herbivores and carnivores in an environment. The animals can move, eat and reproduce. They have their own DNA, in which the values of their traits are coded: speed, length of intestine, limit of fat tissue and length of legs. Trait values affect animal behavior and their ability to survive and reproduce. Animals inherit traits from their parents, with a certain chance of mutation of genes. The project was made entirely in pygame.
 
-<hr>
+<img src="./SERG.gif" alt="SERG GUI" width="500" height="600">
 
 <h2>:white_check_mark: Requirements:</h2>
 - pygame==2.1.2
@@ -17,7 +17,7 @@ SERG (Symulator Ewolucyjnej Rywalizacji Genów) is an artificial life simulator 
 
 
 :date: **22.08.2020**
-- added information about settings and settings changes to report file
+- added information about settings and settings changes to a report file
 
 
 :date: **01.08.2020 - 05.08.2020
