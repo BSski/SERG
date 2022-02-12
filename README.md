@@ -1,7 +1,8 @@
 <b><h1 align="center">SERG</h1></b>
 
 <hr>
-![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) `#f03c15`<b><p align="center">WARNING: VERY OLD CODE</p></b>
+- ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) `#f03c15`
+- <b><p align="center">WARNING: VERY OLD CODE</p></b>
 <i><p align="center">Most of the code was written in 2020. I have learned a lot since then and I am aware of the poor quality of the code.</p></i>
 <hr>
 
