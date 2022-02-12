@@ -9,7 +9,11 @@ SERG (Symulator Ewolucyjnej Rywalizacji Genów) is a .
 
 <hr>
 
-**Changelog**
+<h2>:white_check_mark: Requirements:</h2>
+- pygame==2.1.2
+
+
+<h2>:chart_with_upwards_trend: Changelog:</h2>
 
 
 :date: **22.08.2020**
