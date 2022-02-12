@@ -1,9 +1,7 @@
 <b><h1 align="center">SERG</h1></b>
 
 <hr>
-```diff
-- WARNING: VERY OLD CODE -
-```
+<b><p align="center">WARNING: VERY OLD CODE</p></b>
 <i><p align="center">Most of the code was written in 2020. I have learned a lot since then and I am aware of the poor quality of the code.</p></i>
 <hr>
 
