@@ -221,7 +221,7 @@ right_panel_button_clicked = 1
 # Main loop's cycles per second, between 0-14.
 cycles_per_sec = cycles_per_sec_list[chosen_cycles_per_second]
 
-tempo = 0.01                        # between 0.01 and 1    # default = 0.28
+tempo = 0.28                        # between 0.01 and 1    # default = 0.28
 
 mutation_chance = 4                 # between 0 and 99, percents
 
