@@ -1,7 +1,7 @@
 <b><h1 align="center">SERG</h1></b>
 
 <hr>
-<b><p align="center">WARNING: VERY OLD CODE</p></b>
+<b><p align="center">WARNING: VERY OLD CODE (04-06.2020)</p></b>
 <i><p align="center">This code was written in 2020. I have learned a lot since then and I am aware of the poor quality of the code.</p></i>
 <hr>
 
