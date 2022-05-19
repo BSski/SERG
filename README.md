@@ -13,7 +13,7 @@
 
 <div markdown="1" align="center">
 
-[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/BSski/SERG/blob/main/LICENSE)
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/BSski/SERG/blob/master/LICENSE)
 
 </div>
 
