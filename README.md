@@ -1,22 +1,60 @@
-<b><h1 align="center">SERG</h1></b>
-
+<br>
 <hr>
 <b><p align="center">WARNING: VERY OLD CODE (04-06.2020)</p></b>
 <i><p align="center">This code was written in 2020. I have learned a lot since then and I am aware of the poor quality of the code.</p></i>
 <hr>
+<br>
 
-<p align="center">SERG (Symulator Ewolucyjnej Rywalizacji Genów) is an artificial life simulator inspired by The Game of Life cellular automata. It simulates interaction between herbivores and carnivores in an environment. The animals can move, eat and reproduce. They have their own DNA, in which the values of their traits are coded: speed, length of intestine, limit of fat tissue and length of legs. Trait values affect animal behavior and their ability to survive and reproduce. Animals inherit traits from their parents, with a certain chance of mutation of genes. The project was made entirely in pygame.</p>
+
+<p align="center">
+  <h2 align="center">SERG </h2>
+</p>
+
+
+<div markdown="1" align="center">
+
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/BSski/SERG/blob/main/LICENSE)
+
+</div>
+
+
+## Table of contents
+* [Project description](#scroll-project-description)
+* [SERG's interface](#serg's-interface)
+* [Technologies used](#hammer-technologies-used)
+* [Room for improvement](#arrow_up-room-for-improvement)
+* [Contact](#telephone_receiver-contact)
+* [Changelog](#chart_with_upwards_trend-changelog)
+* [Author](#construction_worker-author)
+* [License](#unlock-license)
+
+## :scroll: Project description
+SERG (Symulator Ewolucyjnej Rywalizacji Genów) is an artificial life simulator inspired by The Game of Life cellular automata. It simulates interaction between herbivores and carnivores in an environment. The animals can move, eat and reproduce. They have their own DNA, in which the values of their traits are coded: speed, length of intestine, limit of fat tissue and length of legs. Trait values affect animal behavior and their ability to survive and reproduce. Animals inherit traits from their parents, with a certain chance of mutation of genes. The project was made entirely in pygame.</p>
+
+
+## :scroll: SERG'S interface
 
 <p align="center"><img src="./SERG.gif" alt="SERG GUI" width="95%" height="63%" align="center"></p>
 
-<br>
 
-<h2>:white_check_mark: Requirements:</h2>
-- pygame==2.1.2
+## :hammer: Technologies used
+- Python 3.7
+- Pygame 2.1.2
 
 
-<h2>:chart_with_upwards_trend: Changelog:</h2>
+## :arrow_up: Room for improvement
+This is an old project of mine and it would certainly benefit from:
+- refactoring the code into better functions,
+- refactoring the code into different files,
+- getting rid of many anti-patterns,
+- having tests written for it.
 
+
+## :telephone_receiver: Contact
+- <contact.bsski@gmail.com>
+
+
+## :chart_with_upwards_trend: Changelog
 
 :date: **22.08.2020**
 - added information about settings and settings changes to a report file
@@ -209,3 +247,11 @@
 
 :date: **14.04.2020**
 - designed an interface for SERG
+
+
+## :construction_worker: Author
+- [@BSski](https://www.github.com/BSski)
+
+
+## :unlock: License
+MIT
