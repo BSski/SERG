@@ -7,7 +7,7 @@
 
 
 <p align="center">
-  <h2 align="center">SERG </h2>
+  <h2 align="center">SERG</h2>
 </p>
 
 
