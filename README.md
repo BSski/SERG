@@ -5,7 +5,11 @@
 <hr>
 <br>
 
-<p align="center"><img src="./SERG.gif" alt="SERG GUI" width="95%" height="63%" align="center"></p>
+
+<p align="center">
+  <img src="./SERG.gif" alt="SERG GUI" width="95%" height="63%" align="center">
+</p>
+
 
 <p align="center">
   <h2 align="center">SERG</h2>
