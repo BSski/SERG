@@ -7,6 +7,7 @@
 
 
 <p>
+    
   <img src="./SERG.gif" alt="SERG GUI" width="95%" height="63%" align="center"/>
 </p>
 
